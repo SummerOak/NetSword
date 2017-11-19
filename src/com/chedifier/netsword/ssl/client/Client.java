@@ -11,11 +11,14 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import com.chedifier.netsword.Log;
 import com.chedifier.netsword.ssl.Configuration;
 import com.chedifier.netsword.ssl.MyHandshakeCompletedListener;
 import com.chedifier.netsword.ssl.SocketIO;
 
 public class Client {
+	private static final String TAG = "Client";
+	
     private SSLContext sslContext;  
     private int port = 0;  
     private String host = null;  
@@ -37,7 +40,7 @@ public class Client {
             
             host = p.getProperty("serverHost");
             port = Integer.valueOf(p.getProperty("serverListenPort","0"));
-              
+            Log.i(TAG, "connecting to " + host + ":" + port);
             SocketAddress address = new InetSocketAddress(host, port);  
             socket.connect(address, 0);  
               

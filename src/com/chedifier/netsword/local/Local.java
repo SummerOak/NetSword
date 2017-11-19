@@ -1,10 +1,14 @@
 package com.chedifier.netsword.local;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import com.chedifier.netsword.ExceptionHandler;
 import com.chedifier.netsword.IOUtils;
@@ -18,8 +22,12 @@ public class Local {
 	private int mPort = 8888;
 	private ServerSocket mSocket = null;
 	
+	private int mRemotePort = 8888;
+	private String mRemoteHost = "47.90.206.185";
+//	private String mRemoteHost = "localhost";
+	
 	public Local(int port) {
-		
+		mPort = 8888;
 	}
 	
 	public Result start() {
@@ -73,6 +81,26 @@ public class Local {
 			ExceptionHandler.handleException(e);
 			IOUtils.safeClose(mSocket);
 			return Result.E_LOCAL_SOCKET_BUILD_FAILED;
+		}
+		
+		return Result.SUCCESS;
+	}
+	
+	public Result sendRemote(String message) {
+		Log.i(TAG, "sendRemote " + message);
+		try {
+			
+			Socket client = new Socket(mRemoteHost, mRemotePort);
+			OutputStream os = client.getOutputStream();
+			PrintWriter pw = new PrintWriter(os);
+			pw.print(message);
+			pw.flush();
+			client.shutdownOutput();
+			
+		} catch (UnknownHostException e) {
+			ExceptionHandler.handleException(e);
+		} catch (IOException e) {
+			ExceptionHandler.handleException(e);
 		}
 		
 		return Result.SUCCESS;

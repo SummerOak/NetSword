@@ -7,7 +7,11 @@ public class Main {
 	public static final String TAG = "NetSword";
 	
 	public static void main(String[] args){
-		Result r = new Local(8888).start();
+		Local local = new Local(8888);
+		Result r = local.start();
+		if(r == Result.SUCCESS) {
+			local.sendRemote("hello vps!");
+		}
 		
 		Log.i(TAG, "local " + r.getMessage());
 	}

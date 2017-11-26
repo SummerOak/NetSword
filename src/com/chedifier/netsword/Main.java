@@ -9,6 +9,8 @@ public class Main {
 	
 	public static void main(String[] args){
 		
+		printArgs(args);
+		
 		if(args != null && args.length >= 1) {
 			if("s".equals(args[0])){
 				Server server = new Server();
@@ -19,6 +21,19 @@ public class Main {
 		
 		Client client = new Client();
 		client.start();
+	}
+	
+	private static final void printArgs(String[] args) {
+		if(args == null) {			
+			Log.i(TAG, "args is null");
+		}else {
+			StringBuilder sb = new StringBuilder(128);
+			for(int i=0;i<args.length;i++) {
+				sb.append(args[i]).append(" ");
+			}
+			
+			Log.i(TAG, "args: " + sb.toString());
+		}
 	}
 
 }

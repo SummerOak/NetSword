@@ -46,7 +46,6 @@ public class Local {
 				InputStreamReader ir = null;
 				BufferedReader br = null;
 			
-				
 				@Override
 				public void run() {
 					try {

@@ -1,19 +1,24 @@
 package com.chedifier.netsword;
 
-import com.chedifier.netsword.local.Local;
+import com.chedifier.netsword.ssl.client.Client;
+import com.chedifier.netsword.ssl.server.Server;
 
 public class Main {
 	
 	public static final String TAG = "NetSword";
 	
 	public static void main(String[] args){
-		Local local = new Local(8888);
-		Result r = local.start();
-		if(r == Result.SUCCESS) {
-			local.sendRemote("hello vps!");
+		
+		if(args != null && args.length >= 1) {
+			if("s".equals(args[0])){
+				Server server = new Server();
+				server.service();
+				return;
+			}
 		}
 		
-		Log.i(TAG, "local " + r.getMessage());
+		Client client = new Client();
+		client.start();
 	}
 
 }

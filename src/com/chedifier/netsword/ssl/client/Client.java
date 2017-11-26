@@ -58,8 +58,10 @@ public class Client implements HandshakeCompletedListener{
 			mConnection.addHandshakeCompletedListener(this);
 			
 			mExecutor = Executors.newFixedThreadPool(Integer.valueOf(mConfiguration.getProperty("local_executor_pool_size","10")));
+			
+			mInitSuccess = true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionHandler.handleException(e);
 		}
 	}
 	
@@ -110,12 +112,13 @@ public class Client implements HandshakeCompletedListener{
 	
 	private boolean buildLocalListener() {
 		if(mLocalSocket != null) {
-			
+			Log.i(TAG, "local proxy already opening");
+			return true;
 		}
 		try {
 			Properties p = Configuration.getConfig();
-			int port = Integer.valueOf(p.getProperty("localPort", "8001"));
-			Log.i(TAG, "connecting to " + mServerHost + ":" + port);
+			int port = Integer.valueOf(p.getProperty("local_port", "8001"));
+			Log.i(TAG, "listening on port: " + port);
 			mLocalSocket = new ServerSocket(port);
 		} catch (Exception e) {
 			ExceptionHandler.handleException(e);
@@ -196,6 +199,5 @@ public class Client implements HandshakeCompletedListener{
 	@Override
 	public void handshakeCompleted(HandshakeCompletedEvent arg0) {
 		Log.i(TAG, "Handshake finished successfully");
-		mInitSuccess = true;
 	}
 }

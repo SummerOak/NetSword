@@ -95,14 +95,12 @@ public class S5ConnStage extends AbsS5Stage{
 		try {
 			socket.connect(address, timeout);
 		} catch (Throwable e) {
-			ExceptionHandler.handleException(e);
-			return null;
-		}finally {
+			ExceptionHandler.handleFatalException(e);
 			IOUtils.safeClose(socket);
 			socket = null;
 		}
 		
-		return null;
+		return socket;
 	}
 	
 	private Result readConnInfo(DataInputStream is, ConnInfo connInfo) {

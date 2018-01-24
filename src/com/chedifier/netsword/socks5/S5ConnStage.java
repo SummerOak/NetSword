@@ -45,6 +45,7 @@ public class S5ConnStage extends AbsS5Stage{
 				return result;
 			}
 			
+			mConnInfoServer = new ConnInfo();
 			if((result = readConnInfo(getContext().getServerInputStream(), mConnInfoServer)) != Result.SUCCESS) {
 				Log.e(TAG, "read conn info from server failed.");
 				return result;

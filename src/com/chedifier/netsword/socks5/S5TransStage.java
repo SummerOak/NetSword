@@ -23,6 +23,7 @@ public class S5TransStage extends AbsS5Stage{
 
 	@Override
 	public Result handle() {
+		Log.r(TAG, ">>>>>>");
 		new Thread(new Transporter(getContext().getServerInputStream(), getContext().getClientOutputStream())).start();
 		new Transporter(getContext().getClientInputStream(), getContext().getServerOutputStream()).run();
 		return Result.SUCCESS;

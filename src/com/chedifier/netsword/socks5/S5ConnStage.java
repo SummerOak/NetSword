@@ -31,6 +31,8 @@ public class S5ConnStage extends AbsS5Stage{
 
 	@Override
 	public Result handle() {
+		Log.r(TAG, ">>>>>>");
+		
 		Result result;
 		mConnInfo = new ConnInfo();
 		if((result = readConnInfo(getContext().getClientInputStream(),mConnInfo)) != Result.SUCCESS){
@@ -56,7 +58,7 @@ public class S5ConnStage extends AbsS5Stage{
 				return result;
 			}
 			
-			Log.e(TAG, "conn request send to proxy succ.");
+			Log.d(TAG, "conn request send to proxy succ.");
 		}else {
 			if(mConnInfo.addrInfo.ip != null) {
 				mConnInfo.netAddr = NetUtils.resolveAddrByIP(mConnInfo.addrInfo.ip);

@@ -20,6 +20,7 @@ public class S5VerifyStage extends AbsS5Stage{
 
 	@Override
 	public Result handle() {
+		Log.r(TAG, ">>>>>>");
 		
 		final int L = 1024;
 		byte[] cData = new byte[L];

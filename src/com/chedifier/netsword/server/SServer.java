@@ -44,7 +44,6 @@ public class SServer {
 					mExecutor.execute(new ConnHandler(conn));
 				} catch (Throwable t) {
 					ExceptionHandler.handleException(t);
-				} finally {
 					IOUtils.safeClose(conn);
 				}
 			}

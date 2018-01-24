@@ -1,7 +1,7 @@
 package com.chedifier.netsword;
 
-import com.chedifier.netsword.ssl.client.Client;
-import com.chedifier.netsword.ssl.server.Server;
+import com.chedifier.netsword.local.SLocal;
+import com.chedifier.netsword.server.SServer;
 
 public class Main {
 	
@@ -13,13 +13,13 @@ public class Main {
 		
 		if(args != null && args.length >= 1) {
 			if("s".equals(args[0])){
-				Server server = new Server();
-				server.service();
+				SServer server = new SServer(8888);
+				server.start();
 				return;
 			}
 		}
 		
-		Client client = new Client();
+		SLocal client = new SLocal(8888);
 		client.start();
 	}
 	

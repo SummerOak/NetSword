@@ -54,8 +54,8 @@ public class Client implements HandshakeCompletedListener{
 			mServerPort = Integer.valueOf(mConfiguration.getProperty("server_port", "0"));
 			Log.i(TAG, "connecting to " + mServerHost + ":" + mServerPort);
 			SocketAddress address = new InetSocketAddress(mServerHost, mServerPort);
-			mConnection.connect(address, 0);
-			mConnection.addHandshakeCompletedListener(this);
+//			mConnection.connect(address, 0);
+//			mConnection.addHandshakeCompletedListener(this);
 			
 			mExecutor = Executors.newFixedThreadPool(Integer.valueOf(mConfiguration.getProperty("local_executor_pool_size","10")));
 			
@@ -91,8 +91,6 @@ public class Client implements HandshakeCompletedListener{
 				mExecutor.execute(new Worker(conn, mConnection));
 			} catch (IOException e) {
 				ExceptionHandler.handleException(e);
-				
-				
 				Log.i(TAG, "accept local conn failed,wait ");
 				waitSecs(2);
 				failedTime++;
@@ -140,16 +138,22 @@ public class Client implements HandshakeCompletedListener{
 
 		@Override
 		public void run() {
-		
+			Log.i(TAG, "transporting request...");
 			DataInputStream ins =  SocketIO.getDataInput(localRequest);
 			DataOutputStream output = SocketIO.getDataOutput(serverConnction);
 			try {
 				if(ins != null) {
 					byte[] buffer = new byte[BUFFER_SIZE];
-					int length = 0;
+					int length = 0,sum = 0;
 					while((length = IOUtils.read(ins, buffer, BUFFER_SIZE)) > 0) {
+						Log.i(TAG, "read " + length + " bytes ");
 						int w = IOUtils.write(output, buffer, length);
+						Log.i(TAG, " write " + w + "bytes");
+						
+						sum += length;
 					}
+					
+					Log.i(TAG, "transport finished, transported " + sum + " bytes ");
 					
 					output.flush();
 				}

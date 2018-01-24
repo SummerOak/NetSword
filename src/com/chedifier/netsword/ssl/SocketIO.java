@@ -9,6 +9,10 @@ import com.chedifier.netsword.ExceptionHandler;
 
 public class SocketIO {
 	public static DataInputStream getDataInput(Socket socket) {
+		if(socket == null) {
+			return null;
+		}
+		
 		DataInputStream input;
 		try {
 			input = new DataInputStream(socket.getInputStream());
@@ -20,6 +24,10 @@ public class SocketIO {
 	}
 
 	public static DataOutputStream getDataOutput(Socket socket) {
+		if(socket == null) {
+			return null;
+		}
+		
 		DataOutputStream out = null;
 		try {
 			out = new DataOutputStream(socket.getOutputStream());

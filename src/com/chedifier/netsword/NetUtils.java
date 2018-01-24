@@ -14,7 +14,7 @@ public class NetUtils {
 	
 	public static InetAddress resolveAddrByDomain(String domain) {
 		try {
-			return InetAddress.getByName("www.example.com");
+			return InetAddress.getByName(domain);
 		} catch (Throwable e) {
 			ExceptionHandler.handleException(e);
 		}

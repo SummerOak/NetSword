@@ -36,4 +36,13 @@ public class StringUtils {
 		return "";
 	}
 	
+	public static int parseInt(String s,int def) {
+		try {
+			return Integer.valueOf(s);
+		}catch(Throwable t) {
+			ExceptionHandler.handleException(t);
+		}
+		return def;
+	}
+	
 }

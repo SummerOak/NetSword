@@ -1,5 +1,7 @@
 package com.chedifier.netsword;
 
+import java.util.regex.Pattern;
+
 import com.chedifier.netsword.local.SLocal;
 import com.chedifier.netsword.server.SServer;
 
@@ -11,28 +13,43 @@ public class Main {
 		
 		printArgs(args);
 		
+		boolean isServer = false;
+		int debugLevel = 0;
 		if(args != null && args.length >= 1) {
-			if("s".equals(args[0])){
-				SServer server = new SServer(8888);
-				server.start();
-				return;
+			for(int i=0;i<args.length;i++) {
+				String[] kv = args[i].split(Pattern.quote("="));
+				if(kv != null && kv.length == 2) {
+					if(kv[0].equals("dl")) {
+						debugLevel = StringUtils.parseInt(kv[1], debugLevel);
+					}
+				}else {
+					if(args[i].equalsIgnoreCase("s")) {
+						isServer = true;
+					}
+				}
 			}
 		}
+		Log.setLogLevel(debugLevel);
 		
-		SLocal client = new SLocal(8888);
-		client.start();
+		if(isServer) {
+			SServer server = new SServer(8888);
+			server.start();
+		}else {
+			SLocal client = new SLocal(8888);
+			client.start();
+		}
 	}
 	
 	private static final void printArgs(String[] args) {
 		if(args == null) {			
-			Log.i(TAG, "args is null");
+			Log.r(TAG, "args is null");
 		}else {
 			StringBuilder sb = new StringBuilder(128);
 			for(int i=0;i<args.length;i++) {
 				sb.append(args[i]).append(" ");
 			}
 			
-			Log.i(TAG, "args: " + sb.toString());
+			Log.r(TAG, "args: " + sb.toString());
 		}
 	}
 

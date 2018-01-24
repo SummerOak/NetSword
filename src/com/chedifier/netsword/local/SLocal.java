@@ -35,7 +35,7 @@ public class SLocal {
 
 		try {
 			mSocket = new ServerSocket(mPort);
-			Log.i(TAG, "build socket success.");
+			Log.r(TAG, "create slocal success.");
 			
 			new Thread(new Runnable() {
 				
@@ -43,13 +43,13 @@ public class SLocal {
 				public void run() {
 					try {
 						while (mSocket != null) {
-							Log.i(TAG, "listening...");
+							Log.d(TAG, "listening " + mPort + "...");
 							Socket conn = mSocket.accept();
 							new ConnHandler(conn).start();
 						}
 						
 					} catch (Throwable t) {
-						ExceptionHandler.handleException(t);
+						ExceptionHandler.handleFatalException(t);
 					} finally {
 						IOUtils.safeClose(mSocket);
 					}
@@ -68,7 +68,7 @@ public class SLocal {
 		Socket server = new Socket();
 		SocketAddress address = new InetSocketAddress(mSServerHost, mSServerPort);
 		try {
-			server.connect(address, 10);
+			server.connect(address, 10000);
 		} catch (IOException e) {
 			ExceptionHandler.handleException(e);
 			return null;
@@ -87,11 +87,15 @@ public class SLocal {
 		
 		@Override
 		public void run() {
+			Log.r(TAG, "receive an conntion");
+			long connServerCost = System.currentTimeMillis();
+			Log.i(TAG, "connecting to proxy " + mSServerHost + " " + mSServerPort);
 			Socket server = bindSServer();
+			Log.i(TAG, "conn server cost: " + (System.currentTimeMillis() - connServerCost));
 			if(server != null) {
 				new S5VerifyStage(new SocketContext(mConnection,server),true).handle();
 			}else {
-				Log.i(TAG, "bind server failed.");
+				Log.e(TAG, "conn proxy server failed. ");
 			}
 			
 		}

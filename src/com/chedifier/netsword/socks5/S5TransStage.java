@@ -42,11 +42,10 @@ public class S5TransStage extends AbsS5Stage{
 		
 		@Override
 		public void run() {
-			
 			try {
 				int read = 0;
 				while((read = from.read(data,0,L)) > 0) {
-					Log.i(TAG, "trans[" + read + "]: " + StringUtils.toString(data, read));
+					Log.d(TAG, "trans[" + read + "]: " + StringUtils.toString(data, read));
 					to.write(data,0,read);
 				}
 			} catch (IOException e) {

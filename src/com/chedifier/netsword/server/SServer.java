@@ -22,12 +22,13 @@ public class SServer {
 	
 	public Result start() {
 		if (mSocket != null) {
+			Log.d(TAG, "already listening");
 			return Result.E_LOCAL_SOCKET_ALREADY_LISTENING;
 		}
 
 		try {
 			mSocket = new ServerSocket(mPort);
-			Log.i(TAG, "build server success.");
+			Log.r(TAG, "create sserver success.");
 
 			new Thread(new Runnable() {
 				
@@ -35,7 +36,7 @@ public class SServer {
 				public void run() {
 					try {
 						while (mSocket != null) {
-							Log.i(TAG, "listening...");
+							Log.d(TAG, "listening on " + mPort + "...");
 							Socket conn = mSocket.accept();
 							new ConnHandler(conn).start();
 						}
@@ -67,6 +68,7 @@ public class SServer {
 		
 		@Override
 		public void run() {
+			Log.r(TAG, "receive a conn.");
 			new S5VerifyStage(new SocketContext(mConnection,null),false).handle();
 		}
 	}

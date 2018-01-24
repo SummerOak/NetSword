@@ -34,28 +34,28 @@ public class S5ConnStage extends AbsS5Stage{
 		Result result;
 		mConnInfo = new ConnInfo();
 		if((result = readConnInfo(getContext().getClientInputStream(),mConnInfo)) != Result.SUCCESS){
-			Log.i(TAG, "parse conn info failed.");
+			Log.e(TAG, "read conn info failed.");
 			return result;
 		}
 		
 		if(isLocal()) {
 			Log.i(TAG, "sending conn request to server...");
 			if((result = writeConn(getContext().getServerOutputStream(), mConnInfo)) != Result.SUCCESS) {
-				Log.i(TAG, "relay conn info to server failed.");
+				Log.e(TAG, "relay conn info to server failed.");
 				return result;
 			}
 			
 			if((result = readConnInfo(getContext().getServerInputStream(), mConnInfoServer)) != Result.SUCCESS) {
-				Log.i(TAG, "read conn info from server failed.");
+				Log.e(TAG, "read conn info from server failed.");
 				return result;
 			}
 			
 			if((result = writeConn(getContext().getClientOutputStream(), mConnInfoServer)) != Result.SUCCESS) {
-				Log.i(TAG, "write conn info to client failed.");
+				Log.e(TAG, "write conn info to client failed.");
 				return result;
 			}
 			
-			Log.i(TAG, "conn request send to proxy succ.");
+			Log.e(TAG, "conn request send to proxy succ.");
 		}else {
 			if(mConnInfo.addrInfo.ip != null) {
 				mConnInfo.netAddr = NetUtils.resolveAddrByIP(mConnInfo.addrInfo.ip);
@@ -68,16 +68,18 @@ public class S5ConnStage extends AbsS5Stage{
 				return Result.E_S5_CONN_SEND_SERVER;
 			}
 			
+			Log.d(TAG, "resolve addr: " + mConnInfo.netAddr.getHostName() + " " + mConnInfo.netAddr.getHostAddress());
+			
 			Socket destSocket;
 			if((destSocket = connectDest(mConnInfo, 10)) == null) {
-				Log.i(TAG, "connect to remote failed.");
+				Log.e(TAG, "connect to remote failed.");
 				return Result.E_S5_CONN_SEND_SERVER;
 			}
 			
 			getContext().updateServerSocket(destSocket);
 			
 			if((result = writeConn(getContext().getClientOutputStream(), mConnInfo)) != Result.SUCCESS) {
-				Log.i(TAG, "write conn info to local failed.");
+				Log.e(TAG, "write conn info to local failed.");
 				return result;
 			}
 		}
@@ -107,14 +109,14 @@ public class S5ConnStage extends AbsS5Stage{
 		final int L = 1024;
 		byte[] data = new byte[L];
 		if(IOUtils.read(is, data, 4) != 4) {
-			Log.i(TAG, "read connection failed.");
+			Log.i(TAG, "read conn head failed.");
 			return Result.E_S5_CONN_READ_HEAD;
 		}
 		
 		Log.i(TAG, "receive conn: " + StringUtils.toRawString(data, 4));
 		
 		if(data[0] != 0x05) {
-			Log.i(TAG, "not socks5");
+			Log.i(TAG, "conn req ver not socks5");
 			return Result.E_S5_CONN_VER;
 		}
 		
@@ -126,7 +128,7 @@ public class S5ConnStage extends AbsS5Stage{
 			case 0x01:{
 				addrInfo.ip = new byte[4];
 				if(IOUtils.read(is, addrInfo.ip, 4) != 4) {
-					Log.i(TAG, "read ipv4 failed.");
+					Log.e(TAG, "conn read ipv4 failed.");
 					return Result.E_S5_CONN_READ_IPV4;
 				}
 				
@@ -136,13 +138,13 @@ public class S5ConnStage extends AbsS5Stage{
 				
 			case 0x03:{
 				if(IOUtils.read(is,data,0,1) != 1) {
-					Log.i(TAG, "read domain length failed.");
+					Log.e(TAG, "conn read domain length failed.");
 					return Result.E_S5_CONN_READ_DOMAIN;
 				}
 				
 				int len = data[0];
 				if(IOUtils.read(is,data, 0,len) != len) {
-					Log.i(TAG, "read domain failed.");
+					Log.e(TAG, "read domain failed.");
 					return Result.E_S5_CONN_READ_DOMAIN;
 				}
 				
@@ -154,7 +156,7 @@ public class S5ConnStage extends AbsS5Stage{
 			case 0x04:{
 				addrInfo.ip = new byte[16];
 				if(IOUtils.read(is,addrInfo.ip, 16) != 16) {
-					Log.i(TAG, "read ipv6 failed.");
+					Log.e(TAG, "conn read ipv6 failed.");
 					return Result.E_S5_CONN_READ_IPV6;
 				}
 				Log.i(TAG, "ipv6: " + StringUtils.toRawString(data, 16));
@@ -163,9 +165,8 @@ public class S5ConnStage extends AbsS5Stage{
 			}
 		}
 		
-		
 		if(IOUtils.read(is,data, 2) != 2) {
-			Log.i(TAG, "read port failed.");
+			Log.e(TAG, "conn read port failed.");
 			return Result.E_S5_CONN_READ_PORT;
 		}
 		
@@ -186,20 +187,20 @@ public class S5ConnStage extends AbsS5Stage{
 		}
 		
 		if(addrtp == 0x00) {
-			Log.i(TAG, "get addr type failed.");
-			return Result.E_S5_CONN_READ_IPV4;
+			Log.i(TAG, "write conn,invalidate head");
+			return Result.E_S5_CONN_INVALIDATE_HEAD;
 		}
 		
 		if(IOUtils.write(os, new byte[] {0x05,connInfo.connCmd,0x00,addrtp}, 4) != 4) {
-			Log.i(TAG, "write conn info head failed.");
-			return Result.E_S5_CONN_READ_HEAD;
+			Log.e(TAG, "write conn info head failed.");
+			return Result.E_S5_CONN_WIRTE_HEAD;
 		}
 		
 		switch(addrtp) {
 			case 0x01:{
 				if(IOUtils.write(os, addrInfo.ip, 4) != 4) {
-					Log.i(TAG, "write conn addr ipv4 failed.");
-					return Result.E_S5_CONN_READ_IPV4;
+					Log.e(TAG, "write conn addr ipv4 failed.");
+					return Result.E_S5_CONN_WRITE_IPV4;
 				}
 				break;
 			}
@@ -207,12 +208,12 @@ public class S5ConnStage extends AbsS5Stage{
 			case 0x03:{
 				if(IOUtils.write(os, new byte[] {(byte)addrInfo.domain.length()},1) != 1) {
 					Log.i(TAG, "write conn addr domain len failed.");
-					return Result.E_S5_CONN_READ_IPV4;
+					return Result.E_S5_CONN_WRITE_DOMAIN;
 				}
 				
 				if(IOUtils.write(os, addrInfo.domain.getBytes(),addrInfo.domain.length()) != addrInfo.domain.length()) {
-					Log.i(TAG, "write conn addr domain failed.");
-					return Result.E_S5_CONN_READ_IPV4;
+					Log.e(TAG, "write conn addr domain failed.");
+					return Result.E_S5_CONN_WRITE_DOMAIN;
 				}
 				
 				break;
@@ -220,16 +221,16 @@ public class S5ConnStage extends AbsS5Stage{
 			
 			case 0x04:{
 				if(IOUtils.write(os, addrInfo.ip, 16) != 16) {
-					Log.i(TAG, "write conn addr ipv6 failed.");
-					return Result.E_S5_CONN_READ_IPV4;
+					Log.e(TAG, "write conn addr ipv6 failed.");
+					return Result.E_S5_CONN_WRITE_IPV6;
 				}
 				break;
 			}
 		}
 		
 		if(IOUtils.write(os, new byte[] {(byte)((addrInfo.port>>8) & 0xff),((byte)(addrInfo.port & 0xff))}, 2) != 2) {
-			Log.i(TAG, "write port failed");
-			return Result.E_S5_CONN_READ_PORT;
+			Log.e(TAG, "write port failed");
+			return Result.E_S5_CONN_WRITE_PORT;
 		}
 		
 		return Result.SUCCESS;

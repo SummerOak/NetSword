@@ -22,6 +22,14 @@ public enum Result {
 	E_S5_CONN_READ_PORT(4,"read data format err"),
 	E_S5_CONN_SEND_SERVER(4,"read data format err"),
 	
+	E_S5_CONN_INVALIDATE_HEAD(4,"stage verify, read data format err"),
+	E_S5_CONN_WIRTE_HEAD(4,"stage verify, read data format err"),
+	E_S5_CONN_WRITE_IPV4(4,"read data format err"),
+	E_S5_CONN_WRITE_DOMAIN(4,"read data format err"),
+	E_S5_CONN_WRITE_IPV6(4,"read data format err"),
+	E_S5_CONN_WRITE_PORT(4,"read data format err"),
+	E_S5_CONN_WRITE_LOCAL(4,"read data format err"),
+	
 	
 	E_LOCAL_SOCKET_ALREADY_LISTENING(2000,"local socket already listening");
 	

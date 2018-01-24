@@ -71,7 +71,7 @@ public class S5ConnStage extends AbsS5Stage{
 			Log.d(TAG, "resolve addr: " + mConnInfo.netAddr.getHostName() + " " + mConnInfo.netAddr.getHostAddress());
 			
 			Socket destSocket;
-			if((destSocket = connectDest(mConnInfo, 10)) == null) {
+			if((destSocket = connectDest(mConnInfo, 100000)) == null) {
 				Log.e(TAG, "connect to remote failed.");
 				return Result.E_S5_CONN_SEND_SERVER;
 			}

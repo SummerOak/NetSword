@@ -93,6 +93,7 @@ public class SLocal {
 			Socket server = bindSServer();
 			Log.i(TAG, "conn server cost: " + (System.currentTimeMillis() - connServerCost));
 			if(server != null) {
+				Log.r(TAG, "conn proxy server succ.");
 				new S5VerifyStage(new SocketContext(mConnection,server),true).handle();
 			}else {
 				Log.e(TAG, "conn proxy server failed. ");

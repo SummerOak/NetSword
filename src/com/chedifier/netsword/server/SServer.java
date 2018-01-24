@@ -2,6 +2,8 @@ package com.chedifier.netsword.server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import com.chedifier.netsword.ExceptionHandler;
 import com.chedifier.netsword.IOUtils;
@@ -16,6 +18,8 @@ public class SServer {
 	private ServerSocket mSocket;
 	private int mPort = 8888;
 	
+	private Executor mExecutor = null;
+	
 	public SServer(int port) {
 		mPort = port;
 	}
@@ -29,36 +33,33 @@ public class SServer {
 		try {
 			mSocket = new ServerSocket(mPort);
 			Log.r(TAG, "create sserver success.");
-
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						while (mSocket != null) {
-							Log.d(TAG, "listening on " + mPort + "...");
-							Socket conn = mSocket.accept();
-							new ConnHandler(conn).start();
-						}
-						
-					} catch (Throwable t) {
-						ExceptionHandler.handleException(t);
-					} finally {
-						IOUtils.safeClose(mSocket);
-					}
+			
+			mExecutor = Executors.newFixedThreadPool(20);
+			
+			while (mSocket != null) {
+				Log.d(TAG, "listening on " + mPort + "...");
+				Socket conn = null;
+				try {
+					conn = mSocket.accept();
+					mExecutor.execute(new ConnHandler(conn));
+				} catch (Throwable t) {
+					ExceptionHandler.handleException(t);
+				} finally {
+					IOUtils.safeClose(conn);
 				}
-			}).start();
+			}
 		} catch (Throwable e) {
 			ExceptionHandler.handleException(e);
-			IOUtils.safeClose(mSocket);
 			return Result.E_LOCAL_SOCKET_BUILD_FAILED;
+		} finally {
+			IOUtils.safeClose(mSocket);
 		}
 
 		return Result.SUCCESS;
 		
 	}
 	
-	private class ConnHandler extends Thread{
+	private class ConnHandler implements Runnable{
 		
 		Socket mConnection;
 		

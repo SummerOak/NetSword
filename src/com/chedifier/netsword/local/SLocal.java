@@ -2,9 +2,12 @@ package com.chedifier.netsword.local;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import com.chedifier.netsword.ExceptionHandler;
 import com.chedifier.netsword.IOUtils;
@@ -23,6 +26,8 @@ public class SLocal {
 	private String mSServerHost = "47.90.206.185";
 //	private String mSServerHost = "127.0.0.1";
 	private int mSServerPort = 8888;
+	
+	private Executor mExecutor = null;
 
 	public SLocal(int port) {
 		mPort = port;
@@ -37,37 +42,35 @@ public class SLocal {
 			mSocket = new ServerSocket(mPort);
 			Log.r(TAG, "create slocal success.");
 			
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						while (mSocket != null) {
-							Log.d(TAG, "listening " + mPort + "...");
-							Socket conn = mSocket.accept();
-							new ConnHandler(conn).start();
-						}
-						
-					} catch (Throwable t) {
-						ExceptionHandler.handleFatalException(t);
-					} finally {
-						IOUtils.safeClose(mSocket);
-					}
+			mExecutor = Executors.newFixedThreadPool(20);
+			
+			while (mSocket != null) {
+				Log.d(TAG, "listening " + mPort + "...");
+				Socket conn = null;
+				try {
+					conn = mSocket.accept();
+					mExecutor.execute(new ConnHandler(conn));
+				}catch (Throwable t) {
+					ExceptionHandler.handleException(t);
+				}finally {
+					IOUtils.safeClose(conn);
 				}
-			}).start();
+			}
 		} catch (Throwable e) {
 			ExceptionHandler.handleException(e);
-			IOUtils.safeClose(mSocket);
 			return Result.E_LOCAL_SOCKET_BUILD_FAILED;
+		}finally {
+			IOUtils.safeClose(mSocket);
 		}
 
 		return Result.SUCCESS;
 	}
 
 	private Socket bindSServer() {
-		Socket server = new Socket();
+		Socket server = new Socket(Proxy.NO_PROXY);
 		SocketAddress address = new InetSocketAddress(mSServerHost, mSServerPort);
 		try {
+			
 			server.connect(address, 10000);
 		} catch (IOException e) {
 			ExceptionHandler.handleException(e);
@@ -77,7 +80,7 @@ public class SLocal {
 		return server;
 	}
 
-	private class ConnHandler extends Thread{
+	private class ConnHandler implements Runnable{
 		
 		Socket mConnection;
 		
@@ -87,9 +90,9 @@ public class SLocal {
 		
 		@Override
 		public void run() {
-			Log.r(TAG, "receive an conntion");
+			Log.r(TAG, "receive an conntion " + mConnection.getInetAddress().getHostAddress());
 			long connServerCost = System.currentTimeMillis();
-			Log.i(TAG, "connecting to proxy " + mSServerHost + " " + mSServerPort);
+			Log.d(TAG, "connecting to proxy " + mSServerHost + " " + mSServerPort);
 			Socket server = bindSServer();
 			Log.i(TAG, "conn server cost: " + (System.currentTimeMillis() - connServerCost));
 			if(server != null) {

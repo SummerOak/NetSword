@@ -68,7 +68,7 @@ public class S5ConnStage extends AbsS5Stage{
 				return Result.E_S5_CONN_SEND_SERVER;
 			}
 			
-			Log.d(TAG, "resolve addr: " + mConnInfo.netAddr.getHostName() + " " + mConnInfo.netAddr.getHostAddress());
+			Log.d(TAG, "resolve addr: " + mConnInfo.netAddr.getHostName() + " " + mConnInfo.netAddr.getHostAddress() + " port " + mConnInfo.addrInfo.port);
 			
 			Socket destSocket;
 			if((destSocket = connectDest(mConnInfo, 100000)) == null) {
@@ -88,7 +88,7 @@ public class S5ConnStage extends AbsS5Stage{
 	}
 	
 	private Socket connectDest(ConnInfo connInfo,int timeout) {
-		Log.i(TAG, "connecting dest: " + connInfo.netAddr.getHostName() + " " + connInfo.netAddr.getHostAddress() + "  " + connInfo.addrInfo.port);
+		Log.d(TAG, "connecting dest: " + connInfo.netAddr.getHostName() + " " + connInfo.netAddr.getHostAddress() + "  " + connInfo.addrInfo.port);
 		Socket socket = new Socket();
 		SocketAddress address = new InetSocketAddress(connInfo.netAddr, connInfo.addrInfo.port);
 		

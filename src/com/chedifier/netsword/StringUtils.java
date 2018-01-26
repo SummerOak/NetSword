@@ -7,10 +7,10 @@ public class StringUtils {
 	}
 	
 	public static String toRawString(byte[] data,int offset,int length) {
-		if(data != null && data.length >= length + offset) {
+		if(data != null && ArrayUtils.isValidateRange(data.length, offset, length)) {
 			StringBuilder sb = new StringBuilder(length << 1);
-			for(int i=offset;i<length + offset;i++) {
-				sb.append(String.valueOf(data[i] & 0xFF) + "|");
+			for(int i=0;i<length;i++) {
+				sb.append(String.valueOf(data[offset+i] & 0xFF) + "|");
 			}
 			
 			return sb.toString();
@@ -24,10 +24,10 @@ public class StringUtils {
 	}
 	
 	public static String toString(byte[] data,int offset,int length) {
-		if(data != null && data.length >= length + offset) {
+		if(data != null && ArrayUtils.isValidateRange(data.length, offset, length)) {
 			StringBuilder sb = new StringBuilder(length << 1);
-			for(int i=offset;i<length;i++) {
-				sb.append((char)(data[i] & 0xFF));
+			for(int i=0;i<length;i++) {
+				sb.append((char)(data[offset+i] & 0xFF));
 			}
 			
 			return sb.toString();

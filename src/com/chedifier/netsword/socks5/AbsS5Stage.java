@@ -10,6 +10,7 @@ public abstract class AbsS5Stage {
 	public AbsS5Stage(SocketContext context,boolean isClient) {
 		mContext = context;
 		mIsLocal = isClient;
+		
 	}
 	
 	public AbsS5Stage(AbsS5Stage stage) {

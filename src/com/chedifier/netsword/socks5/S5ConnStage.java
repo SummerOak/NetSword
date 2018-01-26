@@ -13,15 +13,20 @@ import com.chedifier.netsword.Log;
 import com.chedifier.netsword.NetUtils;
 import com.chedifier.netsword.Result;
 import com.chedifier.netsword.StringUtils;
+import com.chedifier.netsword.trans.Courier;
+import com.chedifier.netsword.trans.Parcel;
 
 public class S5ConnStage extends AbsS5Stage{
 	private String TAG = "S5ConnStage";
 	
 	private ConnInfo mConnInfo;
 	private ConnInfo mConnInfoServer;
+	private Courier mCourier;
 	
 	public S5ConnStage(AbsS5Stage stage) {
 		super(stage);
+		
+		mCourier = new Courier();
 	}
 
 	@Override
@@ -34,25 +39,30 @@ public class S5ConnStage extends AbsS5Stage{
 		Log.r(TAG, ">>>>>>");
 		
 		Result result;
-		mConnInfo = new ConnInfo();
-		if((result = readConnInfo(getContext().getClientInputStream(),mConnInfo)) != Result.SUCCESS){
-			Log.e(TAG, "read conn info failed.");
-			return result;
-		}
-		
 		if(isLocal()) {
+			mConnInfo = new ConnInfo();
+			
+			//1. read from client
+			if((result = readConnInfo(getContext().getClientInputStream(),mConnInfo)) != Result.SUCCESS){
+				Log.e(TAG, "read conn info from client failed.");
+				return result;
+			}
+			
+			//2. send to proxy server
 			Log.i(TAG, "sending conn request to server...");
-			if((result = writeConn(getContext().getServerOutputStream(), mConnInfo)) != Result.SUCCESS) {
-				Log.e(TAG, "relay conn info to server failed.");
+			if((result = writeConnParcel(getContext().getServerOutputStream(), mConnInfo)) != Result.SUCCESS) {
+				Log.e(TAG, "relay conn info to proxy server failed.");
 				return result;
 			}
 			
+			//3. read response from proxy server
 			mConnInfoServer = new ConnInfo();
-			if((result = readConnInfo(getContext().getServerInputStream(), mConnInfoServer)) != Result.SUCCESS) {
-				Log.e(TAG, "read conn info from server failed.");
+			if((result = readParcelConnInfo(getContext().getServerInputStream(), mConnInfoServer)) != Result.SUCCESS) {
+				Log.e(TAG, "read conn info from proxy server failed.");
 				return result;
 			}
 			
+			//4. write conn back to client
 			if((result = writeConn(getContext().getClientOutputStream(), mConnInfoServer)) != Result.SUCCESS) {
 				Log.e(TAG, "write conn info to client failed.");
 				return result;
@@ -60,6 +70,14 @@ public class S5ConnStage extends AbsS5Stage{
 			
 			Log.d(TAG, "conn request send to proxy succ.");
 		}else {
+			mConnInfo = new ConnInfo();
+			
+			//1. read from slocal
+			if((result = readParcelConnInfo(getContext().getClientInputStream(),mConnInfo)) != Result.SUCCESS){
+				Log.e(TAG, "read conn info from local failed.");
+				return result;
+			}
+			
 			if(mConnInfo.addrInfo.ip != null) {
 				mConnInfo.netAddr = NetUtils.resolveAddrByIP(mConnInfo.addrInfo.ip);
 			}else if(mConnInfo.addrInfo.domain != null) {
@@ -73,6 +91,7 @@ public class S5ConnStage extends AbsS5Stage{
 			
 			Log.d(TAG, "resolve addr: " + mConnInfo.netAddr.getHostName() + " " + mConnInfo.netAddr.getHostAddress() + " port " + mConnInfo.addrInfo.port);
 			
+			//2. connect to remote server
 			Socket destSocket;
 			if((destSocket = connectDest(mConnInfo, 100000)) == null) {
 				Log.e(TAG, "connect to remote failed.");
@@ -81,7 +100,8 @@ public class S5ConnStage extends AbsS5Stage{
 			
 			getContext().updateServerSocket(destSocket);
 			
-			if((result = writeConn(getContext().getClientOutputStream(), mConnInfo)) != Result.SUCCESS) {
+			//3. write back to slocal
+			if((result = writeConnParcel(getContext().getClientOutputStream(), mConnInfo)) != Result.SUCCESS) {
 				Log.e(TAG, "write conn info to local failed.");
 				return result;
 			}
@@ -174,6 +194,126 @@ public class S5ConnStage extends AbsS5Stage{
 		addrInfo.port = ((data[0]) << 8) | (data[1] & 0xFF);
 		
 		Log.i(TAG, "port: " + StringUtils.toRawString(data, 2) + "  " + addrInfo.port);
+		
+		return Result.SUCCESS;
+	}
+	
+	private Result readParcelConnInfo(DataInputStream is, ConnInfo connInfo) {
+		Parcel parcel = mCourier.readParcel(is);
+		if(parcel == null) {
+			Log.i(TAG, "read parcel conn info failed.");
+			return Result.E_S5_CONN_READ_HEAD;
+		}
+		
+		byte[] data = parcel.getData();
+		int len = parcel.size();
+		Log.i(TAG, "receive conn: " + StringUtils.toRawString(data, len));
+		
+		if(data[0] != 0x05) {
+			Log.i(TAG, "conn req ver not socks5");
+			return Result.E_S5_CONN_VER;
+		}
+		
+		int p = 0;
+		connInfo.connCmd = data[1];
+		AddrInfo addrInfo = new AddrInfo();
+		connInfo.addrInfo = addrInfo;
+		addrInfo.addrtp = data[3];
+		p+=4;
+		
+		switch(addrInfo.addrtp) {
+			case 0x01:{
+				if(len < 4+4) {
+					Log.e(TAG, "conn read ipv4 failed.");
+					return Result.E_S5_CONN_READ_IPV4;
+				}
+				
+				addrInfo.ip = new byte[4];
+				System.arraycopy(data, p, addrInfo.ip, 0, 4);
+				p+=4;
+				Log.i(TAG, "ipv4: " + StringUtils.toRawString(addrInfo.ip, 4));
+				break;
+			}
+				
+			case 0x03:{
+				if(len < 4) {
+					Log.e(TAG, "read domain failed.");
+					return Result.E_S5_CONN_READ_DOMAIN;
+				}
+				
+				int domainLen = data[p];
+				if(len < p + 1 + domainLen) {
+					Log.e(TAG, "read domain failed.");
+					return Result.E_S5_CONN_READ_DOMAIN;
+				}
+				
+				addrInfo.domain = StringUtils.toString(data, 4+1,domainLen);
+				p+=(domainLen+1);
+				Log.i(TAG, "domain: " + addrInfo.domain);
+				
+				break;
+			}
+			case 0x04:{
+				if(len < p+16) {
+					Log.e(TAG, "conn read ipv6 failed.");
+					return Result.E_S5_CONN_READ_IPV6;
+				}
+				
+				addrInfo.ip = new byte[16];
+				System.arraycopy(data, p, addrInfo.ip, 0, 16);
+				p+=16;
+				Log.i(TAG, "ipv6: " + StringUtils.toRawString(addrInfo.ip, 16));
+				break;
+			}
+		}
+		
+		if(len < p+2) {
+			Log.e(TAG, "conn read port failed.");
+			return Result.E_S5_CONN_READ_PORT;
+		}
+		
+		addrInfo.port = ((data[p]&0xFF) << 8) | (data[p+1] & 0xFF);
+		
+		Log.i(TAG, "port: " + StringUtils.toRawString(data, p,2) + "  " + addrInfo.port);
+		
+		return Result.SUCCESS;
+	}
+	
+	private Result writeConnParcel(OutputStream os,ConnInfo connInfo) {
+		Parcel parcel = new Parcel();
+		AddrInfo addrInfo = connInfo.addrInfo;
+		byte addrtp = 0x00;
+		if(addrInfo.ip != null) {
+			addrtp = (byte) (addrInfo.ip.length == 4? 0x01:(addrInfo.ip.length == 16?0x04:0x00));
+		}else if(addrInfo.domain != null && addrInfo.domain.length() < Byte.MAX_VALUE) {
+			addrtp = 0x03;
+		}
+		
+		if(addrtp == 0x00) {
+			Log.i(TAG, "write conn,invalidate head");
+			return Result.E_S5_CONN_INVALIDATE_HEAD;
+		}
+		
+		parcel.append(new byte[] {0x05,connInfo.connCmd,0x00,addrtp});
+		switch(addrtp) {
+			case 0x01:
+			case 0x04:{
+				parcel.append(addrInfo.ip);
+				break;
+			}
+			
+			case 0x03:{
+				parcel.append(new byte[] {(byte)addrInfo.domain.length()});
+				parcel.append(addrInfo.domain.getBytes());
+				break;
+			}
+		}
+		
+		parcel.append(new byte[] {(byte)((addrInfo.port>>8) & 0xff),((byte)(addrInfo.port & 0xff))});
+		if(!mCourier.writeParcel(parcel, os)) {
+			Log.e(TAG, "write conn parcel failed.");
+			return Result.E_S5_CONN_WIRTE_HEAD;
+		}
 		
 		return Result.SUCCESS;
 	}

@@ -23,8 +23,8 @@ public class SLocal {
 	private int mPort = 8887;
 	private ServerSocket mSocket = null;
 	
-	private String mSServerHost = "47.90.206.185";
-//	private String mSServerHost = "127.0.0.1";
+//	private String mSServerHost = "47.90.206.185";
+	private String mSServerHost = "127.0.0.1";
 	private int mSServerPort = 8888;
 	
 	private Executor mExecutor = null;

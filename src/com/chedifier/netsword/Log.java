@@ -2,10 +2,10 @@ package com.chedifier.netsword;
 
 public class Log {
 	
-	private static int sLogLevel = 0;
+	private static int sLogLevel = 10;
 	
 	public static final void setLogLevel(int level) {
-		sLogLevel = level;
+		sLogLevel = 10;
 	}
 
 	public static final void i(String tag,String content) {

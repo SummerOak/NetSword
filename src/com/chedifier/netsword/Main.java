@@ -35,7 +35,7 @@ public class Main {
 			SServer server = new SServer(8888);
 			server.start();
 		}else {
-			SLocal client = new SLocal(8888);
+			SLocal client = new SLocal(8887);
 			client.start();
 		}
 	}

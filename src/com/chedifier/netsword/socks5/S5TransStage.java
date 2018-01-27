@@ -8,6 +8,7 @@ import com.chedifier.netsword.ExceptionHandler;
 import com.chedifier.netsword.IOUtils;
 import com.chedifier.netsword.Log;
 import com.chedifier.netsword.Result;
+import com.chedifier.netsword.StringUtils;
 import com.chedifier.netsword.trans.Courier;
 import com.chedifier.netsword.trans.Parcel;
 
@@ -33,16 +34,17 @@ public class S5TransStage extends AbsS5Stage{
 		Log.r(TAG, ">>>>>>");
 		
 		if(!isLocal()) {
-			new Thread(new Transporter(Transporter.TO_PARCEL,getContext().getServerInputStream(), getContext().getClientOutputStream())).start();
-			new Transporter(Transporter.FROM_PARCEL,getContext().getClientInputStream(), getContext().getServerOutputStream()).run();
+			new Thread(new Transporter(Transporter.TO_PARCEL,getContext().getServerInputStream(), getContext().getClientOutputStream(),"remote2proxy")).start();
+			new Transporter(Transporter.FROM_PARCEL,getContext().getClientInputStream(), getContext().getServerOutputStream(),"proxy2remote").run();
 		}else {
-			new Thread(new Transporter(Transporter.FROM_PARCEL,getContext().getServerInputStream(), getContext().getClientOutputStream())).start();
-			new Transporter(Transporter.TO_PARCEL,getContext().getClientInputStream(), getContext().getServerOutputStream()).run();
+			new Thread(new Transporter(Transporter.FROM_PARCEL,getContext().getServerInputStream(), getContext().getClientOutputStream(),"local2client")).start();
+			new Transporter(Transporter.TO_PARCEL,getContext().getClientInputStream(), getContext().getServerOutputStream(),"client2local").run();
 		}
 		return Result.SUCCESS;
 	}
 	
 	private class Transporter implements Runnable{
+		private final String TAG;
 		final int L = 2048;
 		byte[] data = new byte[L];
 		byte type;
@@ -53,10 +55,15 @@ public class S5TransStage extends AbsS5Stage{
 		private OutputStream to;
 		
 		public Transporter(byte type,DataInputStream from,OutputStream to) {
+			this(type,from,to,"???");
+		}
+		
+		public Transporter(byte type,DataInputStream from,OutputStream to,String tag) {
 			this.from = from;
 			this.to = to;
 			
 			this.type = type;
+			this.TAG = tag;
 		}
 		
 		@Override
@@ -68,8 +75,11 @@ public class S5TransStage extends AbsS5Stage{
 					if((type & FROM_PARCEL) > 0) {
 						Parcel parcel = mCourier.readParcel(from);
 						if(parcel == null) {
+							Log.e(S5TransStage.this.TAG+"#"+TAG, "read parcel failed.");
 							break;
 						}
+						
+						Log.d(TAG, "read trans parcel: " + StringUtils.toRawString(parcel.getData() ,parcel.size()));
 						
 						if((type & TO_PARCEL) > 0) {
 							if(!mCourier.writeParcel(parcel, to)) {
@@ -77,28 +87,30 @@ public class S5TransStage extends AbsS5Stage{
 							}
 						}else {
 							if(IOUtils.write(to, parcel.getData(), parcel.size()) != parcel.size()) {
-								Log.e(TAG, "send data failed");
+								Log.e(S5TransStage.this.TAG+"#"+TAG, "send data failed");
 								break;
 							}
 						}
 					}else {
 						int read = 0;
 						if((read = from.read(data,0,L)) <= 0) {
-							Log.e(TAG, "read 0");
+							Log.e(S5TransStage.this.TAG+"#"+TAG, "read err " + read);
 							break;
 						}
+						
+						Log.d(TAG, "read trans stream succ: " + StringUtils.toRawString(data, read));
 						
 						if((type & TO_PARCEL) > 0) {
 							Parcel p = new Parcel();
 							p.append(data,0,read);
 							if(!mCourier.writeParcel(p, to)) {
-								Log.e(TAG, "send parcel failed");
+								Log.e(S5TransStage.this.TAG+"#"+TAG, "send parcel failed");
 								break;
 							}
 							
 						}else {
 							if(IOUtils.write(to, data, read) != read) {
-								Log.e(TAG, "send data failed");
+								Log.e(S5TransStage.this.TAG+"#"+TAG, "send data failed");
 								break;
 							}
 						}

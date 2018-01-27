@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -68,7 +69,7 @@ public class S5ConnStage extends AbsS5Stage{
 				return result;
 			}
 			
-			Log.d(TAG, "conn request send to proxy succ.");
+			Log.d(TAG, "feedback conn request to client succ.");
 		}else {
 			mConnInfo = new ConnInfo();
 			
@@ -100,7 +101,7 @@ public class S5ConnStage extends AbsS5Stage{
 			
 			getContext().updateServerSocket(destSocket);
 			
-			//3. write back to slocal
+			//3. feedback to local
 			if((result = writeConnParcel(getContext().getClientOutputStream(), mConnInfo)) != Result.SUCCESS) {
 				Log.e(TAG, "write conn info to local failed.");
 				return result;
@@ -110,9 +111,18 @@ public class S5ConnStage extends AbsS5Stage{
 		return forward();
 	}
 	
+	private ConnInfo getProxyAddr() {
+		ConnInfo connInfo = new ConnInfo();
+		connInfo.addrInfo = new AddrInfo();
+		connInfo.addrInfo.addrtp = 0x01;
+		connInfo.addrInfo.ip = new byte[] {};
+		
+		return connInfo;
+	}
+	
 	private Socket connectDest(ConnInfo connInfo,int timeout) {
 		Log.d(TAG, "connecting dest: " + connInfo.netAddr.getHostName() + " " + connInfo.netAddr.getHostAddress() + "  " + connInfo.addrInfo.port);
-		Socket socket = new Socket();
+		Socket socket = new Socket(Proxy.NO_PROXY);
 		SocketAddress address = new InetSocketAddress(connInfo.netAddr, connInfo.addrInfo.port);
 		
 		try {
@@ -294,7 +304,7 @@ public class S5ConnStage extends AbsS5Stage{
 			return Result.E_S5_CONN_INVALIDATE_HEAD;
 		}
 		
-		parcel.append(new byte[] {0x05,connInfo.connCmd,0x00,addrtp});
+		parcel.append(new byte[] {0x05,0x00,0x00,addrtp});
 		switch(addrtp) {
 			case 0x01:
 			case 0x04:{
@@ -332,7 +342,7 @@ public class S5ConnStage extends AbsS5Stage{
 			return Result.E_S5_CONN_INVALIDATE_HEAD;
 		}
 		
-		if(IOUtils.write(os, new byte[] {0x05,connInfo.connCmd,0x00,addrtp}, 4) != 4) {
+		if(IOUtils.write(os, new byte[] {0x05,0x00,0x00,addrtp}, 4) != 4) {
 			Log.e(TAG, "write conn info head failed.");
 			return Result.E_S5_CONN_WIRTE_HEAD;
 		}
@@ -369,7 +379,7 @@ public class S5ConnStage extends AbsS5Stage{
 			}
 		}
 		
-		if(IOUtils.write(os, new byte[] {(byte)((addrInfo.port>>8) & 0xff),((byte)(addrInfo.port & 0xff))}, 2) != 2) {
+		if(IOUtils.write(os, new byte[] {(byte)(((addrInfo.port&0xFF)>>8) & 0xff),((byte)(addrInfo.port & 0xff))}, 2) != 2) {
 			Log.e(TAG, "write port failed");
 			return Result.E_S5_CONN_WRITE_PORT;
 		}

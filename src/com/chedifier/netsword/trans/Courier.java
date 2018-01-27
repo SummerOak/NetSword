@@ -59,7 +59,7 @@ public class Courier {
 		do {
 			int l;
 			if(IOUtils.read(is, buffer, 1) == 1) {
-				l = buffer[0];
+				l = buffer[0]&0xFF;
 				Log.i(TAG, "read parcel l = " + l);
 				if(l == 0) {
 					return decode(p);

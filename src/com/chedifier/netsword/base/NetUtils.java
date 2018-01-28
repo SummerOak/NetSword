@@ -1,4 +1,4 @@
-package com.chedifier.netsword;
+package com.chedifier.netsword.base;
 
 import java.net.InetAddress;
 

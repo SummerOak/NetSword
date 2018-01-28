@@ -6,16 +6,18 @@ public abstract class AbsS5Stage {
 
 	protected SocketContext mContext;
 	private boolean mIsLocal;
+	private ICallback mCallback;
 	
-	public AbsS5Stage(SocketContext context,boolean isClient) {
+	public AbsS5Stage(SocketContext context,boolean isLocal,ICallback callback) {
 		mContext = context;
-		mIsLocal = isClient;
-		
+		mIsLocal = isLocal;
+		mCallback = callback;
 	}
 	
 	public AbsS5Stage(AbsS5Stage stage) {
 		this.mContext = stage.mContext;
 		this.mIsLocal = stage.mIsLocal;
+		this.mCallback = stage.mCallback;
 	}
 	
 	protected SocketContext getContext() {
@@ -29,4 +31,15 @@ public abstract class AbsS5Stage {
 	public abstract Result forward();
 
 	public abstract Result handle();
+	
+	protected void sendResultBack(Result result) {
+		if(mCallback != null) {
+			mCallback.onResult(result);
+		}
+	}
+	
+	
+	public static interface ICallback{
+		void onResult(Result result);
+	}
 }

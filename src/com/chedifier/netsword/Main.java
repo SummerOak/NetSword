@@ -2,8 +2,9 @@ package com.chedifier.netsword;
 
 import java.util.regex.Pattern;
 
-import com.chedifier.netsword.local.SLocal;
-import com.chedifier.netsword.server.SServer;
+import com.chedifier.netsword.base.Log;
+import com.chedifier.netsword.base.StringUtils;
+import com.chedifier.netsword.socks5.SProxy;
 
 public class Main {
 	
@@ -32,11 +33,9 @@ public class Main {
 		Log.setLogLevel(debugLevel);
 		
 		if(isServer) {
-			SServer server = new SServer(8888);
-			server.start();
+			new SProxy(8888,false).start();
 		}else {
-			SLocal client = new SLocal(8887);
-			client.start();
+			new SProxy(8887,true).start();
 		}
 	}
 	

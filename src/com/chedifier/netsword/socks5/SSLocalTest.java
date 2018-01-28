@@ -1,15 +1,10 @@
-package com.chedifier.netsword.local;
+package com.chedifier.netsword.socks5;
 
-import com.chedifier.netsword.Log;
-import com.chedifier.netsword.StringUtils;
-import com.chedifier.netsword.trans.IProguarder;
-import com.chedifier.netsword.trans.ShiftProguarder;
-
-public class LocalTest {
+public class SSLocalTest {
 	
 	public static void main(String[] args){
 		
-		SLocal l = new SLocal(8887);
+		SProxy l = new SProxy(8887,true);
 		l.start();
 		
 		

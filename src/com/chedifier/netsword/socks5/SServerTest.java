@@ -1,10 +1,10 @@
-package com.chedifier.netsword.server;
+package com.chedifier.netsword.socks5;
 
 public class SServerTest {
 	
 	public static void main(String[] args){
 		
-		SServer s = new SServer(8888);
+		SProxy s = new SProxy(8888,false);
 		s.start();
 	}
 }

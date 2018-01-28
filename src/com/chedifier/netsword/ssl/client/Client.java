@@ -17,11 +17,11 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-import com.chedifier.netsword.ExceptionHandler;
-import com.chedifier.netsword.IOUtils;
-import com.chedifier.netsword.Log;
+import com.chedifier.netsword.base.ExceptionHandler;
+import com.chedifier.netsword.base.IOUtils;
+import com.chedifier.netsword.base.Log;
+import com.chedifier.netsword.base.SocketIO;
 import com.chedifier.netsword.ssl.Configuration;
-import com.chedifier.netsword.ssl.SocketIO;
 
 public class Client implements HandshakeCompletedListener{
 	private static final String TAG = "Client";

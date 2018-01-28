@@ -1,11 +1,9 @@
-package com.chedifier.netsword.ssl;
+package com.chedifier.netsword.base;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-
-import com.chedifier.netsword.ExceptionHandler;
 
 public class SocketIO {
 	public static DataInputStream getDataInput(Socket socket) {

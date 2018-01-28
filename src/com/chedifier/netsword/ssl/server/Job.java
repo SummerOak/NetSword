@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Properties;
 
-import com.chedifier.netsword.Log;
+import com.chedifier.netsword.base.Log;
+import com.chedifier.netsword.base.SocketIO;
 import com.chedifier.netsword.ssl.Configuration;
-import com.chedifier.netsword.ssl.SocketIO;
 
 public class Job implements Runnable {
 

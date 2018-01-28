@@ -1,9 +1,9 @@
 package com.chedifier.netsword.socks5;
 
-import com.chedifier.netsword.IOUtils;
-import com.chedifier.netsword.Log;
 import com.chedifier.netsword.Result;
-import com.chedifier.netsword.StringUtils;
+import com.chedifier.netsword.base.IOUtils;
+import com.chedifier.netsword.base.Log;
+import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.trans.Courier;
 import com.chedifier.netsword.trans.Parcel;
 
@@ -13,8 +13,8 @@ public class S5VerifyStage extends AbsS5Stage{
 	
 	private Courier mCourier;
 
-	public S5VerifyStage(SocketContext context,boolean isLocal) {
-		super(context,isLocal);
+	public S5VerifyStage(SocketContext context,boolean isLocal,ICallback callback) {
+		super(context,isLocal,callback);
 		
 		mCourier = new Courier();
 	}

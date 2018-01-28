@@ -10,7 +10,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
-import com.chedifier.netsword.ExceptionHandler;
+import com.chedifier.netsword.base.ExceptionHandler;
 import com.chedifier.netsword.ssl.Configuration;
 
 public class Auth {

@@ -1,7 +1,7 @@
 package com.chedifier.netsword.trans;
 
-import com.chedifier.netsword.ArrayUtils;
-import com.chedifier.netsword.Log;
+import com.chedifier.netsword.base.ArrayUtils;
+import com.chedifier.netsword.base.Log;
 
 public class Parcel {
 

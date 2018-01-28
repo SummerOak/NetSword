@@ -4,7 +4,8 @@ import java.io.DataInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import com.chedifier.netsword.ssl.SocketIO;
+import com.chedifier.netsword.base.IOUtils;
+import com.chedifier.netsword.base.SocketIO;
 
 public class SocketContext {
 	
@@ -53,6 +54,15 @@ public class SocketContext {
 		mServer = socket;
 		mSIS = SocketIO.getDataInput(mServer);
 		mSOS = SocketIO.getDataOutput(mServer);
+	}
+	
+	public void destroy() {
+		IOUtils.safeClose(mCIS);
+		IOUtils.safeClose(mSIS);
+		IOUtils.safeClose(mCOS);
+		IOUtils.safeClose(mSOS);
+		IOUtils.safeClose(mServer);
+		IOUtils.safeClose(mClient);
 	}
 	
 }

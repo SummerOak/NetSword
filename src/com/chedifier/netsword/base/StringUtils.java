@@ -1,6 +1,10 @@
-package com.chedifier.netsword;
+package com.chedifier.netsword.base;
 
 public class StringUtils {
+	
+	public static boolean isEmpty(String s) {
+		return s == null || s.equals("");
+	}
 
 	public static String toRawString(byte[] data,int length) {
 		return toRawString(data,0,length);

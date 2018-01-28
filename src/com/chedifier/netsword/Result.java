@@ -29,6 +29,7 @@ public enum Result {
 	E_S5_CONN_WRITE_IPV6(4,"read data format err"),
 	E_S5_CONN_WRITE_PORT(4,"read data format err"),
 	E_S5_CONN_WRITE_LOCAL(4,"read data format err"),
+	E_S5_TRANS_END(4,"trans stage end"),
 	
 	
 	E_LOCAL_SOCKET_ALREADY_LISTENING(2000,"local socket already listening");

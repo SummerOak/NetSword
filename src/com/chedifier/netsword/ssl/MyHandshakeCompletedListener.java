@@ -3,7 +3,7 @@ package com.chedifier.netsword.ssl;
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
 
-import com.chedifier.netsword.Log;
+import com.chedifier.netsword.base.Log;
 
 public class MyHandshakeCompletedListener implements HandshakeCompletedListener {
 

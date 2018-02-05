@@ -1,6 +1,6 @@
 package com.chedifier.netsword.socks5;
 
-public class SSLocalTest {
+public class SLocalTest {
 	
 	public static void main(String[] args){
 		

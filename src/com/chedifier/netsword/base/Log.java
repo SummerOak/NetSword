@@ -2,10 +2,10 @@ package com.chedifier.netsword.base;
 
 public class Log {
 	
-	private static int sLogLevel = -1;
+	private static int sLogLevel = 0;
 	
 	public static final void setLogLevel(int level) {
-		sLogLevel = -1;
+		sLogLevel = 0;
 	}
 	
 	private static final String getTimeFormat() {

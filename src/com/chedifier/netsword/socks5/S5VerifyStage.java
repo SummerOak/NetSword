@@ -1,122 +1,127 @@
 package com.chedifier.netsword.socks5;
 
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+
 import com.chedifier.netsword.Result;
-import com.chedifier.netsword.base.IOUtils;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
-import com.chedifier.netsword.trans.Courier;
-import com.chedifier.netsword.trans.Parcel;
+import com.chedifier.netsword.trans.Cipher;
+import com.chedifier.netsword.trans.Cipher.DecryptResult;
 
 public class S5VerifyStage extends AbsS5Stage{
-
-	private static final String TAG = "S5VerifyStage";
 	
-	private Courier mCourier;
-
-	public S5VerifyStage(SocketContext context,boolean isLocal,ICallback callback) {
+	public S5VerifyStage(SSockChannel context,boolean isLocal,ICallback callback) {
 		super(context,isLocal,callback);
+	}
+	
+	@Override
+	public void start() {
+		Log.r(getTag(), "S5VerifyStage start >>>");
+		super.start();
+	}
+
+	@Override
+	public AbsS5Stage next() {
+		return new S5ConnStage(this);
+	}
+	
+	private int verify(byte[] data,int offset,int len) {
+		if(data != null) {
+			if(len > 2) {
+				if((data[offset]&0xFF) == (0x05)) {
+					int mths = data[offset+1]&0xFF;
+					if(mths > 0) {
+						if(len == (mths + 2)) {
+							return 1;
+						}
+					}else {
+						return -1;
+					}
+				}else {
+					return -1;
+				}
+			}
+		}
 		
-		mCourier = new Courier();
+		return 0;
 	}
 
 	@Override
-	public Result forward() {
-		return new S5ConnStage(this).handle();
+	public void onSourceOpts(int opts) {
+		if((opts&SelectionKey.OP_READ) > 0) {
+			ByteBuffer buffer = getChannel().getSrcInBuffer();
+			if(isLocal()) {
+				Log.d(getTag(), "recv verify from client:" + StringUtils.toRawString(buffer.array(),buffer.position()));
+				int verifyResult = verify(buffer.array(),0,buffer.position());
+				if(verifyResult > 0) {
+					Log.d(getTag(), "recv verify success.");
+					if(getChannel().relay(true, true) != buffer.position()) {
+						
+					}
+				}else if(verifyResult < 0){
+					Log.e(getTag(), "verify socks5 methos failed.");
+					notifyError(Result.E_S5_VERIFY_FAILED);
+					return;
+				}
+			}else {
+				DecryptResult decResult = Cipher.decrypt(buffer.array(), 0, buffer.position());
+				if(decResult != null && decResult.origin != null && decResult.origin.length > 0 && decResult.decryptLen > 0) {
+					byte[] data = decResult.origin;
+					Log.d(getTag(), "recv verify data from local: " + StringUtils.toRawString(data));
+					int verifyResult = verify(data, 0, data.length);
+					if(verifyResult > 0) {
+						Log.d(getTag(), "verify success.");
+						
+						byte[] back = Cipher.encrypt(new byte[] {0x05,0x00});
+						if(getChannel().writeToBuffer(false, back) == back.length) {
+							getChannel().cutBuffer(buffer, decResult.decryptLen);
+							forward();
+							return;
+						}else {
+							Log.e(getTag(), "send verify msg to remote failed.");
+						}
+					}else if(verifyResult < 0){
+						Log.e(getTag(), "verify socks5 methos failed.");
+						notifyError(Result.E_S5_VERIFY_FAILED);
+						return;
+					}
+				}
+			}
+			
+			return;
+		}
+		
+//		Log.e(TAG, "unexpected opts " + opts + " from src.");
 	}
 
 	@Override
-	public Result handle() {
-		Result result = null;
+	public void onDestOpts(int opts) {
 		if(isLocal()) {
-			if((result = handleLocal()) != Result.SUCCESS) {
-				return result;
-			}
-		}else if((result = handleServer()) != Result.SUCCESS){
-			return result;
-		}
-		
-		return forward();
-	}
-	
-	private Result handleServer() {
-		
-		Parcel parcel = mCourier.readParcel(getContext().getClientInputStream());
-		if(parcel == null) {
-			Log.e(TAG, "socks5 verify failed.");
-			return Result.E_S5_VERIFY_READ_HEAD;
-		}
-		
-		byte[] cData = parcel.getData();
-		Log.i(TAG, "recv client greeting: " + StringUtils.toRawString(cData, 0, 2));
-
-		if(cData[0] != 0x05) {
-			Log.e(TAG, "socks5 verify failed.it is not socks5 protocol");
-			return Result.E_S5_VERIFY_VER;
-		}
-		
-		//feedback to local
-		Parcel p = new Parcel();
-		p.append(new byte[] {0x05,0x00});
-		if(!mCourier.writeParcel(p, getContext().getClientOutputStream())) {
-			Log.e(TAG, "socks5 verify failed in feedback to local.");
-			return Result.E_S5_VERIFY_SEND_LOCAL;
-		}
-		
-		return Result.SUCCESS;
-	}
-	
-	private Result handleLocal() {
-		Log.r(TAG, "handleLocal >>>>>>");
-		final int L = 1024;
-		byte[] cData = new byte[L];
-		
-		//1. read first 2 bytes from client
-		if(IOUtils.read(getContext().getClientInputStream(),cData, 2) != 2) {
-			Log.e(TAG, "socks5 verify failed.");
-			return Result.E_S5_VERIFY_READ_HEAD;
-		}
-		
-		Log.i(TAG, "recv client greeting: " + StringUtils.toRawString(cData, 0, 2));
-		
-		if(cData[0] != 0x05) {
-			Log.e(TAG, "socks5 verify failed.it is not socks5 protocol");
-			return Result.E_S5_VERIFY_VER;
-		}
-		
-		//2. read all supported verify methods from client
-		if(cData[1] > 0) {
-			if(IOUtils.read(getContext().getClientInputStream(), cData,2, cData[1]) != cData[1]) {
-				Log.e(TAG, "socks5 verify failed.verify methods wrong");
-				return Result.E_S5_VERIFY_METHOD_LEN_READ;
+			if((opts&SelectionKey.OP_READ) > 0) {
+				ByteBuffer buffer = getChannel().getDestInBuffer();
+				DecryptResult decrypt = Cipher.decrypt(buffer.array(), 0, buffer.position());
+				if(decrypt != null && decrypt.decryptLen > 0) {
+					Log.d(getTag(), "recv verify info back from server: " + StringUtils.toRawString(decrypt.origin));
+					if(getChannel().writeToBuffer(false, decrypt.origin) == decrypt.origin.length) {
+						getChannel().cutBuffer(buffer, decrypt.decryptLen);
+						forward();
+						return;
+					}else {
+						Log.e(getTag(), "send verify info to server failed.");
+					}
+				}
+				
+				return;
 			}
 		}
 		
-		Log.i(TAG, "send verify methods: " + StringUtils.toRawString(cData, 2, cData[1]));
-		
-		//3. relay to proxy server
-		int verifyLength = 2+cData[1];
-		Parcel parcel = new Parcel();
-		parcel.append(cData,0,verifyLength);
-		if(!mCourier.writeParcel(parcel,getContext().getServerOutputStream())) {
-			Log.e(TAG, "socks5 verify failed.verify methods wrong");
-			return Result.E_S5_VERIFY_SEND_PROXY;
-		}
-		
-		//4. read feedback from server
-		parcel = mCourier.readParcel(getContext().getServerInputStream());
-		if(parcel == null) {
-			Log.e(TAG, "socks5 verify failed. proxy server return false data.");
-			return Result.E_S5_VERIFY_READ_PROXY;
-		}
-		
-		Log.i(TAG, "recv from server: " + parcel);
-		
-		//5. relay feedback from server to client
-		if(IOUtils.write(getContext().getClientOutputStream(),parcel.getData(), 2) != 2) {
-			Log.e(TAG, "socks5 verify failed. write proxy server return false data.");
-			return Result.E_S5_VERIFY_SEND_LOCAL;
-		}
-		return Result.SUCCESS;
+//		Log.e(TAG, "receive unexpected ops." + opts);
 	}
-
+	
+	@Override
+	public void onSocketBroken() {
+		notifyError(Result.E_S5_SOCKET_ERROR_VERIFY);
+	}
+	
 }

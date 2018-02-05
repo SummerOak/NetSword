@@ -5,6 +5,13 @@ public class StringUtils {
 	public static boolean isEmpty(String s) {
 		return s == null || s.equals("");
 	}
+	
+	public static String toRawString(byte[] data) {
+		if(data != null) {
+			return toRawString(data,data.length);
+		}
+		return "";
+	}
 
 	public static String toRawString(byte[] data,int length) {
 		return toRawString(data,0,length);
@@ -20,6 +27,13 @@ public class StringUtils {
 			return sb.toString();
 		}
 		
+		return "";
+	}
+	
+	public static String toString(byte[] data) {
+		if(data != null) {
+			return toString(data,data.length);
+		}
 		return "";
 	}
 	

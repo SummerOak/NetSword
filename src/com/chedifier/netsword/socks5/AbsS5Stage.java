@@ -1,45 +1,75 @@
 package com.chedifier.netsword.socks5;
 
 import com.chedifier.netsword.Result;
+import com.chedifier.netsword.socks5.SSockChannel.IChannelEvent;
 
-public abstract class AbsS5Stage {
+public abstract class AbsS5Stage implements IChannelEvent{
 
-	protected SocketContext mContext;
-	private boolean mIsLocal;
+	protected SSockChannel mChannel;
 	private ICallback mCallback;
+	private boolean mIsLocal;
+	private int mConnId;
 	
-	public AbsS5Stage(SocketContext context,boolean isLocal,ICallback callback) {
-		mContext = context;
+	public AbsS5Stage(SSockChannel context,boolean isLocal,ICallback callback) {
+		mChannel = context;
 		mIsLocal = isLocal;
 		mCallback = callback;
+		mChannel.setListener(this);
 	}
 	
 	public AbsS5Stage(AbsS5Stage stage) {
-		this.mContext = stage.mContext;
-		this.mIsLocal = stage.mIsLocal;
+		this.mChannel = stage.mChannel;
+		this.mChannel.setListener(this);
 		this.mCallback = stage.mCallback;
+		this.mIsLocal = stage.mIsLocal;
+		this.mConnId = stage.mConnId;
 	}
 	
-	protected SocketContext getContext() {
-		return mContext;
+	protected final String getTag() {
+		return getClass().getName() + "_c"+mConnId;
 	}
 	
-	public boolean isLocal() {
+	public void setConnId(int id) {
+		mConnId = id;
+	}
+	
+	public int getConnId() {
+		return mConnId;
+	}
+	
+	protected boolean isLocal() {
 		return mIsLocal;
 	}
 	
-	public abstract Result forward();
-
-	public abstract Result handle();
+	public void start() {
+		
+	}
 	
-	protected void sendResultBack(Result result) {
-		if(mCallback != null) {
-			mCallback.onResult(result);
+	@Override
+	public void onRelayFailed() {
+		
+	}
+	
+	protected void forward() {
+		AbsS5Stage next = next();
+		if(next != null) {
+			next.start();
 		}
 	}
 	
+	public abstract AbsS5Stage next();
+
+	protected SSockChannel getChannel() {
+		return mChannel;
+	}
+
+	protected void notifyError(Result result) {
+		if(mCallback != null) {
+			mCallback.onError(result);
+		}
+	}
 	
 	public static interface ICallback{
-		void onResult(Result result);
+		void onError(Result result);
 	}
 }

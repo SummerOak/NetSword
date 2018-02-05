@@ -1,13 +1,13 @@
 package com.chedifier.netsword.base;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.chedifier.netsword.base.ObjectPool.IConstructor;
 
 public class JobScheduler {
 	private static final String TAG = "JobScheduler";
-	private static ExecutorService sExecutor = null;
+	private static ScheduledExecutorService sExecutor = null;
 	private static boolean sInited = false;
 	private static int sRunningTask;
 	private static ObjectPool<WJob> sWJobPool;
@@ -16,7 +16,7 @@ public class JobScheduler {
 		if(sInited) {
 			return;
 		}
-		sExecutor = Executors.newFixedThreadPool(20);
+		sExecutor = Executors.newScheduledThreadPool(20);
 		sWJobPool = new ObjectPool<WJob>(new IConstructor<WJob>() {
 			
 			@Override
@@ -37,7 +37,6 @@ public class JobScheduler {
 		if(!sInited) {
 			return false;
 		}
-		
 		sExecutor.execute(sWJobPool.obtain(j));
 		incTask();
 		return true;
@@ -63,6 +62,10 @@ public class JobScheduler {
 		Log.t(TAG, "decTask, " + sRunningTask);
 	}
 	
+	public static WJob wrapJob(Job j) {
+		return sWJobPool.obtain(j);
+	}
+	
 	public static abstract class Job implements Runnable{
 		private String mTag;
 		public Job(String tag) {
@@ -70,7 +73,7 @@ public class JobScheduler {
 		}
 	}
 	
-	private static class WJob implements Runnable{
+	public static class WJob implements Runnable{
 		
 		private Job mJ;
 		public WJob(Job j) {

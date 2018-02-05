@@ -31,9 +31,11 @@ public class ObjectPool<T> {
 	}
 	
 	public void release(T o) {
-		synchronized (mPool) {
-			if(mPool.size() < mSize) {
-				mPool.add(o);
+		if(o != null) {
+			synchronized (mPool) {
+				if(mPool.size() < mSize) {
+					mPool.add(o);
+				}
 			}
 		}
 	}

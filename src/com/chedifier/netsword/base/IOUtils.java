@@ -5,6 +5,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 
 public class IOUtils {
 	private static final String TAG = "NetSword.io";
@@ -17,6 +19,26 @@ public class IOUtils {
 				ExceptionHandler.handleException(e);
 			}
 		}
+	}
+	
+	public static int readSocketChannel(SocketChannel socketChannel,ByteBuffer buffer) {
+		try {
+			int read = socketChannel.read(buffer);
+			return read;
+		} catch (Throwable e) {
+			ExceptionHandler.handleException(e);
+		}
+		return -1;
+	}
+	
+	public static int writeSocketChannel(SocketChannel socketChannel,ByteBuffer buffer) {
+		try {
+			int w = socketChannel.write(buffer);
+			return w;
+		} catch (Throwable e) {
+			ExceptionHandler.handleException(e);
+		}
+		return -1;
 	}
 	
 	public static int read(DataInputStream ins,byte[] data,int offset,int length) {

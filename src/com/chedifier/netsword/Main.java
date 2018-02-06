@@ -41,14 +41,14 @@ public class Main {
 	
 	private static final void printArgs(String[] args) {
 		if(args == null) {			
-			Log.r(TAG, "args is null");
+			Log.e(TAG, "args is null");
 		}else {
 			StringBuilder sb = new StringBuilder(128);
 			for(int i=0;i<args.length;i++) {
 				sb.append(args[i]).append(" ");
 			}
 			
-			Log.r(TAG, "args: " + sb.toString());
+			Log.d(TAG, "args: " + sb.toString());
 		}
 	}
 

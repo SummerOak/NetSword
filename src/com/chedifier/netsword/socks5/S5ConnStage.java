@@ -92,6 +92,10 @@ public class S5ConnStage extends AbsS5Stage{
 									forward();
 									return;
 								}
+							}else {
+								Log.e(getTag(), "bind remote failed: " + remoteAddr);
+								notifyError(Result.E_S5_CONN_BIND_REMOTE);
+								return;
 							}
 						}else {
 							Log.e(getTag(), "receive wrong connect request.");

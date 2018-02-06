@@ -57,7 +57,7 @@ public class S5VerifyStage extends AbsS5Stage{
 				if(verifyResult > 0) {
 					Log.d(getTag(), "recv verify success.");
 					if(getChannel().relay(true, true) != buffer.position()) {
-						
+						Log.e(getTag(), "relay verify info to server failed.");
 					}
 				}else if(verifyResult < 0){
 					Log.e(getTag(), "verify socks5 methos failed.");

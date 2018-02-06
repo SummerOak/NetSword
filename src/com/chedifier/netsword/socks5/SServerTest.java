@@ -13,17 +13,18 @@ public class SServerTest {
 		SProxy l = new SProxy(8888,false);
 		l.start();
 		
-//		InetSocketAddress addr = new InetSocketAddress("www.baidu.com", 443);
+//		Log.t("test", "open... ");
+//		InetSocketAddress addr = new InetSocketAddress("btrace.video.qq.com", 80);
 //		try {
-//			Log.d("test", "open " + addr);
+//			Log.t("test", "open " + addr);
 //			SocketChannel sc = SocketChannel.open(addr);
-//			Log.d("test", "open returned " + sc);
+//			Log.t("test", "open returned " + sc);
 //		} catch (IOException e) {
-//			Log.d("test", "" + e.getMessage());
+//			Log.t("test", "" + e.getMessage());
 //			e.printStackTrace();
 //		}
 //		
-//		Log.d("test", "open ... " + addr);
+//		Log.t("test", "open ... " + addr);
 		
 		
 //		byte[] o = new byte[] {-127,0x01,0x00};

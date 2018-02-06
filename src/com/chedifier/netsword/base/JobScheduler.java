@@ -54,12 +54,12 @@ public class JobScheduler {
 	
 	private static synchronized void incTask() {
 		sRunningTask++;
-		Log.t(TAG, "incTask, " + sRunningTask);
+		Log.d(TAG, "incTask, " + sRunningTask);
 	}
 	
 	private static synchronized void decTask() {
 		sRunningTask--;
-		Log.t(TAG, "decTask, " + sRunningTask);
+		Log.d(TAG, "decTask, " + sRunningTask);
 	}
 	
 	public static WJob wrapJob(Job j) {

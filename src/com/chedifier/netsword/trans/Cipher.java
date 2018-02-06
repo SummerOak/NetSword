@@ -16,6 +16,10 @@ public class Cipher {
 	public static byte[] encrypt(byte[] origin,int offset ,int len) {
 		if(origin != null && ArrayUtils.isValidateRange(origin.length, offset, len)) {
 			
+//			byte[] rr = new byte[len];
+//			System.arraycopy(origin,offset, rr, 0, len);
+//			return rr;
+			
 			ByteBuffer buffer = ByteBuffer.allocate(len<<2);
 			int s = 0;
 			while(s < len) {
@@ -56,10 +60,17 @@ public class Cipher {
 			return null;
 		}
 		
+//		DecryptResult rr = new DecryptResult();
+//		rr.decryptLen = len;
+//		rr.origin = new byte[len];
+//		System.arraycopy(packs, offset, rr.origin, 0, len);
+//		return rr;
+		
 		ByteBuffer buffer = ByteBuffer.allocate(len);
 		byte[] data = new byte[sChunkSize/sBlockSize + sChunkSize + 1];
 		
 		int l = 0;//location of packs
+		int tl = 0;
 		while(l < len) {
 			int d = 0;int b = 0;
 			while(l < len) {
@@ -84,6 +95,7 @@ public class Cipher {
 				}
 				
 				buffer.put(temp);
+				tl = l;
 				continue;
 			}
 			
@@ -92,7 +104,7 @@ public class Cipher {
 		
 		if(buffer.position() > 0) {
 			DecryptResult result = new DecryptResult();
-			result.decryptLen = l;
+			result.decryptLen = tl;
 			result.origin = new byte[buffer.position()];
 			System.arraycopy(buffer.array(), 0, result.origin, 0, result.origin.length);
 			return result;

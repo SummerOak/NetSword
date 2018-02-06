@@ -33,6 +33,7 @@ public class SProxy implements IAcceptor{
 	private InetSocketAddress mProxyAddress;
 	
 	private ObjectPool<Relayer> mConnHandlerPool;
+	private volatile long mConnections = 0;
 
 	public SProxy(int port,boolean isLocal) {
 		mPort = port;
@@ -107,8 +108,11 @@ public class SProxy implements IAcceptor{
             while (it.hasNext()) {
             		SelectionKey key = it.next();
             		it.remove();
+            		if(!key.isValid()) {
+            			continue;
+            		}
             		
-            		Log.d(TAG, "select " + key + " ops " + key.readyOps());
+//            		Log.d(TAG, "select " + key + " ops " + key.readyOps());
             		if(key != null && key.attachment() instanceof IAcceptor) {
             			((IAcceptor)key.attachment()).accept(key,key.readyOps());
             		}
@@ -116,6 +120,16 @@ public class SProxy implements IAcceptor{
             		
             }
 		}
+	}
+	
+	private synchronized void incConnection() {
+		++mConnections;
+		Log.r(TAG, "inc " + mConnections);
+	}
+	
+	private synchronized void decConnection() {
+		--mConnections;
+		Log.r(TAG, "dec " + mConnections);
 	}
 
 	private class Relayer implements ICallback{
@@ -133,10 +147,11 @@ public class SProxy implements IAcceptor{
 		}
 		
 		private void init(SocketChannel conn) {
+			incConnection();
 			mChannel = new SSockChannel(mSelector);
 			mChannel.setSource(conn);
 			mChannel.setConnId(mConnId);
-			Log.r(getTag(), "receive an conntion " + conn.socket().getInetAddress().getHostAddress());
+			Log.d(getTag(), "receive an conntion " + conn.socket().getInetAddress().getHostAddress());
 			
 			if(mIsLocal) {
 				try {
@@ -163,6 +178,7 @@ public class SProxy implements IAcceptor{
 		private void release() {
 			mChannel.destroy();
 			mConnHandlerPool.release(this);
+			decConnection();
 		}
 	}
 	

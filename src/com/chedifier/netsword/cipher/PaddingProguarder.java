@@ -1,4 +1,4 @@
-package com.chedifier.netsword.trans;
+package com.chedifier.netsword.cipher;
 
 public class PaddingProguarder implements IProguarder{
 

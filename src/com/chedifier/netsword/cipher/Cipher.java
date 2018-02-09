@@ -1,4 +1,4 @@
-package com.chedifier.netsword.trans;
+package com.chedifier.netsword.cipher;
 
 import java.nio.ByteBuffer;
 
@@ -10,8 +10,13 @@ import com.chedifier.netsword.socks5.Configuration;
 public class Cipher {
 	private static final String TAG = "Cipher";
 	private static IProguarder sP = new ShiftProguarder();
-	private static int sBlockSize = Configuration.getConfigurationInt(Configuration.KEY_BLOCK_SIZE, 255);
-	private static int sChunkSize = Configuration.getConfigurationInt(Configuration.KEY_CHUNK_SIZE,255<<2);
+	
+	private static final int sBlockSize;
+	private static final int sChunkSize;
+	static {		
+		sBlockSize = Configuration.getConfigInt(Configuration.BLOCKSIZE, 255);
+		sChunkSize = sBlockSize<<3;
+	}
 	
 	public static byte[] encrypt(byte[] origin,int offset ,int len) {
 		if(origin != null && ArrayUtils.isValidateRange(origin.length, offset, len)) {

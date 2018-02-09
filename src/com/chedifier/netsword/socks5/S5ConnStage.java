@@ -6,13 +6,12 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
-import com.chedifier.netsword.Result;
 import com.chedifier.netsword.base.ExceptionHandler;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.NetUtils;
 import com.chedifier.netsword.base.StringUtils;
-import com.chedifier.netsword.trans.Cipher;
-import com.chedifier.netsword.trans.Cipher.DecryptResult;
+import com.chedifier.netsword.cipher.Cipher;
+import com.chedifier.netsword.cipher.Cipher.DecryptResult;
 
 public class S5ConnStage extends AbsS5Stage{
 	private ConnInfo mConnInfo = new ConnInfo();

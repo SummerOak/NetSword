@@ -8,7 +8,6 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.chedifier.netsword.Result;
 import com.chedifier.netsword.base.ExceptionHandler;
 import com.chedifier.netsword.base.IOUtils;
 import com.chedifier.netsword.base.Log;
@@ -22,20 +21,25 @@ public class SProxy implements IAcceptor{
 	private final String TAG;
 
 	private static int sConnectionId;
-	private int mPort = 8887;
+	private final int mPort;
 	private Selector mSelector;
 	private ServerSocketChannel mSocketChannel = null;
 	private boolean mIsLocal;
 	
-//	private String mSServerHost = "47.90.206.185";
-	private String mSServerHost = "127.0.0.1";
-	private int mSServerPort = 8888;
 	private InetSocketAddress mProxyAddress;
 	
 	private ObjectPool<Relayer> mConnHandlerPool;
 	private volatile long mConnections = 0;
+	
+	public static SProxy createLocal(int port,String serverHost,int serverPort) {
+		return new SProxy(port,true,serverHost,serverPort);
+	}
+	
+	public static SProxy createServer(int port) {
+		return new SProxy(port,false,"",0);
+	}
 
-	public SProxy(int port,boolean isLocal) {
+	private SProxy(int port,boolean isLocal,String serverHost,int serverPort) {
 		mPort = port;
 		mIsLocal = isLocal;
 		TAG = "SProxy." + (isLocal?"local":"server");
@@ -43,7 +47,7 @@ public class SProxy implements IAcceptor{
 		
 		
 		if(isLocal) {
-			mProxyAddress = new InetSocketAddress(mSServerHost,mSServerPort);
+			mProxyAddress = new InetSocketAddress(serverHost,serverPort);
 		}
 		
 		mConnHandlerPool = new ObjectPool<Relayer>(new IConstructor<Relayer>() {
@@ -63,7 +67,6 @@ public class SProxy implements IAcceptor{
 	}
 	
 	private void init() {
-		Configuration.init();
 		AcceptorWrapper.init();
 		
 	}
@@ -116,8 +119,6 @@ public class SProxy implements IAcceptor{
             		if(key != null && key.attachment() instanceof IAcceptor) {
             			((IAcceptor)key.attachment()).accept(key,key.readyOps());
             		}
-            		
-            		
             }
 		}
 	}

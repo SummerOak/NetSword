@@ -3,11 +3,10 @@ package com.chedifier.netsword.socks5;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
-import com.chedifier.netsword.Result;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
-import com.chedifier.netsword.trans.Cipher;
-import com.chedifier.netsword.trans.Cipher.DecryptResult;
+import com.chedifier.netsword.cipher.Cipher;
+import com.chedifier.netsword.cipher.Cipher.DecryptResult;
 
 public class S5VerifyStage extends AbsS5Stage{
 	

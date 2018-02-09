@@ -1,4 +1,4 @@
-package com.chedifier.netsword.trans;
+package com.chedifier.netsword.cipher;
 
 import com.chedifier.netsword.base.ArrayUtils;
 import com.chedifier.netsword.base.Log;

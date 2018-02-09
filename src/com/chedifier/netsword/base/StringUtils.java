@@ -63,4 +63,12 @@ public class StringUtils {
 		return def;
 	}
 	
+	public static long parseLong(String s,long def) {
+		try {
+			return Long.valueOf(s);
+		}catch(Throwable t) {
+			ExceptionHandler.handleException(t);
+		}
+		return def;
+	}
 }

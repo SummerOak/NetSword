@@ -1,34 +1,58 @@
 package com.chedifier.netsword.socks5;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
+
+import com.chedifier.netsword.base.StringUtils;
 
 public class Configuration {
+	private static Properties sConfig;
 	
-	
-	private static Map<String,Object> sConfigurations = new HashMap<>();
-	
-	private static boolean sInited = false;
-	public static final String KEY_BLOCK_SIZE = "KEY_BLOCK_SIZE";
-	public static final String KEY_CHUNK_SIZE = "KEY_CHUNK_SIZE";
-	public static final String KEY_BUFFER_SIZE = "KEY_BUFFER_SIZE";
-	
+	public static final String IS_SERVER 	= "is_server";
+	public static final String SERVER_ADDR 	= "server_address";
+	public static final String SERVER_PORT 	= "server_port";
+	public static final String LOCAL_PORT 	= "local_port";
+	public static final String BLOCKSIZE 	= "block_size";
+	public static final String LOG_PATH 		= "log_directory";
+	public static final String LOG_LEVL 		= "log_level";
 	
 	public synchronized static void init() {
-		if(!sInited) {
-			sConfigurations.put(KEY_BLOCK_SIZE, 255);
-			sConfigurations.put(KEY_CHUNK_SIZE, 255<<3);
-			sConfigurations.put(KEY_BUFFER_SIZE, 255<<6);
-			sInited = true;
+		try {
+			if (null == sConfig) {
+				File configFile = new File("./socks5/settings.txt");
+				if (configFile.exists() && configFile.isFile() && configFile.canRead()) {
+					InputStream input = new FileInputStream(configFile);
+					sConfig = new Properties();
+					sConfig.load(input);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			sConfig = new Properties();
+			sConfig.setProperty("is_server", "0");
+			sConfig.setProperty("server_addr", "0");
+			sConfig.setProperty("server_port", "0");
+			sConfig.setProperty("local_port", "0");
+			sConfig.setProperty("block_size", "0");
+			sConfig.setProperty("log_path", "0");
 		}
 	}
-	
-	public static int getConfigurationInt(String key,int def) {
-		Object o = sConfigurations.get(key);
-		if(o instanceof Integer) {
-			return (int)o;
+
+	public static synchronized int getConfigInt(String key,int def) {
+		if(sConfig == null) {
+			init();
 		}
 		
-		return def;
+		return StringUtils.parseInt(sConfig.getProperty(key), def);
+	}
+	
+	public static synchronized String getConfig(String key,String def) {
+		if(sConfig == null) {
+			init();
+		}
+		
+		return sConfig.getProperty(key,def);
 	}
 }

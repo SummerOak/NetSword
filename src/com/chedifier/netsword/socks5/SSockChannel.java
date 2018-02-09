@@ -6,14 +6,13 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-import com.chedifier.netsword.Result;
 import com.chedifier.netsword.base.ExceptionHandler;
 import com.chedifier.netsword.base.IOUtils;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
+import com.chedifier.netsword.cipher.Cipher;
+import com.chedifier.netsword.cipher.Cipher.DecryptResult;
 import com.chedifier.netsword.socks5.AcceptorWrapper.IAcceptor;
-import com.chedifier.netsword.trans.Cipher;
-import com.chedifier.netsword.trans.Cipher.DecryptResult;
 
 public class SSockChannel implements IAcceptor {
 
@@ -50,11 +49,11 @@ public class SSockChannel implements IAcceptor {
 	public SSockChannel(Selector selector) {
 		mSelector = selector;
 
-		BUFFER_SIZE = Configuration.getConfigurationInt(Configuration.KEY_BUFFER_SIZE, 0);
+		BUFFER_SIZE = Configuration.getConfigInt(Configuration.BLOCKSIZE, 1024*100);
 		mUpStreamBufferIn = ByteBuffer.allocate(BUFFER_SIZE);
-		mUpStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE << 1);
+		mUpStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE);
 		mDownStreamBufferIn = ByteBuffer.allocate(BUFFER_SIZE);
-		mDownStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE << 1);
+		mDownStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE);
 
 		mAlive = true;
 	}

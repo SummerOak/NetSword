@@ -29,7 +29,7 @@ public class JobScheduler {
 				e.mJ = (Job)params[0];
 			}
 			
-		}, 50);
+		}, 5);
 		sInited = true;
 	}
 	

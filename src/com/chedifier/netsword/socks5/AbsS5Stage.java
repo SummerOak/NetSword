@@ -1,6 +1,5 @@
 package com.chedifier.netsword.socks5;
 
-import com.chedifier.netsword.Result;
 import com.chedifier.netsword.socks5.SSockChannel.IChannelEvent;
 
 public abstract class AbsS5Stage implements IChannelEvent{

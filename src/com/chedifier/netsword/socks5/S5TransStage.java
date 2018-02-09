@@ -2,7 +2,6 @@ package com.chedifier.netsword.socks5;
 
 import java.nio.channels.SelectionKey;
 
-import com.chedifier.netsword.Result;
 import com.chedifier.netsword.base.Log;
 
 public class S5TransStage extends AbsS5Stage{

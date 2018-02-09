@@ -1,4 +1,4 @@
-package com.chedifier.netsword.trans;
+package com.chedifier.netsword.cipher;
 
 public interface IProguarder {
 	byte[] encode(byte[] origin);

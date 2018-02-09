@@ -1,0 +1,15 @@
+#set 1 for server 0 for local
+is_server=0
+
+#proxy server
+server_address=47.90.206.185
+server_port=8668
+
+#local
+local_port=8667
+
+#common
+log_path=./log
+log_level=2
+
+block_size=255

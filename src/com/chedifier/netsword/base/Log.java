@@ -24,7 +24,7 @@ public class Log {
 	}
 	
 	public static final void setLogLevel(int level) {
-		sLogLevel = 0;
+		sLogLevel = level;
 	}
 	
 	private static final String getTimeFormat() {
@@ -106,7 +106,7 @@ public class Log {
 		}
 		
 		Date date = new Date(time);
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd-hh-mm");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-hh-mm");
 		
 		if(StringUtils.isEmpty(sLogDir)) {
 			if(!initLogDir(DEF_DIR)) {

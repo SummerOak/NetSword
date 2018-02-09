@@ -49,11 +49,11 @@ public class SSockChannel implements IAcceptor {
 	public SSockChannel(Selector selector) {
 		mSelector = selector;
 
-		BUFFER_SIZE = Configuration.getConfigInt(Configuration.BLOCKSIZE, 1024*100);
+		BUFFER_SIZE = Configuration.getConfigInt(Configuration.BLOCKSIZE, 255) << 4;
 		mUpStreamBufferIn = ByteBuffer.allocate(BUFFER_SIZE);
-		mUpStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE);
+		mUpStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE<<2);
 		mDownStreamBufferIn = ByteBuffer.allocate(BUFFER_SIZE);
-		mDownStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE);
+		mDownStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE<<2);
 
 		mAlive = true;
 	}

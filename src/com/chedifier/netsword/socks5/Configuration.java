@@ -21,7 +21,7 @@ public class Configuration {
 	public synchronized static void init() {
 		try {
 			if (null == sConfig) {
-				File configFile = new File("./socks5/settings.txt");
+				File configFile = new File("./Socks5/settings.txt");
 				if (configFile.exists() && configFile.isFile() && configFile.canRead()) {
 					InputStream input = new FileInputStream(configFile);
 					sConfig = new Properties();

@@ -14,6 +14,8 @@ public class CrashHandler {
 			public void uncaughtException(Thread t, Throwable e) {
 				Log.e(TAG, "thread: " + t.getName() + "reason: " + e.getMessage() + " stack: " + Log.getStackTraceString(e));
 				Log.dumpLog2File();
+				
+				System.exit(1);
 			}
 		});
 	}

@@ -18,6 +18,8 @@ public class Socks5 {
 		
 		Log.setLogLevel(Configuration.getConfigInt(Configuration.LOG_LEVL, 0));
 		Log.setLogDir(Configuration.getConfig(Configuration.LOG_PATH, "./socks5/log"));
+		
+		Log.d("", ((String)null).concat(""));
 	
 		startSProxy();
 		

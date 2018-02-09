@@ -98,7 +98,6 @@ public class Log {
 	}
 	
 	private static final String getLogFilePath() {
-		Log.r("333", "getLogFilePath1");
 		long now = System.currentTimeMillis();
 		long time = sLastDumpTime;
 		if((now-sLastDumpTime) > 3600) {
@@ -107,8 +106,6 @@ public class Log {
 		
 		Date date = new Date(time);
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd-hh-mm");
-		
-		Log.r("333", "getLogFilePath2");
 		
 		if(StringUtils.isEmpty(sLogDir)) {
 			if(!initLogDir(DEF_DIR)) {
@@ -124,8 +121,6 @@ public class Log {
 			
 			sLogDir = DEF_DIR;
 		}
-		
-		Log.r("333", "getLogFilePath3");
 		
 		if(!sLogDir.endsWith(File.separator)) {
 			sLogDir += File.separator;

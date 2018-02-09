@@ -1,0 +1,5 @@
+E> tid[1] 25302864.45.176 : CrashHandler >> thread: mainreason: null stack: java.lang.NullPointerException
+	at com.chedifier.netsword.socks5.Configuration.getConfigInt(Configuration.java:48)
+	at com.chedifier.netsword.Socks5.main(Socks5.java:21)
+
+

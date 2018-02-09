@@ -98,6 +98,7 @@ public class Log {
 	}
 	
 	private static final String getLogFilePath() {
+		
 		long now = System.currentTimeMillis();
 		long time = sLastDumpTime;
 		if((now-sLastDumpTime) > 3600) {
@@ -126,6 +127,8 @@ public class Log {
 			sLogDir += File.separator;
 		}
 		
+		
+		
 		return sLogDir + df.format(date) + ".txt";
 	}
 	
@@ -143,6 +146,11 @@ public class Log {
 	}
 	
 	public static final void dumpLog2File() {
+		dumpLog2File(null);
+	}
+	
+	public static final void dumpLog2File(final ICallback cb) {
+		
 		JobScheduler.schedule(new Job("log-dumper") {
 			
 			@Override
@@ -162,10 +170,19 @@ public class Log {
 				if(sb != null && sb.length() > 0) {
 					FileUtils.writeString2File(getLogFilePath(), sb.toString());
 				}
+				
+				if(cb != null) {
+					cb.onDumpFinish();
+				}
 			}
 		});
 		
+		
 			
+	}
+	
+	public interface ICallback{
+		void onDumpFinish();
 	}
 	
 }

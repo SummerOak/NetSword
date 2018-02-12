@@ -13,8 +13,14 @@ import com.chedifier.netsword.base.IOUtils;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.ObjectPool;
 import com.chedifier.netsword.base.ObjectPool.IConstructor;
+import com.chedifier.netsword.iface.IProxyListener;
+import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.SProxyIface;
+import com.chedifier.netsword.metrics.ISpeedListener;
+import com.chedifier.netsword.metrics.SpeedMetrics;
 import com.chedifier.netsword.socks5.AbsS5Stage.ICallback;
 import com.chedifier.netsword.socks5.AcceptorWrapper.IAcceptor;
+import com.chedifier.netsword.socks5.SSockChannel.ITrafficEvent;
 
 public class SProxy implements IAcceptor{
 
@@ -26,27 +32,53 @@ public class SProxy implements IAcceptor{
 	private ServerSocketChannel mSocketChannel = null;
 	private boolean mIsLocal;
 	
+	private int mChannelBufferSize;
+	private boolean mWorking = false;
+	private String mProxyHost = null;
+	private int mProxyPort;
 	private InetSocketAddress mProxyAddress;
 	
 	private ObjectPool<Relayer> mConnHandlerPool;
 	private volatile long mConnections = 0;
+	private IProxyListener mListener;
+	
 	
 	public static SProxy createLocal(int port,String serverHost,int serverPort) {
-		return new SProxy(port,true,serverHost,serverPort);
+		return new SProxy(port,true,serverHost,serverPort,null);
 	}
 	
 	public static SProxy createServer(int port) {
-		return new SProxy(port,false,"",0);
+		return new SProxy(port,false,"",0,null);
+	}
+	
+	public static SProxy createLocal(int port,String serverHost,int serverPort,IProxyListener l) {
+		return new SProxy(port,true,serverHost,serverPort,l);
+	}
+	
+	public static SProxy createServer(int port,IProxyListener l) {
+		return new SProxy(port,false,"",0,l);
 	}
 
-	private SProxy(int port,boolean isLocal,String serverHost,int serverPort) {
+	private SProxy(int port,boolean isLocal,String serverHost,int serverPort,IProxyListener l) {
+		TAG = "SProxy." + (isLocal?"local":"server");
 		mPort = port;
 		mIsLocal = isLocal;
-		TAG = "SProxy." + (isLocal?"local":"server");
+		mListener = l;
+		
+		mChannelBufferSize = Configuration.getConfigInt(Configuration.BUFFER_SIZE, Configuration.DEFAULT_BUFFERSIZE);
+		if (mChannelBufferSize <= 0 || mChannelBufferSize > (Configuration.DEFAULT_BUFFERSIZE << 1)) {
+			Log.e(TAG, "buffer size is too small or big, adjust to default.");
+			mChannelBufferSize = Configuration.DEFAULT_BUFFERSIZE;
+		}
+
+		Log.d(TAG, "buffer size is " + mChannelBufferSize);
+		
 		init();
 		
 		
 		if(isLocal) {
+			mProxyHost = serverHost;
+			mProxyPort = serverPort;
 			mProxyAddress = new InetSocketAddress(serverHost,serverPort);
 		}
 		
@@ -75,8 +107,7 @@ public class SProxy implements IAcceptor{
 		return ++sConnectionId;
 	}
 
-	public Result start() {
-		
+	public void start() {
 		try {
 			mSelector = Selector.open();
 			mSocketChannel = ServerSocketChannel.open();
@@ -89,19 +120,23 @@ public class SProxy implements IAcceptor{
 			Log.e(TAG, "start failed." + t.getMessage());
 			ExceptionHandler.handleException(t);
 			IOUtils.safeClose(mSocketChannel);
-			return Result.E_LOCAL_SOCKET_BUILD_FAILED;
+			Messenger.notifyMessage(mListener, IProxyListener.ERROR, 0,Result.E_LOCAL_SOCKET_BUILD_FAILED);
+			return;
 		}
 		
-		Log.r(TAG, "start success >>>");
-		while(true) {
+		mWorking = true;
+		Messenger.notifyMessage(mListener, IProxyListener.PROXY_START, mIsLocal,mPort, mProxyHost,mProxyPort);
+		
+		Log.r(TAG, "start success >>> listening " + mPort);
+		while(mWorking) {
 			int sel = 0;
 			try {
-//				Log.d(TAG, "select next ops...");
+				Log.d(TAG, "select next ops...");
 				if((sel = mSelector.select()) == 0) {
-//					Log.d(TAG, "nothing to do,go next...");
+					Log.d(TAG, "nothing to do,go next... " + mSelector.selectedKeys().size());
 					continue;
 				}
-//				Log.d(TAG, "selected ops: " + sel);
+				Log.d(TAG, "selected ops: " + sel);
 			} catch (Throwable t) {
 				ExceptionHandler.handleException(t);
 			}
@@ -121,6 +156,12 @@ public class SProxy implements IAcceptor{
             		}
             }
 		}
+		
+		Messenger.notifyMessage(mListener, IProxyListener.PROXY_STOP, mIsLocal);
+	}
+	
+	public void stop() {
+		mWorking = false;
 	}
 	
 	private synchronized void incConnection() {
@@ -133,13 +174,13 @@ public class SProxy implements IAcceptor{
 		Log.r(TAG, "dec " + mConnections);
 	}
 
-	private class Relayer implements ICallback{
+	private class Relayer implements ICallback,ITrafficEvent,ISpeedListener{
 		
-		SSockChannel mChannel;
+		private SSockChannel mChannel;
+		private SpeedMetrics mMetrics;
 		private int mConnId;
 		
 		private Relayer(SocketChannel conn) {
-			mConnId = generateConnectionId();
 			init(conn);
 		}
 		
@@ -148,45 +189,111 @@ public class SProxy implements IAcceptor{
 		}
 		
 		private void init(SocketChannel conn) {
+			mConnId = generateConnectionId();
 			incConnection();
-			mChannel = new SSockChannel(mSelector);
-			mChannel.setSource(conn);
+			mChannel = new SSockChannel(mSelector,mChannelBufferSize);
 			mChannel.setConnId(mConnId);
-			Log.d(getTag(), "receive an conntion " + conn.socket().getInetAddress().getHostAddress());
+			AbsS5Stage stage = new S5InitStage(mChannel, mIsLocal, this);
+			stage.setConnId(mConnId);
+			stage.start();
+			
+			mChannel.setSource(conn);
+			mChannel.setTrafficListener(this);
+			mMetrics = new SpeedMetrics(this);
+			
+			String clientAddr = (conn.socket() != null && conn.socket().getInetAddress() != null)?conn.socket().getInetAddress().getHostAddress():"unknown";
+			Log.d(getTag(), "receive an conntion " + clientAddr);
+			
+			Messenger.notifyMessage(mListener, IProxyListener.RECV_CONN,mConnId, clientAddr);
 			
 			if(mIsLocal) {
 				try {
-					mChannel.setDest(SocketChannel.open(mProxyAddress));
+					SocketChannel sc = SocketChannel.open();
+					sc.configureBlocking(false);
+					sc.connect(mProxyAddress);
+					mChannel.setDest(sc);
 				} catch (Throwable e) {
 					Log.e(getTag(), "failed to connect to proxy server.");
 					ExceptionHandler.handleException(e);
+					Messenger.notifyMessage(mListener, IProxyListener.ERROR,mConnId, Result.E_S5_BIND_PROXY_FAILED);
 					release();
 					return;
 				}
 			}
-			
-			AbsS5Stage stage = new S5VerifyStage(mChannel, mIsLocal, this);
-			stage.setConnId(mConnId);
-			stage.start();
-		}
-		
-		@Override
-		public void onError(Result result) {
-			Log.e(getTag(), result.getMessage());
-			release();
 		}
 		
 		private void release() {
 			mChannel.destroy();
 			mConnHandlerPool.release(this);
 			decConnection();
+			
+			Messenger.notifyMessage(mListener, IProxyListener.STATE_UPDATE, mConnId, SProxyIface.STATE.TERMINATE);
+		}
+		
+		@Override
+		public void onStateChange(int newState, Object... params) {
+			Messenger.notifyMessage(mListener, IProxyListener.STATE_UPDATE, mConnId, newState, params);
+		}
+		
+		@Override
+		public void onError(Result result) {
+			Log.e(getTag(), result.getMessage());
+			
+			Messenger.notifyMessage(mListener,IProxyListener.ERROR,mConnId, result);
+			
+			release();
+			
+		}
+		
+		@Override
+		public void onSpeed(int tag, int speed) {
+			Messenger.notifyMessage(mListener,IProxyListener.SPEED, mConnId, (byte)(tag&0xFF), speed);
+		}
+		
+		@Override
+		public void onSrcIn(int len, long total) {
+			mMetrics.add(IProxyListener.SPEEDTYPE.SRC_IN, len);
+			Messenger.notifyMessage(mListener,IProxyListener.SRC_IN, mConnId, total);
+		}
+
+		@Override
+		public void onSrcOut(int len, long total) {
+			mMetrics.add(IProxyListener.SPEEDTYPE.SRC_OUT, len);
+			Messenger.notifyMessage(mListener,IProxyListener.SRC_OUT, mConnId, total);
+		}
+
+		@Override
+		public void onDestIn(int len, long total) {
+			mMetrics.add(IProxyListener.SPEEDTYPE.DEST_IN, len);
+			Messenger.notifyMessage(mListener,IProxyListener.DEST_IN, mConnId, total);
+		}
+
+		@Override
+		public void onDestOut(int len, long total) {
+			mMetrics.add(IProxyListener.SPEEDTYPE.DEST_OUT, len);
+			Messenger.notifyMessage(mListener,IProxyListener.DEST_OUT, mConnId, total);
+		}
+
+		@Override
+		public void onConnInfo(String ip, String domain, int port) {
+			Messenger.notifyMessage(mListener,IProxyListener.CONN_INFO, mConnId, ip,domain,port);
+		}
+
+		@Override
+		public void onSrcOpsUpdate(int ops) {
+			Messenger.notifyMessage(mListener,IProxyListener.SRC_INTRS_OPS, mConnId, ops);
+		}
+
+		@Override
+		public void onDestOpsUpdate(int ops) {
+			Messenger.notifyMessage(mListener,IProxyListener.DEST_INTRS_OPS, mConnId, ops);
 		}
 	}
 	
 
 	@Override
 	public Result accept(SelectionKey selKey,int opt) {
-		if((SelectionKey.OP_ACCEPT&opt) > 0) {
+		if(selKey.isAcceptable()) {
 			Log.d(TAG, "recv a connection...");
 			try {
 				SocketChannel sc = mSocketChannel.accept();

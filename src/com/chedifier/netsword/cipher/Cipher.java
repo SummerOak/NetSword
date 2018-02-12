@@ -11,19 +11,20 @@ public class Cipher {
 	private static final String TAG = "Cipher";
 	private static IProguarder sP = new ShiftProguarder();
 	
-	private static final int sBlockSize;
-	private static final int sChunkSize;
-	static {		
-		sBlockSize = Configuration.getConfigInt(Configuration.BLOCKSIZE, 255);
-		sChunkSize = sBlockSize<<3;
+	private static final int BLOCK_SIZE = 255;
+	private static int sChunkSize = Configuration.DEFAULT_CHUNKSIZE;
+	
+	public static void init() {
+		int chunkSize = Configuration.getConfigInt(Configuration.CHUNKSIZE, Configuration.DEFAULT_CHUNKSIZE);
+		if(256 < chunkSize && chunkSize <= (Configuration.DEFAULT_CHUNKSIZE << 1)) {
+			sChunkSize = chunkSize;
+		}
+		
+		Log.d(TAG, "chunk size: " + sChunkSize);
 	}
 	
 	public static byte[] encrypt(byte[] origin,int offset ,int len) {
 		if(origin != null && ArrayUtils.isValidateRange(origin.length, offset, len)) {
-			
-//			byte[] rr = new byte[len];
-//			System.arraycopy(origin,offset, rr, 0, len);
-//			return rr;
 			
 			ByteBuffer buffer = ByteBuffer.allocate(len<<2);
 			int s = 0;
@@ -72,7 +73,7 @@ public class Cipher {
 //		return rr;
 		
 		ByteBuffer buffer = ByteBuffer.allocate(len);
-		byte[] data = new byte[sChunkSize/sBlockSize + sChunkSize + 1];
+		byte[] data = new byte[sChunkSize/BLOCK_SIZE + sChunkSize + 1];
 		
 		int l = 0;//location of packs
 		int tl = 0;
@@ -84,15 +85,15 @@ public class Cipher {
 					break;
 				}
 				
-//				Log.d(TAG, "sChunkSize " + sChunkSize + " l " + l + " b " + b + " d " + d + " len " + len);
+				Log.d(TAG, "sChunkSize " + sChunkSize + " l " + l + " b " + b + " d " + d + " len " + len + " packs.len " + packs.length + " data.len " + data.length);
 				System.arraycopy(packs, ++l + offset, data, b, d);
 				l += d; b += d;
-				if(d < sBlockSize) {
+				if(d < BLOCK_SIZE) {
 					break;
 				}
 			}
 			
-			if(b > 0 && d < sBlockSize) {
+			if(b > 0 && d < BLOCK_SIZE) {
 				byte[] temp = sP.decode(data, 0, b);
 				if(temp == null || temp.length <= 0) {
 					Log.e(TAG, "decrypt>>> decode block failed: " + StringUtils.toRawString(data,0,b));
@@ -115,7 +116,7 @@ public class Cipher {
 			return result;
 		}
 		
-		Log.e(TAG, "decrypt>>> decode packs failed. " + StringUtils.toRawString(packs,offset,len));
+		Log.e(TAG, "decrypt>>> decode packs failed. ");
 		
 		return null;
 	}
@@ -129,11 +130,11 @@ public class Cipher {
 	
 	private static byte[] pack(byte[] origin,int offset,int len) {
 		if(origin != null && ArrayUtils.isValidateRange(origin.length, offset, len)) {
-			byte[] packed = new byte[(len/sBlockSize) + 1 + len];
+			byte[] packed = new byte[(len/BLOCK_SIZE) + 1 + len];
 			int l = len;
 			int i = 0;
 			while(l > 0) {
-				int b = l>sBlockSize?sBlockSize:l;
+				int b = l>BLOCK_SIZE?BLOCK_SIZE:l;
 				packed[i++] = (byte)(b&0xFF);
 				System.arraycopy(origin, offset+len-l, packed, i, b);
 				l -= b;

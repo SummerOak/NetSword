@@ -8,16 +8,19 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.chedifier.netsword.base.JobScheduler.Job;
+import com.chedifier.netsword.socks5.Configuration;
 
 public class Log {
 	
 	private static int sLogLevel = 0;
 	private static String sLogDir;
-	private static final String DEF_DIR = "./Socks5/Log/";
+	private static final String DEF_DIR = Configuration.DEFAULT_LOG_PATH;
 	
 	private static final int MAX_SIZE = 20;
 	private static ArrayList<String> sCache = new ArrayList<>(MAX_SIZE);
 	private static long sLastDumpTime = 0L;
+	private static SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-SS");
+	private static Date sDate = new Date();
 	
 	public static final void setLogDir(String dir) {
 		sLogDir = dir;
@@ -32,40 +35,38 @@ public class Log {
 	}
 	
 	private static final String getTimeFormat(long time) {
-		long min = time/(1000*60);
-		long sec = (time%(1000*60)) / 1000;
-		long mils = (time%1000);
-		return min + "." + sec + "." + mils;
+		sDate.setTime(time);
+		return sDateFormat.format(sDate);
 	}
 
 	public static final void i(String tag,String content) {
 		if(sLogLevel > 2) {
-			System.out.println("I> tid[" + Thread.currentThread().getId() + "] " + getTimeFormat() + " : " + tag + " >> " + content);
+			System.out.println(getTimeFormat() + " : " + "I> tid[" + Thread.currentThread().getId() + "] " + tag + " >> " + content);
 		}
 	}
 	
 	public static final void d(String tag,String content) {
 		if(sLogLevel > 1) {
-			System.out.println("D> tid[" + Thread.currentThread().getId() + "] " + getTimeFormat() + " : " + tag + " >> " + content);
+			System.out.println(getTimeFormat() + " : " + "D> tid[" + Thread.currentThread().getId() + "] " + tag + " >> " + content);
 		}
 	}
 	
 	public static final void e(String tag,String content) {
-		String s = "E> tid[" + Thread.currentThread().getId() + "] " + getTimeFormat() + " : " + tag + " >> " + content;
+		String s = getTimeFormat() + " : " + "E> tid[" + Thread.currentThread().getId() + "] " + tag + " >> " + content;
 		System.out.println(s);
 		addLog(s);
 	}
 	
 	public static final void r(String tag,String content) {
 		if(sLogLevel >= 0) {
-			String s = "R> tid[" + Thread.currentThread().getId() + "] " + getTimeFormat() + " : " + tag + " >> " + content;
+			String s = getTimeFormat() + " : " + "R> tid[" + Thread.currentThread().getId() + "] " + tag + " >> " + content;
 			System.out.println(s);
 			addLog(s);
 		}
 	}
 	
 	public static final void t(String tag,String content) {
-		System.out.println("T> tid[" + Thread.currentThread().getId() + "] " + getTimeFormat() + " : " + tag + " >> " + content);
+		System.out.println(getTimeFormat() + " : " + "T> tid[" + Thread.currentThread().getId() + "] " + tag + " >> " + content);
 	}
 	
 	public static String getStackTraceString(Throwable tr) {

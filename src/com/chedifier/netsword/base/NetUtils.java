@@ -17,7 +17,9 @@ public class NetUtils {
 	public static SocketChannel bindSServer(InetSocketAddress netAddr) {
 		SocketChannel server = null;
 		try {
-			server = SocketChannel.open(netAddr);
+			server = SocketChannel.open();
+			server.configureBlocking(false);
+			server.connect(netAddr);
 		} catch (Throwable e) {
 			ExceptionHandler.handleException(e);
 		}

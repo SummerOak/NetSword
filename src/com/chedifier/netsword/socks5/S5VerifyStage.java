@@ -7,17 +7,20 @@ import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.cipher.Cipher;
 import com.chedifier.netsword.cipher.Cipher.DecryptResult;
+import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.SProxyIface;
 
 public class S5VerifyStage extends AbsS5Stage{
 	
-	public S5VerifyStage(SSockChannel context,boolean isLocal,ICallback callback) {
-		super(context,isLocal,callback);
+	public S5VerifyStage(AbsS5Stage stage) {
+		super(stage);
 	}
 	
 	@Override
 	public void start() {
 		Log.r(getTag(), "S5VerifyStage start >>>");
 		super.start();
+		notifyState(SProxyIface.STATE.VERIFY);
 	}
 
 	@Override
@@ -50,12 +53,13 @@ public class S5VerifyStage extends AbsS5Stage{
 	public void onSourceOpts(int opts) {
 		if((opts&SelectionKey.OP_READ) > 0) {
 			ByteBuffer buffer = getChannel().getSrcInBuffer();
+			int verifyInfoLen = buffer.position();
 			if(isLocal()) {
 				Log.d(getTag(), "recv verify from client:" + StringUtils.toRawString(buffer.array(),buffer.position()));
-				int verifyResult = verify(buffer.array(),0,buffer.position());
+				int verifyResult = verify(buffer.array(),0,verifyInfoLen);
 				if(verifyResult > 0) {
 					Log.d(getTag(), "recv verify success.");
-					if(getChannel().relay(true, true) != buffer.position()) {
+					if(getChannel().relay(true, true) != verifyInfoLen) {
 						Log.e(getTag(), "relay verify info to server failed.");
 					}
 				}else if(verifyResult < 0){
@@ -64,7 +68,7 @@ public class S5VerifyStage extends AbsS5Stage{
 					return;
 				}
 			}else {
-				DecryptResult decResult = Cipher.decrypt(buffer.array(), 0, buffer.position());
+				DecryptResult decResult = Cipher.decrypt(buffer.array(), 0, verifyInfoLen);
 				if(decResult != null && decResult.origin != null && decResult.origin.length > 0 && decResult.decryptLen > 0) {
 					byte[] data = decResult.origin;
 					Log.d(getTag(), "recv verify data from local: " + StringUtils.toRawString(data));
@@ -119,7 +123,8 @@ public class S5VerifyStage extends AbsS5Stage{
 	}
 	
 	@Override
-	public void onSocketBroken() {
+	public void onSocketBroken(Result result) {
+		notifyError(result);
 		notifyError(Result.E_S5_SOCKET_ERROR_VERIFY);
 	}
 	

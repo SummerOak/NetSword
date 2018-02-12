@@ -12,6 +12,7 @@ import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.cipher.Cipher;
 import com.chedifier.netsword.cipher.Cipher.DecryptResult;
+import com.chedifier.netsword.iface.Result;
 import com.chedifier.netsword.socks5.AcceptorWrapper.IAcceptor;
 
 public class SSockChannel implements IAcceptor {
@@ -28,7 +29,7 @@ public class SSockChannel implements IAcceptor {
 	private ByteBuffer mUpStreamBufferOut;
 	private ByteBuffer mDownStreamBufferIn;
 	private ByteBuffer mDownStreamBufferOut;
-	
+
 	private long mSrcIn = 0l;
 	private long mSrcOut = 0l;
 	private long mDestIn = 0l;
@@ -39,6 +40,7 @@ public class SSockChannel implements IAcceptor {
 	private boolean mAlive = false;
 
 	private IChannelEvent mListener;
+	private ITrafficEvent mTrafficListener;
 
 	private final int BUFFER_SIZE;
 
@@ -46,20 +48,24 @@ public class SSockChannel implements IAcceptor {
 		return "SSockChannel_c" + mConnId;
 	}
 
-	public SSockChannel(Selector selector) {
+	public SSockChannel(Selector selector,int bufferSize) {
 		mSelector = selector;
-
-		BUFFER_SIZE = Configuration.getConfigInt(Configuration.BLOCKSIZE, 255) << 4;
+		BUFFER_SIZE = bufferSize;
+		
 		mUpStreamBufferIn = ByteBuffer.allocate(BUFFER_SIZE);
-		mUpStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE<<2);
+		mUpStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE << 1);
 		mDownStreamBufferIn = ByteBuffer.allocate(BUFFER_SIZE);
-		mDownStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE<<2);
+		mDownStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE << 1);
 
 		mAlive = true;
 	}
 
 	public void setListener(IChannelEvent l) {
 		mListener = l;
+	}
+
+	public void setTrafficListener(ITrafficEvent l) {
+		mTrafficListener = l;
 	}
 
 	public void setConnId(int id) {
@@ -71,20 +77,22 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	public void setDest(SocketChannel socket) {
-		if(!mAlive) {
+		Log.t(getTag(), "setDest " + socket + "  " + mDest);
+		if (!mAlive) {
 			Log.e(getTag(), "setDest>>> channel has died.");
 			return;
 		}
-		
+
 		if (mDest == null && socket != null) {
 			mDest = socket;
 			try {
 				mDest.configureBlocking(false);
 			} catch (IOException e) {
+				Log.t(getTag(), "configureBlocking failed " + e.getMessage());
 				ExceptionHandler.handleException(e);
 			}
 
-			updateOps(false, true, SelectionKey.OP_CONNECT | SelectionKey.OP_READ);
+			updateOps(false, true, SelectionKey.OP_CONNECT);
 			return;
 		}
 
@@ -92,11 +100,11 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	public void setSource(SocketChannel socket) {
-		if(!mAlive) {
+		if (!mAlive) {
 			Log.e(getTag(), "setDest>>> channel has died.");
 			return;
 		}
-		
+
 		if (mSource == null && socket != null) {
 			mSource = socket;
 			try {
@@ -112,11 +120,11 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	public int relay(boolean up, boolean encrypt) {
-		if(!mAlive) {
+		if (!mAlive) {
 			Log.e(getTag(), "relay>>> channel has died.");
 			return -1;
 		}
-		
+
 		ByteBuffer from = up ? mUpStreamBufferIn : mDownStreamBufferIn;
 		ByteBuffer to = up ? mUpStreamBufferOut : mDownStreamBufferOut;
 		int r = encrypt ? encryptRelay(from, to) : decryptRelay(from, to);
@@ -132,11 +140,11 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	public int writeToBuffer(boolean up, byte[] data) {
-		if(!mAlive) {
+		if (!mAlive) {
 			Log.e(getTag(), "write>>> channel has died.");
 			return -1;
 		}
-		
+
 		int w = 0;
 		if (data != null && data.length > 0) {
 			ByteBuffer buffer = up ? mUpStreamBufferOut : mDownStreamBufferOut;
@@ -161,8 +169,8 @@ public class SSockChannel implements IAcceptor {
 	 *            : the source data need be encrypted and relayed to dest.
 	 * @param dest:
 	 *            the destnation where data in src need be encrypted and relayed to.
-	 * @return the bytes be relayed, possibile 0 if nothing be relayed or -1 if dest
-	 *         buffer is full filled.
+	 * @return the bytes be relayed of src, possibile 0 if nothing be relayed or -1
+	 *         if dest buffer is full filled.
 	 */
 	private int encryptRelay(ByteBuffer src, ByteBuffer dest) {
 		if (src.position() <= 0) {
@@ -170,7 +178,8 @@ public class SSockChannel implements IAcceptor {
 			return 0;
 		}
 
-		byte[] data = Cipher.encrypt(src.array(), 0, src.position());
+		int len = src.position();
+		byte[] data = Cipher.encrypt(src.array(), 0, len);
 		if (data == null) {
 			Log.e(getTag(), "encryptRelay>>> encrypt data failed.");
 			notifyRelayFailed();
@@ -179,7 +188,7 @@ public class SSockChannel implements IAcceptor {
 		if (dest.remaining() >= data.length) {
 			dest.put(data);
 			src.clear();
-			return data.length;
+			return len;
 		} else {
 			Log.e(getTag(),
 					"encryptRelay>>> out buffer is full filled: need " + data.length + " remain " + dest.remaining());
@@ -204,13 +213,14 @@ public class SSockChannel implements IAcceptor {
 			return 0;
 		}
 
-		DecryptResult decRes = Cipher.decrypt(src.array(), 0, src.position());
+		int len = src.position();
+		DecryptResult decRes = Cipher.decrypt(src.array(), 0, len);
 		if (decRes != null && decRes.origin != null && decRes.origin.length > 0 && decRes.decryptLen > 0) {
 			byte[] data = decRes.origin;
 			if (dest.remaining() >= data.length) {
 				dest.put(data);
 				cutBuffer(src, decRes.decryptLen);
-				return decRes.decryptLen;
+				return len;
 			} else {
 				Log.e(getTag(), "encryptRelay>>> out buffer is full filled,need " + data.length + " remain "
 						+ dest.remaining());
@@ -226,12 +236,11 @@ public class SSockChannel implements IAcceptor {
 
 	public int cutBuffer(ByteBuffer buffer, int len) {
 		if (buffer != null && buffer.position() >= len) {
-			Log.d(getTag(),
-					"before cut " + len + " : " + StringUtils.toRawString(buffer.array(), 0, buffer.position()));
+			Log.i(getTag(), "before cut " + len + " : " + buffer.position());
 			buffer.flip();
 			buffer.position(len);
 			buffer.compact();
-			Log.d(getTag(), "after cut " + len + " : " + StringUtils.toRawString(buffer.array(), 0, buffer.position()));
+			Log.i(getTag(), "after cut " + len + " : " + buffer.position());
 			return len;
 		}
 
@@ -269,6 +278,7 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	private void updateOps(boolean src, boolean add, int opts) {
+		Log.t(getTag(), "updateOps " + (add?"enable ":"disable ") + (src?" src " :" dest ") + opts);
 		SelectionKey key = src ? mSourceKey : mDestKey;
 		if (key != null) {
 			int oldOps = key.interestOps();
@@ -276,10 +286,20 @@ public class SSockChannel implements IAcceptor {
 		}
 
 		if (src) {
-			mSourceKey = registerOpts(mSource, opts);
+			if(mSourceKey != null && mSourceKey.isValid()) {				
+				mSourceKey.interestOps(opts);
+			}else {				
+				mSourceKey = registerOpts(mSource, opts);
+			}
 		} else {
-			mDestKey = registerOpts(mDest, opts);
+			if(mDestKey != null && mDestKey.isValid()) {
+				mDestKey.interestOps(opts);
+			}else {				
+				mDestKey = registerOpts(mDest, opts);
+			}
 		}
+		
+		notifyIntrestOpsUpdate(src);
 	}
 
 	private void pauseIn(boolean src, boolean pause) {
@@ -293,9 +313,9 @@ public class SSockChannel implements IAcceptor {
 
 	public void destroy() {
 		mAlive = false;
-		
-		Log.r(getTag(), "total>>> src>" + mSrcIn + ",src<" + mSrcOut + ",dest>"+mDestIn+",dest<"+mDestOut);
-		
+
+		Log.r(getTag(), "total>>> src>" + mSrcIn + ",src<" + mSrcOut + ",dest>" + mDestIn + ",dest<" + mDestOut);
+
 		if (mDestKey != null) {
 			mDestKey.cancel();
 			mDestKey = null;
@@ -332,15 +352,15 @@ public class SSockChannel implements IAcceptor {
 			Log.d(getTag(), "pre read,buffer remain " + buffer.remaining());
 			r = socketChannel.read(buffer);
 			Log.d(getTag(), "read " + r + " bytes,total " + buffer.position());
-			Log.d(getTag(), "read content: " + StringUtils.toRawString(buffer.array(), buffer.position() - r, r));
+			Log.i(getTag(), "read content: " + StringUtils.toRawString(buffer.array(), buffer.position() - r, r));
 		} catch (Throwable e) {
 			Log.e(getTag(), "read socket channel failed. " + e.getMessage());
 			ExceptionHandler.handleException(e);
 			r = -1;
 		}
-		
-		if(r < 0) {
-			notifySocketClosed();
+
+		if (r < 0) {
+			notifySocketClosed(Result.E_S5_SOCKET_READ_FAILED);
 		}
 
 		return r;
@@ -352,14 +372,14 @@ public class SSockChannel implements IAcceptor {
 			int w = socketChannel.write(buffer);
 
 			Log.d(getTag(), "write " + w + " bytes,remain " + buffer.remaining());
-			Log.d(getTag(), "write content: " + StringUtils.toRawString(buffer.array(), 0, w));
+			Log.i(getTag(), "write content: " + StringUtils.toRawString(buffer.array(), 0, w));
 
 			buffer.compact();
 			return w;
 		} catch (Throwable e) {
 			Log.e(getTag(), "write socket channel failed." + e.getMessage());
 			ExceptionHandler.handleException(e);
-			notifySocketClosed();
+			notifySocketClosed(Result.E_S5_SOCKET_WRITE_FAILED);
 		}
 
 		return -1;
@@ -367,45 +387,45 @@ public class SSockChannel implements IAcceptor {
 
 	@Override
 	public Result accept(SelectionKey selKey, int opts) {
-		if(!mAlive) {
+		if (!mAlive && selKey.isValid()) {
 			Log.e(getTag(), "accept>>> channel has died.");
 			return null;
 		}
-		
+
 		if (selKey == mSourceKey) {
-			if ((opts & SelectionKey.OP_ACCEPT) > 0) {
+			if (selKey.isValid() && selKey.isAcceptable()) {
 				Log.e(getTag(), "src receive an unexpected ACCEPT ops: " + opts);
 				return null;
 			}
 
-			if ((opts & SelectionKey.OP_CONNECT) > 0) {
+			if (selKey.isValid() && selKey.isConnectable()) {
 				Log.e(getTag(), "src receive an unexpected CONNECT ops: " + opts);
 				return null;
 			}
 
-			if ((opts & SelectionKey.OP_READ) > 0) {
+			if (selKey.isValid() && selKey.isReadable()) {
 				Log.d(getTag(), "src recv OP_READ");
 				int r = read(mSource, mUpStreamBufferIn);
 				if (r <= 0) {
 					Log.e(getTag(), "read data in src failed." + r + " block read in.");
 					pauseIn(true, true);
-				}else {
-					mSrcIn += r;
+				} else {
+					onSrcIn(r);
 				}
 			}
 
-			if ((opts & SelectionKey.OP_WRITE) > 0) {
+			if (selKey.isValid() && selKey.isWritable()) {
 				Log.d(getTag(), "src recv OP_WRITE");
 				if (mDownStreamBufferOut != null && mDownStreamBufferOut.position() > 0) {
 					int w = write(mSource, mDownStreamBufferOut);
-				
+
 					if (w > 0) {
-						if(mDownStreamBufferOut.remaining() > (BUFFER_SIZE >> 1) && mDestInPaused) {
+						if (mDownStreamBufferOut.remaining() > (BUFFER_SIZE >> 1) && mDestInPaused) {
 							Log.d(getTag(), "out buffer has enough remaining, open dest read in.");
 							pauseIn(false, false);
 						}
-						
-						mSrcOut += w;
+
+						onSrcOut(w);
 					}
 				}
 
@@ -413,88 +433,165 @@ public class SSockChannel implements IAcceptor {
 					updateOps(true, false, SelectionKey.OP_WRITE);
 				}
 			}
+			
+			if(selKey.isValid()) {				
+				notifySourceOps(opts);
+			}
 
-			notifySourceOps(opts);
 		} else if (selKey == mDestKey) {
-			if ((opts & SelectionKey.OP_ACCEPT) > 0) {
-				Log.e(getTag(), "receive an unexpected ACCEPT ops: " + opts);
+			if (selKey.isValid() && selKey.isAcceptable()) {
+				Log.e(getTag(), "dest receive an unexpected ACCEPT ops: " + opts);
 				return null;
 			}
 
-			if ((opts & SelectionKey.OP_CONNECT) > 0) {
-				Log.d(getTag(), "dest connected.");
+			if (selKey.isValid() && selKey.isConnectable()) {
+				Log.t(getTag(), "dest receive connect ops.");
+				try {
+					if(!mDest.finishConnect()) {
+						Log.e(getTag(), "finish connect failed.");
+						notifySocketClosed(Result.E_S5_BIND_PROXY_FAILED);
+						return null;
+					}else {
+						updateOps(false, false, SelectionKey.OP_CONNECT);
+						updateOps(false, true, SelectionKey.OP_READ);
+						Log.r(getTag(), "bind proxy success!");
+					}
+				} catch (IOException e) {
+					ExceptionHandler.handleException(e);
+					Log.e(getTag(), "conn to proxy failed");
+					notifySocketClosed(Result.E_S5_BIND_PROXY_FAILED);
+					return null;
+				}
 			}
 
-			if ((opts & SelectionKey.OP_READ) > 0) {
+			if (selKey.isValid() && selKey.isReadable()) {
 				Log.d(getTag(), "recv dest OP_READ");
 				int r = read(mDest, mDownStreamBufferIn);
 				if (r <= 0) {
 					Log.e(getTag(), "read from dest failed," + r + " pause dest read.");
 					pauseIn(false, true);
-				}else {
-					mDestIn += r;
+				} else {
+					onDestIn(r);
 				}
 			}
 
-			if ((opts & SelectionKey.OP_WRITE) > 0) {// dest channel is writable now
+			if (selKey.isValid() && selKey.isWritable()) {// dest channel is writable now
 				Log.d(getTag(), "recv dest OP_WRITE");
 				if (mUpStreamBufferOut != null && mUpStreamBufferOut.position() > 0) {
 					int w = write(mDest, mUpStreamBufferOut);
 					if (w > 0) {
-						if(mUpStreamBufferOut.remaining() > (BUFFER_SIZE >> 1) && mSrcInPaused) {
+						if (mUpStreamBufferOut.remaining() > (BUFFER_SIZE >> 1) && mSrcInPaused) {
 							Log.d(getTag(), "out buffer has enough remaining, open src read in.");
 							pauseIn(true, false);
 						}
-						
-						mDestOut += w;
+
+						onDestOut(w);
 					}
 				}
 
-				if (mUpStreamBufferOut == null || mUpStreamBufferOut.position() <= 0) {// all data have been send,shutdown write event
+				if (mUpStreamBufferOut == null || mUpStreamBufferOut.position() <= 0) {// all data have been
+																						// send,shutdown write event
 					updateOps(false, false, SelectionKey.OP_WRITE);
 				}
 			}
 
-			notifyDestOps(opts);
+			if(selKey.isValid()) {				
+				notifyDestOps(opts);
+			}
 		} else {
 			Log.e(getTag(), "accept an unexpected ops: " + opts);
 		}
 
 		return null;
 	}
-	
+
+	private void onSrcIn(int len) {
+		mSrcIn += len;
+		if(mTrafficListener != null) {
+			mTrafficListener.onSrcIn(len,mSrcIn);
+		}
+	}
+
+	private void onSrcOut(int len) {
+		mSrcOut += len;
+		if(mTrafficListener != null) {
+			mTrafficListener.onSrcOut(len,mSrcOut);
+		}
+	}
+
+	private void onDestIn(int len) {
+		mDestIn += len;
+		if(mTrafficListener != null) {
+			mTrafficListener.onDestIn(len,mDestIn);
+		}
+	}
+
+	private void onDestOut(int len) {
+		mDestOut += len;
+		if(mTrafficListener != null) {
+			mTrafficListener.onDestOut(len,mDestOut);
+		}
+	}
+
 	private void notifySourceOps(int ops) {
-		if(mAlive && mListener != null) {
+		if (mAlive && mListener != null) {
 			mListener.onSourceOpts(ops);
 		}
 	}
-	
+
 	private void notifyDestOps(int ops) {
-		if(mAlive && mListener != null) {
+		if (mAlive && mListener != null) {
 			mListener.onDestOpts(ops);
 		}
 	}
-	
-	private void notifySocketClosed() {
-		if(mAlive && mListener != null) {
-			mListener.onSocketBroken();
+
+	private void notifySocketClosed(Result result) {
+		if (mAlive && mListener != null) {
+			mListener.onSocketBroken(result);
 		}
 	}
 
 	private void notifyRelayFailed() {
-		if(mAlive && mListener != null) {
+		if (mAlive && mListener != null) {
 			mListener.onRelayFailed();
 		}
 	}
 	
+	private void notifyIntrestOpsUpdate(boolean src) {
+		Log.d(getTag(), "notifyIntrestOpsUpdate " + src);
+		if(mAlive && mListener != null) {
+			if(src) {
+				mListener.onSrcOpsUpdate(mSourceKey.interestOps());
+			}else {				
+				mListener.onDestOpsUpdate(mDestKey.interestOps());
+			}
+		}
+	}
+
 	public static interface IChannelEvent {
+
 		void onSourceOpts(int opts);
 
 		void onDestOpts(int opts);
 
-		void onSocketBroken();
+		void onSocketBroken(Result result);
 
 		void onRelayFailed();
+		
+		void onSrcOpsUpdate(int ops);
+		
+		void onDestOpsUpdate(int ops);
+	}
+
+	public static interface ITrafficEvent {
+		void onSrcIn(int len,long total);
+
+		void onSrcOut(int len,long total);
+
+		void onDestIn(int len,long total);
+
+		void onDestOut(int len,long total);
+		
 	}
 
 }

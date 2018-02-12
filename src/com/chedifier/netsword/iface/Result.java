@@ -1,4 +1,4 @@
-package com.chedifier.netsword.socks5;
+package com.chedifier.netsword.iface;
 
 public enum Result {
 	
@@ -9,7 +9,10 @@ public enum Result {
 	E_S5_CONN_BUILD_CONN_INFO_FAILED(4,"build conn info failed."),
 	E_S5_SOCKET_ERROR_VERIFY(5,"socket error while verifing"),
 	E_S5_SOCKET_ERROR_CONN(6,"socket error while connectting"),
-	E_S5_SOCKET_ERROR_TRANS(7,"socket error while transportinging");
+	E_S5_SOCKET_ERROR_TRANS(7,"socket error while transportinging"),
+	E_S5_BIND_PROXY_FAILED(8,"bind proxy failed."),
+	E_S5_SOCKET_READ_FAILED(9,"sc read failed"),
+	E_S5_SOCKET_WRITE_FAILED(10,"sc write failed");
 	
 	private int type;
 	private String msg;

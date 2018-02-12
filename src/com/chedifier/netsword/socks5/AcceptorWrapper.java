@@ -4,6 +4,7 @@ import java.nio.channels.SelectionKey;
 
 import com.chedifier.netsword.base.ObjectPool;
 import com.chedifier.netsword.base.ObjectPool.IConstructor;
+import com.chedifier.netsword.iface.Result;
 
 public class AcceptorWrapper {
 	

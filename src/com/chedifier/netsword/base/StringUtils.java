@@ -71,4 +71,15 @@ public class StringUtils {
 		}
 		return def;
 	}
+	
+	public static String toString(Object... objects) {
+		StringBuilder sb = new StringBuilder();
+		if(objects != null) {
+			for(Object o:objects) {
+				sb.append(o).append("##");
+			}
+		}
+		
+		return sb.toString();
+	}
 }

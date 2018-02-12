@@ -1,45 +1,235 @@
 package com.chedifier.netsword;
 
-import com.chedifier.netsword.base.JobScheduler;
 import com.chedifier.netsword.base.Log;
-import com.chedifier.netsword.base.StringUtils;
-import com.chedifier.netsword.crash.CrashHandler;
-import com.chedifier.netsword.socks5.Configuration;
-import com.chedifier.netsword.socks5.SProxy;
+import com.chedifier.netsword.iface.IProxyListener;
+import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.SProxyIface;
+import com.chedifier.netsword.swing.ConnsTableModel.COLUMN;
+import com.chedifier.netsword.swing.SwordUI;
 
-public class Socks5 {
-	
+public class Socks5 implements IProxyListener{
+
 	private static final String TAG = "SOCKS5";
+
+	private SwordUI mSwordUI;
+	private SProxyIface mProxy;
 	
-	public static void main(String[] args){
+	private int mForceServer = 0;
+	
+	private Socks5(String[] args) {
 		
-		CrashHandler.init();
-		JobScheduler.init();
+		parseArgs(args);
 		
-		Log.setLogLevel(Configuration.getConfigInt(Configuration.LOG_LEVL, 0));
-		Log.setLogDir(Configuration.getConfig(Configuration.LOG_PATH, "./socks5/log"));
-		
-		startSProxy();
-		
-		Log.dumpLog2File();
+		mSwordUI = SwordUI.build();
+		mSwordUI.show();
+
+		mProxy = SProxyIface.start("./Socks5/setting.txt", this, mForceServer);
 	}
 	
-	private static void startSProxy() {
-		boolean isServer = Configuration.getConfigInt(Configuration.IS_SERVER, 1) == 1;
-		if(isServer) {
-			int port = Configuration.getConfigInt(Configuration.SERVER_PORT, 8668);
-			SProxy.createServer(port).start();
-		}else {
-			String server_host = Configuration.getConfig(Configuration.SERVER_ADDR,"");
-			int server_port = Configuration.getConfigInt(Configuration.SERVER_PORT, 0);
-			int port = Configuration.getConfigInt(Configuration.LOCAL_PORT, 8667);
-			
-			if(StringUtils.isEmpty(server_host) || server_port == 0) {
-				Log.e(TAG, "server host or port is not configed correct,check settings.txt.");
-				return;
+	public static void main(String[] args) {
+		new Socks5(args);
+	}
+	
+	private void parseArgs(String[] args) {
+		if(args != null) {
+			for(String s:args) {
+				if("s".equals(s)) {
+					mForceServer = 1;
+				}else if("l".equals(s)) {
+					mForceServer = -1;
+				}
 			}
-			
-			SProxy.createLocal(port, server_host, server_port).start();
 		}
 	}
+
+	@Override
+	public Object onMessage(int msgId, Object... params) {
+		switch (msgId) {
+			case IProxyListener.PROXY_START:{
+				boolean isLocal = false;
+				if(params.length > 0 && params[0] instanceof Boolean) {
+					isLocal = (boolean)params[0];
+					mSwordUI.setServer(isLocal);
+				}
+				
+				if(params.length > 1 && params[1] instanceof Integer) {
+					mSwordUI.setLocalPort((int)params[1]);
+				}
+				
+				if(params.length > 2 && params[2] instanceof String) {
+					mSwordUI.setProxyHost((String)params[2]);
+				}
+				
+				if(params.length > 3 && params[3] instanceof Integer) {
+					mSwordUI.setProxyPort((int)params[3]);
+				}
+				
+				
+				break;
+			}
+					
+			case IProxyListener.PROXY_STOP:{
+				
+				break;
+			}
+			
+			case IProxyListener.ERROR:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof Result) {
+							Result result = (Result)params[1];
+							mSwordUI.updateConn(id, COLUMN.ERR, result.getMessage());
+						}
+					}
+				}
+				break;
+			}
+			
+			case IProxyListener.RECV_CONN:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						mSwordUI.addConn(id);
+						if(params.length > 1 && params[1] instanceof String) {
+							String client = (String)params[1];
+							mSwordUI.updateConn(id, COLUMN.CLIENT, client);
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			case IProxyListener.STATE_UPDATE:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof Integer) {
+							int newState = (int)params[1];
+							mSwordUI.updateConn(id, COLUMN.STATE, newState);
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			case IProxyListener.SPEED:{
+				
+				break;
+			}
+			
+			case IProxyListener.SRC_IN:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof Long) {
+							long val = (long)params[1];
+							mSwordUI.updateConn(id, COLUMN.SRC_IN, val);
+						}
+					}
+				}
+				break;
+			}
+			
+			case IProxyListener.SRC_OUT:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof Long) {
+							long val = (long)params[1];
+							mSwordUI.updateConn(id, COLUMN.SRC_OUT, val);
+						}
+					}
+				}
+				break;
+			}
+			
+			case IProxyListener.DEST_IN:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof Long) {
+							long val = (long)params[1];
+							mSwordUI.updateConn(id, COLUMN.DEST_IN, val);
+						}
+					}
+				}
+				break;
+			}
+			
+			case IProxyListener.DEST_OUT:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof Long) {
+							long val = (long)params[1];
+							mSwordUI.updateConn(id, COLUMN.DEST_OUT, val);
+						}
+					}
+				}
+				break;
+			}
+			
+			case IProxyListener.CONN_INFO:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof String) {
+							String ip = (String)params[1];
+							mSwordUI.updateConn(id, COLUMN.IP, ip);
+						}
+						
+						if(params.length > 2 && params[2] instanceof String) {
+							String domain = (String)params[2];
+							mSwordUI.updateConn(id, COLUMN.DOMAIN, domain);
+						}
+						
+						if(params.length > 3 && params[3] instanceof Integer) {
+							int port = (Integer)params[3];
+							mSwordUI.updateConn(id, COLUMN.PORT, port);
+						}
+					}
+				}
+				break;
+			}
+			
+			case IProxyListener.SRC_INTRS_OPS:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof Integer) {
+							int ops = (int)params[1];
+							Log.d(TAG, "onMessage src ops " + ops);
+							mSwordUI.updatePortOps(id, true, ops);
+						}
+					}
+				}
+				break;
+			}
+			
+			case IProxyListener.DEST_INTRS_OPS:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Integer) {
+						int id = (int)params[0];
+						if(params.length > 1 && params[1] instanceof Integer) {
+							int ops = (int)params[1];
+							Log.d(TAG, "onMessage dest ops " + ops);
+							mSwordUI.updatePortOps(id, false, ops);
+						}
+					}
+				}
+				break;
+			}
+			
+			default:break;
+		}
+		
+		return null;
+	}
+
+	
+
+	
 }

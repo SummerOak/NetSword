@@ -12,6 +12,8 @@ import com.chedifier.netsword.base.NetUtils;
 import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.cipher.Cipher;
 import com.chedifier.netsword.cipher.Cipher.DecryptResult;
+import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.SProxyIface;
 
 public class S5ConnStage extends AbsS5Stage{
 	private ConnInfo mConnInfo = new ConnInfo();
@@ -24,6 +26,8 @@ public class S5ConnStage extends AbsS5Stage{
 	public void start() {
 		Log.r(getTag(), "S5ConnStage start>>>");
 		super.start();
+		
+		notifyState(SProxyIface.STATE.CONN);
 	}
 
 	@Override
@@ -41,7 +45,7 @@ public class S5ConnStage extends AbsS5Stage{
 				int result = buildConnInfo(mConnInfo,buffer.array(), 0, buffer.position());
 				if(result > 0){
 					Log.d(getTag(), "recv conn info success. " + mConnInfo);
-					
+					notifyConnInfo();
 					if((mConnInfo.connCmd&0xFF) != 0x01 && (mConnInfo.connCmd&0xFF) != 0x02) {
 						Log.e(getTag(), "this conn cmd is not support now: " + mConnInfo.connCmd);
 						notifyError(Result.E_S5_SOCKET_ERROR_CONN);
@@ -67,6 +71,7 @@ public class S5ConnStage extends AbsS5Stage{
 					Log.i(getTag(),"recv conn info: " + StringUtils.toRawString(origin));
 					int buildConnInfoResult = buildConnInfo(mConnInfo,origin, 0, origin.length);
 					if(buildConnInfoResult > 0) {
+						notifyConnInfo();
 						Log.d(getTag(), "build conn info success.");
 						InetSocketAddress remoteAddr = buildRemoteAddress(mConnInfo);
 						Log.d(getTag(), "build remote address: " + remoteAddr);
@@ -75,6 +80,7 @@ public class S5ConnStage extends AbsS5Stage{
 							SocketChannel remoteChannel = NetUtils.bindSServer(remoteAddr);
 							Log.d(getTag(), "bind to remote return " + remoteChannel);
 							if(remoteChannel != null) {
+								mConnInfo.netAddr = remoteAddr;
 								getChannel().setDest(remoteChannel);
 								ByteBuffer rep = ByteBuffer.wrap(new byte[1024]);
 								byte addrType = mConnInfo.addrInfo.addrtp;
@@ -154,7 +160,8 @@ public class S5ConnStage extends AbsS5Stage{
 	}
 	
 	@Override
-	public void onSocketBroken() {
+	public void onSocketBroken(Result result) {
+		notifyError(result);
 		notifyError(Result.E_S5_SOCKET_ERROR_CONN);
 	}
 
@@ -236,11 +243,42 @@ public class S5ConnStage extends AbsS5Stage{
 		
 		return 0;
 	}
+	
+	private void notifyConnInfo() {
+		ICallback callback = getCallback();
+		if(callback != null && mConnInfo != null) {
+			String domain = "";
+			String ip = "";
+			int port = 0;
+			
+			AddrInfo addrInfo = mConnInfo.addrInfo;
+			if(addrInfo != null) {
+				if(addrInfo.addrtp == AddrInfo.ADDR_DOMAIN) {					
+					domain = StringUtils.toString(addrInfo.addr);
+				}else {
+					ip = StringUtils.toRawString(addrInfo.addr);
+				}
+				
+				port = mConnInfo.addrInfo.port;
+			}
+			
+			if(mConnInfo.netAddr != null && !mConnInfo.netAddr.isUnresolved()) {
+				if(StringUtils.isEmpty(domain)) {
+					domain = mConnInfo.netAddr.getHostString();
+				}
+				
+				if(StringUtils.isEmpty(ip) && mConnInfo.netAddr.getAddress() != null) {
+					ip = mConnInfo.netAddr.getAddress().getHostAddress();
+				}
+			}
+			callback.onConnInfo(ip, domain, port);
+		}
+	}
 
 	private final class ConnInfo{
 		private byte connCmd;
 		private AddrInfo addrInfo;
-		private InetAddress netAddr;
+		private InetSocketAddress netAddr;
 		
 		@Override
 		public String toString() {
@@ -249,6 +287,11 @@ public class S5ConnStage extends AbsS5Stage{
 	}
 	
 	private final class AddrInfo{
+		
+		public static final int ADDR_DOMAIN 	= 0x03;
+		public static final int ADDR_IPV4  	= 0x01;
+		public static final int ADDR_IPV6 	= 0x04;
+		
 		private byte[] addr;
 		private byte addrtp;
 		
@@ -258,7 +301,7 @@ public class S5ConnStage extends AbsS5Stage{
 		@Override
 		public String toString() {
 			return "ip: " + (addr == null? "null":
-					(addrtp==0x03?StringUtils.toRawString(addr, addr.length):
+					(addrtp!=0x03?StringUtils.toRawString(addr, addr.length):
 						StringUtils.toString(addr, addr.length))) + 
 					" port " + port;
 		}

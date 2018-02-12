@@ -15,13 +15,16 @@ public class Socks5 implements IProxyListener{
 	private SProxyIface mProxy;
 	
 	private int mForceServer = 0;
+	private boolean mNonUI = false;
 	
 	private Socks5(String[] args) {
 		
 		parseArgs(args);
 		
-		mSwordUI = SwordUI.build();
-		mSwordUI.show();
+		if(!mNonUI) {
+			mSwordUI = SwordUI.build();
+			mSwordUI.show();
+		}
 
 		mProxy = SProxyIface.start("./Socks5/setting.txt", this, mForceServer);
 	}
@@ -31,12 +34,15 @@ public class Socks5 implements IProxyListener{
 	}
 	
 	private void parseArgs(String[] args) {
+		
 		if(args != null) {
 			for(String s:args) {
 				if("s".equals(s)) {
 					mForceServer = 1;
 				}else if("l".equals(s)) {
 					mForceServer = -1;
+				}else if("nui".equals(s)) {
+					mNonUI = true;
 				}
 			}
 		}
@@ -44,6 +50,10 @@ public class Socks5 implements IProxyListener{
 
 	@Override
 	public Object onMessage(int msgId, Object... params) {
+		if(mSwordUI == null) {
+			return null;
+		}
+		
 		switch (msgId) {
 			case IProxyListener.PROXY_START:{
 				boolean isLocal = false;

@@ -456,7 +456,7 @@ public class SSockChannel implements IAcceptor {
 						updateOps(false, true, SelectionKey.OP_READ);
 						Log.r(getTag(), "bind proxy success!");
 					}
-				} catch (IOException e) {
+				} catch (Throwable e) {
 					ExceptionHandler.handleException(e);
 					Log.e(getTag(), "conn to proxy failed");
 					notifySocketClosed(Result.E_S5_BIND_PROXY_FAILED);

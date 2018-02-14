@@ -10,6 +10,7 @@ import com.chedifier.netsword.socks5.Configuration;
 public class Cipher {
 	private static final String TAG = "Cipher";
 	private static IProguarder sP = new ShiftProguarder();
+	private static IProguarder sP2 = new PaddingProguarder();
 	
 	private static final int BLOCK_SIZE = 255;
 	private static int sChunkSize = Configuration.DEFAULT_CHUNKSIZE;
@@ -26,7 +27,7 @@ public class Cipher {
 	public static byte[] encrypt(byte[] origin,int offset ,int len) {
 		if(origin != null && ArrayUtils.isValidateRange(origin.length, offset, len)) {
 			
-			ByteBuffer buffer = ByteBuffer.allocate(len<<2);
+			ByteBuffer buffer = ByteBuffer.allocate(len + ((len/sChunkSize + 1)<<8));
 			int s = 0;
 			while(s < len) {
 				int l = len - s;
@@ -34,7 +35,8 @@ public class Cipher {
 					l = sChunkSize;
 				}
 				
-				byte[] encrypted = sP.encode(origin, offset+s, l);
+				byte[] encrypted1 = sP.encode(origin, offset+s, l);
+				byte[] encrypted = sP2.encode(encrypted1);
 				if(encrypted == null || encrypted.length <= 0) {
 					Log.e(TAG, "encrypt>> block failed." + StringUtils.toRawString(origin,offset+s,l));
 					return null;
@@ -52,6 +54,7 @@ public class Cipher {
 			
 			byte[] result = new byte[buffer.position()];
 			System.arraycopy(buffer.array(), 0, result, 0, result.length);
+//			Log.t(TAG, "encrypt>> data: " + "len " + result.length + " > " + StringUtils.toRawString(result));
 			return result;
 		}else {
 			Log.e(TAG, "encrypt>> invalidate input.");
@@ -72,8 +75,10 @@ public class Cipher {
 //		System.arraycopy(packs, offset, rr.origin, 0, len);
 //		return rr;
 		
+//		Log.t(TAG, "decrypt " + len + ": " + StringUtils.toRawString(packs, offset, len));
+		
 		ByteBuffer buffer = ByteBuffer.allocate(len);
-		byte[] data = new byte[sChunkSize/BLOCK_SIZE + sChunkSize + 1];
+		byte[] data = new byte[sChunkSize/BLOCK_SIZE + sChunkSize + 1 + 255];
 		
 		int l = 0;//location of packs
 		int tl = 0;
@@ -94,7 +99,8 @@ public class Cipher {
 			}
 			
 			if(b > 0 && d < BLOCK_SIZE) {
-				byte[] temp = sP.decode(data, 0, b);
+				byte[] temp1 = sP2.decode(data, 0, b);
+				byte[] temp = sP.decode(temp1);
 				if(temp == null || temp.length <= 0) {
 					Log.e(TAG, "decrypt>>> decode block failed: " + StringUtils.toRawString(data,0,b));
 					return null;

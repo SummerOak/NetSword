@@ -32,7 +32,7 @@ public class ShiftProguarder implements IProguarder{
 		}
 		
 		byte[] result = new byte[len + 1];
-		byte s = 6;//(byte)(1 + (int)(Math.random() * 7));
+		byte s = (byte)(1 + (int)(Math.random() * 7));
 		byte m = (byte)(((1<<s)-1) << (8-s));
 		Log.i(TAG,"shift " + s + " msk " + m);
 		

@@ -122,7 +122,7 @@ public class Cipher {
 			return result;
 		}
 		
-		Log.e(TAG, "decrypt>>> decode packs failed. ");
+		Log.e(TAG, "decrypt>>> decode packs failed. " + " processed " + l + "," + tl + " total len " + len);
 		
 		return null;
 	}

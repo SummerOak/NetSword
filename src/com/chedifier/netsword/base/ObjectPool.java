@@ -3,7 +3,7 @@ package com.chedifier.netsword.base;
 import java.util.LinkedList;
 
 public class ObjectPool<T> {
-	
+	private static final String TAG = "ObjectPool";
 	private LinkedList<T> mPool;
 	private IConstructor<T> mConstructor;
 	private int mSize;
@@ -20,12 +20,16 @@ public class ObjectPool<T> {
 		}
 		
 		synchronized (mPool) {
+			T e = null;
 			if(mPool.isEmpty()) {
-				return mConstructor.newInstance(params);
+				e = mConstructor.newInstance(params);
+//				Log.d(TAG,"obtain-create " + System.identityHashCode(e));
+			}else{
+				e = mPool.removeFirst();
+				mConstructor.initialize(e,params);
+//				Log.d(TAG,"obtain-reuse " + System.identityHashCode(e));
 			}
 			
-			T e = mPool.removeFirst();
-			mConstructor.initialize(e,params);
 			return e;
 		}
 	}
@@ -33,7 +37,8 @@ public class ObjectPool<T> {
 	public void release(T o) {
 		if(o != null) {
 			synchronized (mPool) {
-				if(mPool.size() < mSize) {
+				if(mPool.size() < mSize && !mPool.contains(o)) {
+//					Log.d(TAG,"release " + System.identityHashCode(o));
 					mPool.add(o);
 				}
 			}

@@ -13,10 +13,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 
+import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
 
 
 public class SwordUI {
+	private static final String TAG = "SwordUI";
 	
 	private static final int WIDNOW_WIDTH = 800;
 	private static final int WINDOW_HEIGHT = 400;
@@ -133,6 +135,7 @@ public class SwordUI {
 	}
 	
 	public void updateConn(int id,int column,Object value) {
+		Log.d(TAG, "updateConn " + id + " column " + column + " value " + value);
 		if(mConnModel != null) {			
 			mConnModel.updateField(id, column, value);
 		}

@@ -9,6 +9,7 @@ import java.nio.channels.SocketChannel;
 import com.chedifier.netsword.base.ExceptionHandler;
 import com.chedifier.netsword.base.IOUtils;
 import com.chedifier.netsword.base.Log;
+import com.chedifier.netsword.base.NetUtils;
 import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.cipher.Cipher;
 import com.chedifier.netsword.cipher.Cipher.DecryptResult;
@@ -133,7 +134,7 @@ public class SSockChannel implements IAcceptor {
 			updateOps(!up, true, SelectionKey.OP_WRITE);
 			if (r == -1) {
 				Log.e(getTag(), "relay " + up + ">>> out buffer is full filled. pause reading in.");
-				pauseIn(up, true);
+				pauseOrResume(up, true);
 			}
 		}
 		return r;
@@ -155,7 +156,7 @@ public class SSockChannel implements IAcceptor {
 			} else {
 				Log.e(getTag(), "writeToBuffer" + up + ">>> out buffer is full filled,need " + data.length + " remain "
 						+ buffer.remaining() + " pause data read in.");
-				pauseIn(up, true);
+				pauseOrResume(up, true);
 			}
 		}
 
@@ -278,7 +279,7 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	private void updateOps(boolean src, boolean add, int opts) {
-		Log.t(getTag(), "updateOps " + (add?"enable ":"disable ") + (src?" src " :" dest ") + opts);
+		Log.t(getTag(), "updateOps " + (add?"enable ":"disable ") + (src?" src " :" dest ") + opts + ": " + NetUtils.getOpsDest(opts));
 		SelectionKey key = src ? mSourceKey : mDestKey;
 		if (key != null) {
 			int oldOps = key.interestOps();
@@ -302,7 +303,7 @@ public class SSockChannel implements IAcceptor {
 		notifyIntrestOpsUpdate(src);
 	}
 
-	private void pauseIn(boolean src, boolean pause) {
+	private void pauseOrResume(boolean src, boolean pause) {
 		updateOps(src, !pause, SelectionKey.OP_READ);
 		if (src) {
 			mSrcInPaused = pause;
@@ -329,6 +330,7 @@ public class SSockChannel implements IAcceptor {
 		IOUtils.safeClose(mDest);
 		IOUtils.safeClose(mSource);
 		mDest = mSource = null;
+		mConnId = -1;
 
 		if (mUpStreamBufferIn != null) {
 			mUpStreamBufferIn = null;
@@ -408,7 +410,7 @@ public class SSockChannel implements IAcceptor {
 				int r = read(mSource, mUpStreamBufferIn);
 				if (r <= 0) {
 					Log.e(getTag(), "read data in src failed." + r + " block read in.");
-					pauseIn(true, true);
+					pauseOrResume(true, true);
 				} else {
 					onSrcIn(r);
 				}
@@ -422,7 +424,7 @@ public class SSockChannel implements IAcceptor {
 					if (w > 0) {
 						if (mDownStreamBufferOut.remaining() > (BUFFER_SIZE >> 1) && mDestInPaused) {
 							Log.d(getTag(), "out buffer has enough remaining, open dest read in.");
-							pauseIn(false, false);
+							pauseOrResume(false, false);
 						}
 
 						onSrcOut(w);
@@ -469,7 +471,7 @@ public class SSockChannel implements IAcceptor {
 				int r = read(mDest, mDownStreamBufferIn);
 				if (r <= 0) {
 					Log.e(getTag(), "read from dest failed," + r + " pause dest read.");
-					pauseIn(false, true);
+					pauseOrResume(false, true);
 				} else {
 					onDestIn(r);
 				}
@@ -482,7 +484,7 @@ public class SSockChannel implements IAcceptor {
 					if (w > 0) {
 						if (mUpStreamBufferOut.remaining() > (BUFFER_SIZE >> 1) && mSrcInPaused) {
 							Log.d(getTag(), "out buffer has enough remaining, open src read in.");
-							pauseIn(true, false);
+							pauseOrResume(true, false);
 						}
 
 						onDestOut(w);
@@ -558,7 +560,7 @@ public class SSockChannel implements IAcceptor {
 	}
 	
 	private void notifyIntrestOpsUpdate(boolean src) {
-		Log.d(getTag(), "notifyIntrestOpsUpdate " + src);
+		Log.d(getTag(), "notifyIntrestOpsUpdate " + (src?"source ":"dest"));
 		if(mAlive && mListener != null) {
 			if(src) {
 				mListener.onSrcOpsUpdate(mSourceKey.interestOps());

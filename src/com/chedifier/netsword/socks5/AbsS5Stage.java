@@ -1,6 +1,7 @@
 package com.chedifier.netsword.socks5;
 
 import com.chedifier.netsword.base.Log;
+import com.chedifier.netsword.base.NetUtils;
 import com.chedifier.netsword.iface.Result;
 import com.chedifier.netsword.socks5.SSockChannel.IChannelEvent;
 
@@ -53,7 +54,7 @@ public abstract class AbsS5Stage implements IChannelEvent{
 	
 	@Override
 	public void onSrcOpsUpdate(int ops) {
-		Log.t(getTag(), "onSrcOpsUpdate " + ops);
+		Log.t(getTag(), "onSrcOpsUpdate " + ops + ": " + NetUtils.getOpsDest(ops));
 		if(mCallback != null) {
 			mCallback.onSrcOpsUpdate(ops);
 		}
@@ -61,7 +62,7 @@ public abstract class AbsS5Stage implements IChannelEvent{
 	
 	@Override
 	public void onDestOpsUpdate(int ops) {
-		Log.t(getTag(), "onDestOpsUpdate " + ops);
+		Log.t(getTag(), "onDestOpsUpdate " + ops + ": " + NetUtils.getOpsDest(ops));
 		if(mCallback != null) {
 			mCallback.onDestOpsUpdate(ops);
 		}

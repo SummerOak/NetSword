@@ -2,6 +2,7 @@ package com.chedifier.netsword.base;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 public class NetUtils {
@@ -45,6 +46,29 @@ public class NetUtils {
 		}
 		
 		return null;
+	}
+	
+	public static final String getOpsDest(int ops) {
+		String dest = "";
+		if((ops&SelectionKey.OP_ACCEPT) > 0) {
+			dest += "accept&";
+		}
+		if((ops&SelectionKey.OP_CONNECT) > 0) {
+			dest += "connect&";
+		}
+		
+		if((ops&SelectionKey.OP_READ) > 0) {
+			dest += "read&";
+		}
+		if((ops&SelectionKey.OP_WRITE) > 0) {
+			dest += "write&";
+		}
+		
+		if(StringUtils.isEmpty(dest)) {
+			dest = "null";
+		}
+		
+		return dest;
 	}
 	
 }

@@ -128,15 +128,32 @@ public class ConnsTableModel extends AbstractTableModel{
 	}
 	
 	public void updateField(int id,int fieldIdx,Object value) {
+		Log.d(TAG, "updateField " + id + " fieldIdx " + fieldIdx + " value " + value);
 		ConnItem item = getConnById(id);
 		if(item != null) {
 			item.setField(fieldIdx, value);
 			
 			int r = getRow(id);
+			Log.d(TAG, "update row " + r);
 			if(r >= 0) {
-				fireTableCellUpdated(r, fieldIdx);
+				if(needUpdateTotalRow(fieldIdx)) {
+					fireTableRowsUpdated(r, r);
+				}else {					
+					fireTableCellUpdated(r, fieldIdx);
+				}
 			}
+		}else {
+			Log.d(TAG, "not exist item with id " + id);
 		}
+	}
+	
+	private boolean needUpdateTotalRow(int column) {
+		switch(column) {
+		case COLUMN.STATE:
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public void updatePortOps(int id,boolean src,int ops) {
@@ -161,24 +178,30 @@ public class ConnsTableModel extends AbstractTableModel{
 	}
 	
 	public Color getCellBackgroundColor(int r,int c) {
+		ConnItem item = getConnByRow(r);
+		if(item == null) {
+			return null;
+		}
+		
+		if(item.state == STATE.TERMINATE) {
+			return Color.GRAY;
+		}
+		
 		String head = getColumnName(c);
 		if(HEAD_SI.equals(head)) {
-			ConnItem item = getConnByRow(r);
+			
 			if(item != null && (item.srcOps&SelectionKey.OP_READ) == 0) {
 				return Color.RED;
 			}
 		}else if(HEAD_SO.equals(head)){
-			ConnItem item = getConnByRow(r);
 			if(item != null && (item.srcOps&SelectionKey.OP_WRITE) == 0) {
 				return Color.RED;
 			}
 		}else if(HEAD_DI.equals(head)){
-			ConnItem item = getConnByRow(r);
 			if(item != null && (item.destOps&SelectionKey.OP_READ) == 0) {
 				return Color.RED;
 			}
 		}else if(HEAD_DO.equals(head)){
-			ConnItem item = getConnByRow(r);
 			if(item != null && (item.destOps&SelectionKey.OP_WRITE) == 0) {
 				return Color.RED;
 			}

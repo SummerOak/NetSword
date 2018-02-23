@@ -38,7 +38,7 @@ public class SProxy implements IAcceptor{
 	private int mProxyPort;
 	private InetSocketAddress mProxyAddress;
 	
-	private ObjectPool<Relayer> mConnHandlerPool;
+	private ObjectPool<Relayer> mRelayerPool;
 	private volatile long mConnections = 0;
 	private IProxyListener mListener;
 	
@@ -82,7 +82,7 @@ public class SProxy implements IAcceptor{
 			mProxyAddress = new InetSocketAddress(serverHost,serverPort);
 		}
 		
-		mConnHandlerPool = new ObjectPool<Relayer>(new IConstructor<Relayer>() {
+		mRelayerPool = new ObjectPool<Relayer>(new IConstructor<Relayer>() {
 
 			@Override
 			public Relayer newInstance(Object... params) {
@@ -104,7 +104,7 @@ public class SProxy implements IAcceptor{
 	}
 	
 	private synchronized int generateConnectionId() {
-		return ++sConnectionId;
+		return sConnectionId = (++sConnectionId < 0? 0:sConnectionId);
 	}
 
 	public void start() {
@@ -173,6 +173,23 @@ public class SProxy implements IAcceptor{
 		--mConnections;
 		Log.r(TAG, "dec " + mConnections);
 	}
+	
+	@Override
+	public Result accept(SelectionKey selKey,int opt) {
+		if(selKey.isAcceptable()) {
+			Log.d(TAG, "recv a connection...");
+			try {
+				SocketChannel sc = mSocketChannel.accept();
+				if(sc != null) {					
+					mRelayerPool.obtain(sc);
+//					new Relayer(sc);
+				}
+			} catch (Throwable e) {
+				ExceptionHandler.handleException(e);
+			}
+		}
+		return null;
+	}
 
 	private class Relayer implements ICallback,ITrafficEvent,ISpeedListener{
 		
@@ -190,6 +207,11 @@ public class SProxy implements IAcceptor{
 		
 		private void init(SocketChannel conn) {
 			mConnId = generateConnectionId();
+			String clientAddr = (conn.socket() != null && conn.socket().getInetAddress() != null)?conn.socket().getInetAddress().getHostAddress():"unknown";
+			Log.d(getTag(), "receive an conntion " + clientAddr);
+			
+			Messenger.notifyMessage(mListener, IProxyListener.RECV_CONN,mConnId, clientAddr);
+			
 			incConnection();
 			mChannel = new SSockChannel(mSelector,mChannelBufferSize);
 			mChannel.setConnId(mConnId);
@@ -200,11 +222,6 @@ public class SProxy implements IAcceptor{
 			mChannel.setSource(conn);
 			mChannel.setTrafficListener(this);
 			mMetrics = new SpeedMetrics(this);
-			
-			String clientAddr = (conn.socket() != null && conn.socket().getInetAddress() != null)?conn.socket().getInetAddress().getHostAddress():"unknown";
-			Log.d(getTag(), "receive an conntion " + clientAddr);
-			
-			Messenger.notifyMessage(mListener, IProxyListener.RECV_CONN,mConnId, clientAddr);
 			
 			if(mIsLocal) {
 				try {
@@ -223,11 +240,14 @@ public class SProxy implements IAcceptor{
 		}
 		
 		private void release() {
+			Log.d(TAG, "release conn " + mConnId);
 			mChannel.destroy();
-			mConnHandlerPool.release(this);
 			decConnection();
 			
 			Messenger.notifyMessage(mListener, IProxyListener.STATE_UPDATE, mConnId, SProxyIface.STATE.TERMINATE);
+			
+			mConnId = -1;
+			mRelayerPool.release(this);
 		}
 		
 		@Override
@@ -289,23 +309,5 @@ public class SProxy implements IAcceptor{
 			Messenger.notifyMessage(mListener,IProxyListener.DEST_INTRS_OPS, mConnId, ops);
 		}
 	}
-	
-
-	@Override
-	public Result accept(SelectionKey selKey,int opt) {
-		if(selKey.isAcceptable()) {
-			Log.d(TAG, "recv a connection...");
-			try {
-				SocketChannel sc = mSocketChannel.accept();
-				if(sc != null) {					
-					mConnHandlerPool.obtain(sc);
-				}
-			} catch (Throwable e) {
-				ExceptionHandler.handleException(e);
-			}
-		}
-		return null;
-	}
-	
 
 }

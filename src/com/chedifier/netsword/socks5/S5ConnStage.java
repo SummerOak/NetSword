@@ -12,7 +12,7 @@ import com.chedifier.netsword.base.NetUtils;
 import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.cipher.Cipher;
 import com.chedifier.netsword.cipher.Cipher.DecryptResult;
-import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
 
 public class S5ConnStage extends AbsS5Stage{
@@ -48,7 +48,7 @@ public class S5ConnStage extends AbsS5Stage{
 					notifyConnInfo();
 					if((mConnInfo.connCmd&0xFF) != 0x01 && (mConnInfo.connCmd&0xFF) != 0x02) {
 						Log.e(getTag(), "this conn cmd is not support now: " + mConnInfo.connCmd);
-						notifyError(Result.E_S5_SOCKET_ERROR_CONN);
+						notifyError(Error.E_S5_SOCKET_ERROR_CONN);
 						return;
 					}
 					
@@ -60,7 +60,7 @@ public class S5ConnStage extends AbsS5Stage{
 					}
 				}else {
 					Log.e(getTag(), "build conn info failed.");
-					notifyError(Result.E_S5_CONN_BUILD_CONN_INFO_FAILED);
+					notifyError(Error.E_S5_CONN_BUILD_CONN_INFO_FAILED);
 					return;
 				}
 			}else {
@@ -99,17 +99,17 @@ public class S5ConnStage extends AbsS5Stage{
 								}
 							}else {
 								Log.e(getTag(), "bind remote failed: " + remoteAddr);
-								notifyError(Result.E_S5_CONN_BIND_REMOTE);
+								notifyError(Error.E_S5_CONN_BIND_REMOTE);
 								return;
 							}
 						}else {
 							Log.e(getTag(), "receive wrong connect request.");
-							notifyError(Result.E_S5_CONN_BIND_REMOTE);
+							notifyError(Error.E_S5_CONN_BIND_REMOTE);
 							return;
 						}
 					}else if(buildConnInfoResult < 0) {
 						Log.e(getTag(), "build conn info failed.");
-						notifyError(Result.E_S5_CONN_BUILD_CONN_INFO_FAILED);
+						notifyError(Error.E_S5_CONN_BUILD_CONN_INFO_FAILED);
 						return;
 					}
 				}
@@ -160,9 +160,9 @@ public class S5ConnStage extends AbsS5Stage{
 	}
 	
 	@Override
-	public void onSocketBroken(Result result) {
+	public void onSocketBroken(Error result) {
 		notifyError(result);
-		notifyError(Result.E_S5_SOCKET_ERROR_CONN);
+		notifyError(Error.E_S5_SOCKET_ERROR_CONN);
 	}
 
 	private int buildConnInfo(ConnInfo connInfo,byte[] data,int offset,int len) {

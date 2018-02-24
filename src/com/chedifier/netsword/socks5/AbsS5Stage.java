@@ -2,7 +2,7 @@ package com.chedifier.netsword.socks5;
 
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.NetUtils;
-import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.socks5.SSockChannel.IChannelEvent;
 
 public abstract class AbsS5Stage implements IChannelEvent{
@@ -48,7 +48,7 @@ public abstract class AbsS5Stage implements IChannelEvent{
 	}
 	
 	@Override
-	public void onRelayFailed() {
+	public void onRelayFailed(Error result) {
 		
 	}
 	
@@ -91,7 +91,7 @@ public abstract class AbsS5Stage implements IChannelEvent{
 		}
 	}
 
-	protected void notifyError(Result result) {
+	protected void notifyError(Error result) {
 		if(mCallback != null) {
 			mCallback.onError(result);
 		}
@@ -99,7 +99,7 @@ public abstract class AbsS5Stage implements IChannelEvent{
 	
 	public static interface ICallback{
 		void onStateChange(int newState,Object... params);
-		void onError(Result result);
+		void onError(Error result);
 		void onConnInfo(String ip,String domain,int port);
 		void onSrcOpsUpdate(int ops);
 		void onDestOpsUpdate(int ops);

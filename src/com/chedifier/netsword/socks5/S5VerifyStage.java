@@ -7,7 +7,7 @@ import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.cipher.Cipher;
 import com.chedifier.netsword.cipher.Cipher.DecryptResult;
-import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
 
 public class S5VerifyStage extends AbsS5Stage{
@@ -64,7 +64,7 @@ public class S5VerifyStage extends AbsS5Stage{
 					}
 				}else if(verifyResult < 0){
 					Log.e(getTag(), "verify socks5 methos failed.");
-					notifyError(Result.E_S5_VERIFY_FAILED);
+					notifyError(Error.E_S5_VERIFY_FAILED);
 					return;
 				}
 			}else {
@@ -86,7 +86,7 @@ public class S5VerifyStage extends AbsS5Stage{
 						}
 					}else if(verifyResult < 0){
 						Log.e(getTag(), "verify socks5 methos failed.");
-						notifyError(Result.E_S5_VERIFY_FAILED);
+						notifyError(Error.E_S5_VERIFY_FAILED);
 						return;
 					}
 				}
@@ -123,9 +123,9 @@ public class S5VerifyStage extends AbsS5Stage{
 	}
 	
 	@Override
-	public void onSocketBroken(Result result) {
+	public void onSocketBroken(Error result) {
 		notifyError(result);
-		notifyError(Result.E_S5_SOCKET_ERROR_VERIFY);
+		notifyError(Error.E_S5_SOCKET_ERROR_VERIFY);
 	}
 	
 }

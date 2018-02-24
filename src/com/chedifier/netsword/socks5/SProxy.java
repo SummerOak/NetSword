@@ -14,7 +14,7 @@ import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.ObjectPool;
 import com.chedifier.netsword.base.ObjectPool.IConstructor;
 import com.chedifier.netsword.iface.IProxyListener;
-import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
 import com.chedifier.netsword.metrics.ISpeedListener;
 import com.chedifier.netsword.metrics.SpeedMetrics;
@@ -120,7 +120,7 @@ public class SProxy implements IAcceptor{
 			Log.e(TAG, "start failed." + t.getMessage());
 			ExceptionHandler.handleException(t);
 			IOUtils.safeClose(mSocketChannel);
-			Messenger.notifyMessage(mListener, IProxyListener.ERROR, 0,Result.E_LOCAL_SOCKET_BUILD_FAILED);
+			Messenger.notifyMessage(mListener, IProxyListener.ERROR, 0,Error.E_LOCAL_SOCKET_BUILD_FAILED);
 			return;
 		}
 		
@@ -167,20 +167,22 @@ public class SProxy implements IAcceptor{
 	private synchronized void incConnection() {
 		++mConnections;
 		Log.r(TAG, "inc " + mConnections);
+		Messenger.notifyMessage(mListener, IProxyListener.ALIVE_NUM, mConnections);
 	}
 	
 	private synchronized void decConnection() {
 		--mConnections;
 		Log.r(TAG, "dec " + mConnections);
+		Messenger.notifyMessage(mListener, IProxyListener.ALIVE_NUM, mConnections);
 	}
 	
 	@Override
-	public Result accept(SelectionKey selKey,int opt) {
+	public Error accept(SelectionKey selKey,int opt) {
 		if(selKey.isAcceptable()) {
 			Log.d(TAG, "recv a connection...");
 			try {
 				SocketChannel sc = mSocketChannel.accept();
-				if(sc != null) {					
+				if(sc != null) {		
 					mRelayerPool.obtain(sc);
 //					new Relayer(sc);
 				}
@@ -196,6 +198,7 @@ public class SProxy implements IAcceptor{
 		private SSockChannel mChannel;
 		private SpeedMetrics mMetrics;
 		private int mConnId;
+		private boolean mAlive;
 		
 		private Relayer(SocketChannel conn) {
 			init(conn);
@@ -232,15 +235,22 @@ public class SProxy implements IAcceptor{
 				} catch (Throwable e) {
 					Log.e(getTag(), "failed to connect to proxy server.");
 					ExceptionHandler.handleException(e);
-					Messenger.notifyMessage(mListener, IProxyListener.ERROR,mConnId, Result.E_S5_BIND_PROXY_FAILED);
+					Messenger.notifyMessage(mListener, IProxyListener.ERROR,mConnId, Error.E_S5_BIND_PROXY_FAILED);
 					release();
 					return;
 				}
 			}
+			
+			mAlive = true;
 		}
 		
 		private void release() {
 			Log.d(TAG, "release conn " + mConnId);
+			if(!mAlive) {
+				return;
+			}
+			
+			mAlive = false;
 			mChannel.destroy();
 			decConnection();
 			
@@ -256,7 +266,7 @@ public class SProxy implements IAcceptor{
 		}
 		
 		@Override
-		public void onError(Result result) {
+		public void onError(Error result) {
 			Log.e(getTag(), result.getMessage());
 			
 			Messenger.notifyMessage(mListener,IProxyListener.ERROR,mConnId, result);

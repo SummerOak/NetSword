@@ -14,39 +14,28 @@ public class ConnsTableModel extends AbstractTableModel{
 	private static final String TAG = "ConnsTableModel";
 	private static final long serialVersionUID = 1L;
 	
-	private static final String HEAD_ID 		= "id";
-	private static final String HEAD_CLIENT 	= "client";
-	private static final String HEAD_DOMAIN 	= "domain";
-	private static final String HEAD_IP 		= "ip";
-	private static final String HEAD_PORT 	= "port";
-	private static final String HEAD_STATE 	= "state";
-	private static final String HEAD_SI 		= "si";
-	private static final String HEAD_SO 		= "so";
-	private static final String HEAD_DI 		= "di";
-	private static final String HEAD_DO 		= "do";
-	private static final String HEAD_ERR 	= "err";
-	
-	private static final String[] HEADS = new String[] {HEAD_ID,HEAD_CLIENT,HEAD_DOMAIN,HEAD_IP,HEAD_PORT,HEAD_STATE,HEAD_SI,HEAD_SO,HEAD_DI,HEAD_DO,HEAD_ERR};
-	private static final HashMap<String,Head> sHeadIdx = new HashMap<>();
+	private static final int[] HEADS = new int[] {COLUMN.ID,COLUMN.CLIENT,COLUMN.DOMAIN,COLUMN.PORT,COLUMN.STATE,COLUMN.SRC_IN,COLUMN.SRC_OUT,COLUMN.DEST_IN,COLUMN.DEST_OUT,COLUMN.ERR};
+	private static final HashMap<Integer,Head> sHeadIdx = new HashMap<>();
 	static {
-		sHeadIdx.put(HEAD_ID, 		new Head(HEAD_ID,		int.class,		30));
-		sHeadIdx.put(HEAD_CLIENT, 	new Head(HEAD_CLIENT,	String.class,	100));
-		sHeadIdx.put(HEAD_DOMAIN, 	new Head(HEAD_DOMAIN,	String.class,	200));
-		sHeadIdx.put(HEAD_IP, 		new Head(HEAD_IP,		String.class,	100));
-		sHeadIdx.put(HEAD_PORT, 		new Head(HEAD_PORT,		int.class,		50));
-		sHeadIdx.put(HEAD_STATE, 	new Head(HEAD_STATE,		String.class		));
-		sHeadIdx.put(HEAD_SI, 		new Head(HEAD_SI,		long.class,		80));
-		sHeadIdx.put(HEAD_SO, 		new Head(HEAD_SO,		long.class,		80));
-		sHeadIdx.put(HEAD_DI, 		new Head(HEAD_DI,		long.class,		80));
-		sHeadIdx.put(HEAD_DO, 		new Head(HEAD_DO,		long.class,		80));
-		sHeadIdx.put(HEAD_ERR, 		new Head(HEAD_ERR,		String.class		));
+		sHeadIdx.put(COLUMN.ID, 		new Head(COLUMN.ID,			"ID",			int.class,		30));
+		sHeadIdx.put(COLUMN.CLIENT, 	new Head(COLUMN.CLIENT,		"CLIENT",		String.class,	100));
+		sHeadIdx.put(COLUMN.DOMAIN, 	new Head(COLUMN.DOMAIN,		"DOMAIN",		String.class,	200));
+		sHeadIdx.put(COLUMN.IP, 		new Head(COLUMN.IP,			"IP",			String.class,	100));
+		sHeadIdx.put(COLUMN.PORT, 	new Head(COLUMN.PORT,		"PORT",			int.class,		50));
+		sHeadIdx.put(COLUMN.STATE, 	new Head(COLUMN.STATE,		"STATE",			String.class		));
+		sHeadIdx.put(COLUMN.SRC_IN, 	new Head(COLUMN.SRC_IN,		"SI",			long.class,		80));
+		sHeadIdx.put(COLUMN.SRC_OUT, new Head(COLUMN.SRC_OUT,		"SO",			long.class,		80));
+		sHeadIdx.put(COLUMN.DEST_IN, new Head(COLUMN.DEST_IN,		"DI",			long.class,		80));
+		sHeadIdx.put(COLUMN.DEST_OUT, new Head(COLUMN.DEST_OUT,	"DO",			long.class,		80));
+		sHeadIdx.put(COLUMN.ERR, 	new Head(COLUMN.ERR,			"ERR",			String.class		));
 	}
 	
+	private Object mLock = new Object();
 	private HashMap<Integer, ConnItem> mConns = new HashMap<>();
 	private HashMap<Integer,Integer> mRowMapping = new HashMap<>();
 	private HashMap<Integer,Integer> mItemMapping = new HashMap<>();
 	
-	private static final int MAX_ROWS = 50;
+	private static final int MAX_ROWS = 500;
 	
 	public ConnsTableModel() {
 		
@@ -65,7 +54,7 @@ public class ConnsTableModel extends AbstractTableModel{
 
 	@Override
 	public int getRowCount() {
-		synchronized (mConns) {			
+		synchronized (mLock) {			
 			return mConns.size();
 		}
 	}
@@ -167,11 +156,11 @@ public class ConnsTableModel extends AbstractTableModel{
 			
 			Log.t(TAG, "updatePortOps: " + id + " src " + item.srcOps + " dest " + item.destOps + " ops" + ops);
 			
-			String[] columns = null;
+			int[] columns = null;
 			if(src) {
-				columns = new String[] {HEAD_SI,HEAD_SO};
+				columns = new int[] {COLUMN.SRC_IN,COLUMN.SRC_OUT};
 			}else {
-				columns = new String[] {HEAD_DI,HEAD_DO};
+				columns = new int[] {COLUMN.DEST_IN,COLUMN.DEST_OUT};
 			}
 			updateItemUI(id, columns);
 		}
@@ -187,21 +176,20 @@ public class ConnsTableModel extends AbstractTableModel{
 			return Color.GRAY;
 		}
 		
-		String head = getColumnName(c);
-		if(HEAD_SI.equals(head)) {
-			
+		
+		if(HEADS[c] == COLUMN.SRC_IN) {
 			if(item != null && (item.srcOps&SelectionKey.OP_READ) == 0) {
 				return Color.RED;
 			}
-		}else if(HEAD_SO.equals(head)){
+		}else if(HEADS[c] == COLUMN.SRC_OUT){
 			if(item != null && (item.srcOps&SelectionKey.OP_WRITE) == 0) {
 				return Color.RED;
 			}
-		}else if(HEAD_DI.equals(head)){
+		}else if(HEADS[c] == COLUMN.DEST_IN){
 			if(item != null && (item.destOps&SelectionKey.OP_READ) == 0) {
 				return Color.RED;
 			}
-		}else if(HEAD_DO.equals(head)){
+		}else if(HEADS[c] == COLUMN.DEST_OUT){
 			if(item != null && (item.destOps&SelectionKey.OP_WRITE) == 0) {
 				return Color.RED;
 			}
@@ -210,11 +198,11 @@ public class ConnsTableModel extends AbstractTableModel{
 		return null;
 	}
 	
-	private void updateItemUI(int id,String[] columns) {
+	private void updateItemUI(int id,int[] columns) {
 		int row = getRow(id);
 		if(row >= 0) {
 			if(columns != null && columns.length > 0) {
-				for(String head:columns) {
+				for(int head:columns) {
 					int c = getColumnIndex(head);
 					if(c >= 0) {
 						fireTableCellUpdated(row, c);
@@ -226,9 +214,9 @@ public class ConnsTableModel extends AbstractTableModel{
 		}
 	}
 	
-	private int getColumnIndex(String head) {
+	private int getColumnIndex(int id) {
 		for(int i=0;i<HEADS.length;i++) {
-			if(HEADS[i].equals(head)) {
+			if(HEADS[i] == id) {
 				return i;
 			}
 		}
@@ -238,28 +226,38 @@ public class ConnsTableModel extends AbstractTableModel{
 	
 	private void addItem(ConnItem item) {
 		if(item != null) {
-			synchronized (mConns) {			
+			synchronized (mLock) {			
 				mConns.put(item.id, item);
 			}
 		}
 	}
 	
+	public void clear() {
+		synchronized (mLock) {
+			mConns.clear();
+			mItemMapping.clear();
+			mRowMapping.clear();
+		}
+		
+		fireTableDataChanged();
+	}
+	
 	public int getRow(int id) {
-		synchronized (mItemMapping) {
+		synchronized (mLock) {
 			Integer r = mItemMapping.get(id);
 			return r==null?-1:r;
 		}
 	}
 	
 	private void map(int id,int row) {
-		synchronized (mItemMapping) {
+		synchronized (mLock) {
 			mItemMapping.put(id, row);
 			mRowMapping.put(row, id);
 		}
 	}
 	
 	private int getConnId(int row) {
-		synchronized (mRowMapping) {			
+		synchronized (mLock) {			
 			Integer id = mRowMapping.get(row);
 			return id == null?-1:id;
 		}
@@ -270,22 +268,24 @@ public class ConnsTableModel extends AbstractTableModel{
 	}
 	
 	private ConnItem getConnById(int id) {
-		synchronized (mConns) {
+		synchronized (mLock) {
 			ConnItem item = mConns.get(id);
 			return item;
 		}
 	}
 	
 	private static class Head{
+		public int id;
 		public String name;
 		public Class<?> type;
 		public int width = 0;
 		
-		public Head(String name,Class<?> type) {
-			this(name,type,0);
+		public Head(int id,String name,Class<?> type) {
+			this(id,name,type,0);
 		}
 		
-		public Head(String name,Class<?> type,int w) {
+		public Head(int id,String name,Class<?> type,int w) {
+			this.id = id;
 			this.name = name;
 			this.type = type;
 			this.width = w;
@@ -332,21 +332,25 @@ public class ConnsTableModel extends AbstractTableModel{
 		}
 		
 		public Object getColumn(int column) {
-			switch (column) {
-			case COLUMN.ID: 			return id;
-			case COLUMN.CLIENT: 		return client;
-			case COLUMN.DOMAIN: 		return domain;
-			case COLUMN.IP: 			return ip;
-			case COLUMN.PORT: 		return port>0?port:null;
-			case COLUMN.STATE:		return getStateDesc(state);
-			case COLUMN.SRC_IN: 		return srcIn;
-			case COLUMN.SRC_OUT:		return srcOut;
-			case COLUMN.DEST_IN:		return destIn;
-			case COLUMN.DEST_OUT:	return destOut;
-			case COLUMN.ERR:			return err;
+			if(0<=column && column<HEADS.length) {
+				switch (HEADS[column]) {
+				case COLUMN.ID: 			return id;
+				case COLUMN.CLIENT: 		return client;
+				case COLUMN.DOMAIN: 		return domain;
+				case COLUMN.IP: 			return ip;
+				case COLUMN.PORT: 		return port>0?port:null;
+				case COLUMN.STATE:		return getStateDesc(state);
+				case COLUMN.SRC_IN: 		return srcIn;
+				case COLUMN.SRC_OUT:		return srcOut;
+				case COLUMN.DEST_IN:		return destIn;
+				case COLUMN.DEST_OUT:	return destOut;
+				case COLUMN.ERR:			return err;
 
-			default:return null;
+				default:return null;
+				}
 			}
+			
+			return null;
 		}
 		
 		private String getStateDesc(int state) {

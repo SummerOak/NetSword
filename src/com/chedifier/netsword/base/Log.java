@@ -16,7 +16,7 @@ public class Log {
 	private static String sLogDir;
 	private static final String DEF_DIR = Configuration.DEFAULT_LOG_PATH;
 	
-	private static final int MAX_SIZE = 20;
+	private static final int MAX_SIZE = 100;
 	private static ArrayList<String> sCache = new ArrayList<>(MAX_SIZE);
 	private static long sLastDumpTime = 0L;
 	private static SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-SS");

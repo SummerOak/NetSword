@@ -2,7 +2,7 @@ package com.chedifier.netsword;
 
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.iface.IProxyListener;
-import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
 import com.chedifier.netsword.swing.ConnsTableModel.COLUMN;
 import com.chedifier.netsword.swing.SwordUI;
@@ -87,8 +87,8 @@ public class Socks5 implements IProxyListener{
 				if(params != null) {
 					if(params.length > 0 && params[0] instanceof Integer) {
 						int id = (int)params[0];
-						if(params.length > 1 && params[1] instanceof Result) {
-							Result result = (Result)params[1];
+						if(params.length > 1 && params[1] instanceof Error) {
+							Error result = (Error)params[1];
 							mSwordUI.updateConn(id, COLUMN.ERR, result.getMessage());
 						}
 					}
@@ -228,6 +228,16 @@ public class Socks5 implements IProxyListener{
 							Log.d(TAG, "onMessage dest ops " + ops);
 							mSwordUI.updatePortOps(id, false, ops);
 						}
+					}
+				}
+				break;
+			}
+			
+			case IProxyListener.ALIVE_NUM:{
+				if(params != null) {
+					if(params.length > 0 && params[0] instanceof Long) {
+						long aliveNum = (long)params[0];
+						mSwordUI.updateAliveConns(aliveNum);
 					}
 				}
 				break;

@@ -71,6 +71,11 @@ public interface IProxyListener {
 	 * params: int id,int ops
 	 */
 	public static final int DEST_INTRS_OPS	= 13;
+	
+	/**
+	 * params: int aliveNum
+	 */
+	public static final int ALIVE_NUM		= 14;
 
 	Object onMessage(int msgId,Object... params);
 	

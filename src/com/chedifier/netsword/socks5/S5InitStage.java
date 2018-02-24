@@ -1,7 +1,7 @@
 package com.chedifier.netsword.socks5;
 
 import com.chedifier.netsword.base.Log;
-import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
 
 public class S5InitStage extends AbsS5Stage{
@@ -36,7 +36,7 @@ public class S5InitStage extends AbsS5Stage{
 	}
 
 	@Override
-	public void onSocketBroken(Result result) {
+	public void onSocketBroken(Error result) {
 		
 	}
 

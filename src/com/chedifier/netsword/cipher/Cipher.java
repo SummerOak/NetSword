@@ -83,22 +83,34 @@ public class Cipher {
 		int l = 0;//location of packs
 		int tl = 0;
 		while(l < len) {
-			int d = 0;int b = 0;
+			int d = 0;int b = 0;boolean completed = true;
 			while(l < len) {
 				d = (packs[offset+l]&0xFF);
-				if(l+d >= len) {
+				
+				Log.d(TAG, "sChunkSize " + sChunkSize + " l " + l + " b " + b + " d " + d + " len " + len + " packs.len " + packs.length + " data.len " + data.length);
+				
+				if(++l+d > len) {
+					completed = false;
 					break;
 				}
 				
-				Log.d(TAG, "sChunkSize " + sChunkSize + " l " + l + " b " + b + " d " + d + " len " + len + " packs.len " + packs.length + " data.len " + data.length);
-				System.arraycopy(packs, ++l + offset, data, b, d);
+				if(d == 0) {
+					break;
+				}
+				
+				System.arraycopy(packs, l + offset, data, b, d);
 				l += d; b += d;
 				if(d < BLOCK_SIZE) {
 					break;
 				}
 			}
 			
-			if(b > 0 && d < BLOCK_SIZE) {
+			if(!completed) {
+				Log.d(TAG, "chunk not completed.");
+				break;
+			}
+			
+			if(b > 0) {
 				byte[] temp1 = sP2.decode(data, 0, b);
 				byte[] temp = sP.decode(temp1);
 				if(temp == null || temp.length <= 0) {
@@ -145,6 +157,10 @@ public class Cipher {
 				System.arraycopy(origin, offset+len-l, packed, i, b);
 				l -= b;
 				i += b;
+			}
+			
+			while(i<packed.length) {
+				packed[i++] = 0;
 			}
 			
 			return packed;

@@ -4,7 +4,7 @@ import java.nio.channels.SelectionKey;
 
 import com.chedifier.netsword.base.ObjectPool;
 import com.chedifier.netsword.base.ObjectPool.IConstructor;
-import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.Error;
 
 public class AcceptorWrapper {
 	
@@ -42,15 +42,15 @@ public class AcceptorWrapper {
 			this.mA = acceptor;
 		}
 		
-		public Result accept(SelectionKey selKey,int opt) {
-			Result res = mA.accept(selKey,opt);
+		public Error accept(SelectionKey selKey,int opt) {
+			Error res = mA.accept(selKey,opt);
 			sWAcceptorPool.release(this);
 			return res;
 		}
 	}
 	
 	public static interface IAcceptor {
-		public Result accept(SelectionKey selKey,int opts);
+		public Error accept(SelectionKey selKey,int opts);
 	}
 	
 }

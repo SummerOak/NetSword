@@ -1,6 +1,6 @@
 package com.chedifier.netsword.iface;
 
-public enum Result {
+public enum Error {
 	
 	SUCCESS(0,"success"),
 	E_LOCAL_SOCKET_BUILD_FAILED(1,"local socket build failed"),
@@ -12,11 +12,16 @@ public enum Result {
 	E_S5_SOCKET_ERROR_TRANS(7,"socket error while transportinging"),
 	E_S5_BIND_PROXY_FAILED(8,"bind proxy failed."),
 	E_S5_SOCKET_READ_FAILED(9,"sc read failed"),
-	E_S5_SOCKET_WRITE_FAILED(10,"sc write failed");
+	E_S5_SOCKET_WRITE_FAILED(10,"sc write failed"),
+	E_S5_SOCKETCHANNEL_TIMEOUT(11,"sc time out"),
+	E_S5_RELAY_ENCRYPT_FAILED(12,"encrypt failed"),
+	E_S5_RELAY_DECRYPT_FAILED(13,"decrypt failed"),
+	E_S5_OUT_BUFFER_FULL_FILLED(14,"out buffer full filled"),
+	E_S5_CHANNEL_DEAD(15,"channel dead");
 	
 	private int type;
 	private String msg;
-	private Result(int type,String msg) {
+	private Error(int type,String msg) {
 		this.type = type;
 		this.msg = msg;
 	}

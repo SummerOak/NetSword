@@ -3,7 +3,7 @@ package com.chedifier.netsword.socks5;
 import java.nio.channels.SelectionKey;
 
 import com.chedifier.netsword.base.Log;
-import com.chedifier.netsword.iface.Result;
+import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
 
 public class S5TransStage extends AbsS5Stage{
@@ -42,9 +42,9 @@ public class S5TransStage extends AbsS5Stage{
 	}
 
 	@Override
-	public void onSocketBroken(Result result) {
+	public void onSocketBroken(Error result) {
 		notifyError(result);
-		notifyError(Result.E_S5_SOCKET_ERROR_TRANS);
+		notifyError(Error.E_S5_SOCKET_ERROR_TRANS);
 	}
 
 }

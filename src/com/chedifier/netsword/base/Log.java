@@ -1,8 +1,6 @@
 package com.chedifier.netsword.base;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 
 import com.chedifier.netsword.base.JobScheduler.Job;
@@ -18,7 +16,7 @@ public class Log {
 	private static final int MAX_SIZE = 100;
 	private static final int LOG_TIME_ZONE = 3600*1000;//seperate logs by time,put logs have same time zone together.
 	private static ArrayList<String> sCache = new ArrayList<>(MAX_SIZE);
-	private static long sLastDumpTime = 0L;
+	private static volatile long sLastDumpTime = 0L;
 	
 	public static final void setLogDir(String dir) {
 		sLogDir = dir;
@@ -58,25 +56,6 @@ public class Log {
 		System.out.println(DateUtils.getCurrentDate() + " : " + "T> tid[" + Thread.currentThread().getId() + "] " + tag + " >> " + content);
 	}
 	
-	public static String getStackTraceString(Throwable tr) {
-        if (tr == null) {
-            return "";
-        }
-
-        // This is to reduce the amount of log spew that apps do in the non-error
-        // condition of the network being unavailable.
-        Throwable t = tr;
-        while (t != null) {
-            t = t.getCause();
-        }
-
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw, false);
-        tr.printStackTrace(pw);
-        pw.flush();
-        return sw.toString();
-    }
-	
 	private static final void addLog(String s) {
 		synchronized (sCache) {
 			sCache.add(s);
@@ -87,13 +66,15 @@ public class Log {
 		}
 	}
 	
-	private static final String getLogFilePath() {
+	private static synchronized final String getLogFilePath() {
 		
 		long now = System.currentTimeMillis();
-		long time = sLastDumpTime;
 		if((now-sLastDumpTime) > LOG_TIME_ZONE) {
-			time = now;
+			sLastDumpTime = now;
 		}
+		long time = sLastDumpTime;
+		
+		Log.t("jjjdj", "time: " + time + " sLastDumpTime "+ sLastDumpTime);
 		
 		String dir = DEF_DIR;
 		if(!StringUtils.isEmpty(sLogDir)) {
@@ -148,7 +129,9 @@ public class Log {
 				}
 				
 				if(sb != null && sb.length() > 0) {
-					FileUtils.writeString2File(getLogFilePath(), sb.toString());
+					String path = getLogFilePath();
+					Log.t("jjjdj", "path: " + path);
+					FileUtils.writeString2File(path, sb.toString());
 				}
 				
 				if(cb != null) {

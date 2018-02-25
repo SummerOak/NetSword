@@ -261,7 +261,7 @@ public class SProxy implements IAcceptor{
 			Messenger.notifyMessage(mListener, IProxyListener.STATE_UPDATE, mConnId, SProxyIface.STATE.TERMINATE);
 			
 			mConnId = -1;
-			mRelayerPool.release(this);
+			mRelayerPool.recycle(this);
 		}
 		
 		@Override

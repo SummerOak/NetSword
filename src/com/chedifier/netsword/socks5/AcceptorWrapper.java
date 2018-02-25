@@ -44,7 +44,7 @@ public class AcceptorWrapper {
 		
 		public Error accept(SelectionKey selKey,int opt) {
 			Error res = mA.accept(selKey,opt);
-			sWAcceptorPool.release(this);
+			sWAcceptorPool.recycle(this);
 			return res;
 		}
 	}

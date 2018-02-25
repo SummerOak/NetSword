@@ -189,7 +189,7 @@ public class SSockChannel implements IAcceptor {
 	 */
 	private int encryptRelay(ByteBuffer src, ByteBuffer dest) {
 		if (src.position() <= 0) {
-			Log.e(getTag(), "encryptRelay>>> not data in src,nothing need to relay.");
+			Log.d(getTag(), "encryptRelay>>> not data in src,nothing need to relay.");
 			return 0;
 		}
 
@@ -243,7 +243,7 @@ public class SSockChannel implements IAcceptor {
 				return -1;
 			}
 		} else {
-			Log.e(getTag(), "decryptRelay>>> decrypt packs failed.");
+			Log.d(getTag(), "decryptRelay>>> decrypt packs failed.");
 			notifyRelayFailed(Error.E_S5_RELAY_DECRYPT_FAILED);
 			return 0;
 		}

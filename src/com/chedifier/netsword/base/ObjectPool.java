@@ -34,7 +34,7 @@ public class ObjectPool<T> {
 		}
 	}
 	
-	public void release(T o) {
+	public void recycle(T o) {
 		if(o != null) {
 			synchronized (mPool) {
 				if(mPool.size() < mSize && !mPool.contains(o)) {

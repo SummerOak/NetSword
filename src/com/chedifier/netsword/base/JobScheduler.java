@@ -90,7 +90,7 @@ public class JobScheduler {
 			
 			decTask();
 			
-			sWJobPool.release(this);
+			sWJobPool.recycle(this);
 		}
 		
 	}

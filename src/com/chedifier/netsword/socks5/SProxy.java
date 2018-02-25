@@ -8,6 +8,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.chedifier.netsword.base.DateUtils;
 import com.chedifier.netsword.base.ExceptionHandler;
 import com.chedifier.netsword.base.IOUtils;
 import com.chedifier.netsword.base.Log;
@@ -39,9 +40,13 @@ public class SProxy implements IAcceptor{
 	private InetSocketAddress mProxyAddress;
 	
 	private ObjectPool<Relayer> mRelayerPool;
-	private volatile long mConnections = 0;
+	private static volatile long sAliveConnections = 0;
 	private IProxyListener mListener;
 	
+	private static final String BIRTH_TIME = DateUtils.getCurrentDate();
+	public static final String getBirthDay() {
+		return BIRTH_TIME;
+	}
 	
 	public static SProxy createLocal(int port,String serverHost,int serverPort) {
 		return new SProxy(port,true,serverHost,serverPort,null);
@@ -94,7 +99,6 @@ public class SProxy implements IAcceptor{
 				e.init((SocketChannel)params[0]);
 			}
 		}, 20);
-		
 		
 	}
 	
@@ -165,15 +169,15 @@ public class SProxy implements IAcceptor{
 	}
 	
 	private synchronized void incConnection() {
-		++mConnections;
-		Log.r(TAG, "inc " + mConnections);
-		Messenger.notifyMessage(mListener, IProxyListener.ALIVE_NUM, mConnections);
+		++sAliveConnections;
+		Log.r(TAG, "inc " + sAliveConnections);
+		Messenger.notifyMessage(mListener, IProxyListener.ALIVE_NUM, sAliveConnections);
 	}
 	
 	private synchronized void decConnection() {
-		--mConnections;
-		Log.r(TAG, "dec " + mConnections);
-		Messenger.notifyMessage(mListener, IProxyListener.ALIVE_NUM, mConnections);
+		--sAliveConnections;
+		Log.r(TAG, "dec " + sAliveConnections);
+		Messenger.notifyMessage(mListener, IProxyListener.ALIVE_NUM, sAliveConnections);
 	}
 	
 	@Override
@@ -318,6 +322,10 @@ public class SProxy implements IAcceptor{
 		public void onDestOpsUpdate(int ops) {
 			Messenger.notifyMessage(mListener,IProxyListener.DEST_INTRS_OPS, mConnId, ops);
 		}
+	}
+	
+	public static final String dumpInfo() {
+		return "alive connections: " + sAliveConnections;
 	}
 
 }

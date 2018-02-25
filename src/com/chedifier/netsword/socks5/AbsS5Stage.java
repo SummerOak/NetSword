@@ -54,7 +54,7 @@ public abstract class AbsS5Stage implements IChannelEvent{
 	
 	@Override
 	public void onSrcOpsUpdate(int ops) {
-		Log.t(getTag(), "onSrcOpsUpdate " + ops + ": " + NetUtils.getOpsDest(ops));
+		Log.i(getTag(), "onSrcOpsUpdate " + ops + ": " + NetUtils.getOpsDest(ops));
 		if(mCallback != null) {
 			mCallback.onSrcOpsUpdate(ops);
 		}
@@ -62,7 +62,7 @@ public abstract class AbsS5Stage implements IChannelEvent{
 	
 	@Override
 	public void onDestOpsUpdate(int ops) {
-		Log.t(getTag(), "onDestOpsUpdate " + ops + ": " + NetUtils.getOpsDest(ops));
+		Log.i(getTag(), "onDestOpsUpdate " + ops + ": " + NetUtils.getOpsDest(ops));
 		if(mCallback != null) {
 			mCallback.onDestOpsUpdate(ops);
 		}

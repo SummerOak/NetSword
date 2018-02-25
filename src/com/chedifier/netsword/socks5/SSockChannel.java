@@ -90,7 +90,7 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	public void setDest(SocketChannel socket) {
-		Log.t(getTag(), "setDest " + socket + "  " + mDest);
+		Log.i(getTag(), "setDest " + socket + "  " + mDest);
 		if (!mAlive) {
 			Log.e(getTag(), "setDest>>> channel has died.");
 			return;
@@ -101,7 +101,7 @@ public class SSockChannel implements IAcceptor {
 			try {
 				mDest.configureBlocking(false);
 			} catch (IOException e) {
-				Log.t(getTag(), "configureBlocking failed " + e.getMessage());
+				Log.i(getTag(), "configureBlocking failed " + e.getMessage());
 				ExceptionHandler.handleException(e);
 			}
 
@@ -293,7 +293,7 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	private void updateOps(boolean src, boolean add, int opts) {
-		Log.t(getTag(), "updateOps " + (add?"enable ":"disable ") + (src?" src " :" dest ") + opts + ": " + NetUtils.getOpsDest(opts));
+		Log.i(getTag(), "updateOps " + (add?"enable ":"disable ") + (src?" src " :" dest ") + opts + ": " + NetUtils.getOpsDest(opts));
 		SelectionKey key = src ? mSourceKey : mDestKey;
 		if (key != null) {
 			int oldOps = key.interestOps();
@@ -422,7 +422,7 @@ public class SSockChannel implements IAcceptor {
 			
 			@Override
 			public void run() {
-				notifySocketClosed(Error.E_S5_SOCKETCHANNEL_TIMEOUT);
+				notifySocketClosed(Error.E_S5_SOCKETCHANNEL_ZOMBIE);
 			}
 		};
 		
@@ -495,7 +495,7 @@ public class SSockChannel implements IAcceptor {
 			}
 
 			if (selKey.isValid() && selKey.isConnectable()) {
-				Log.t(getTag(), "dest receive connect ops.");
+				Log.i(getTag(), "dest receive connect ops.");
 				try {
 					if(!mDest.finishConnect()) {
 						Log.e(getTag(), "finish connect failed.");

@@ -10,7 +10,7 @@ server_port=8668
 local_port=8667
 
 #common
-log_path=./log
+log_directory=./log
 log_level=2
 
 #1. chunk_size must in (256B,1M]

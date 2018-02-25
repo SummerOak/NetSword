@@ -89,7 +89,7 @@ public class Socks5 implements IProxyListener{
 						int id = (int)params[0];
 						if(params.length > 1 && params[1] instanceof Error) {
 							Error result = (Error)params[1];
-							mSwordUI.updateConn(id, COLUMN.ERR, result.getMessage());
+							mSwordUI.updateConn(id, COLUMN.ERR, result.getType() + "(" + result.getMessage() + ")");
 						}
 					}
 				}

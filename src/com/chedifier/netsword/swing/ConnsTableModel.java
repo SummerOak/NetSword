@@ -22,7 +22,7 @@ public class ConnsTableModel extends AbstractTableModel{
 		sHeadIdx.put(COLUMN.DOMAIN, 	new Head(COLUMN.DOMAIN,		"DOMAIN",		String.class,	200));
 		sHeadIdx.put(COLUMN.IP, 		new Head(COLUMN.IP,			"IP",			String.class,	100));
 		sHeadIdx.put(COLUMN.PORT, 	new Head(COLUMN.PORT,		"PORT",			int.class,		50));
-		sHeadIdx.put(COLUMN.STATE, 	new Head(COLUMN.STATE,		"STATE",			String.class		));
+		sHeadIdx.put(COLUMN.STATE, 	new Head(COLUMN.STATE,		"STATE",			String.class	,	50));
 		sHeadIdx.put(COLUMN.SRC_IN, 	new Head(COLUMN.SRC_IN,		"SI",			long.class,		80));
 		sHeadIdx.put(COLUMN.SRC_OUT, new Head(COLUMN.SRC_OUT,		"SO",			long.class,		80));
 		sHeadIdx.put(COLUMN.DEST_IN, new Head(COLUMN.DEST_IN,		"DI",			long.class,		80));
@@ -154,7 +154,7 @@ public class ConnsTableModel extends AbstractTableModel{
 				item.destOps = ops;
 			}
 			
-			Log.t(TAG, "updatePortOps: " + id + " src " + item.srcOps + " dest " + item.destOps + " ops" + ops);
+			Log.i(TAG, "updatePortOps: " + id + " src " + item.srcOps + " dest " + item.destOps + " ops" + ops);
 			
 			int[] columns = null;
 			if(src) {
@@ -355,11 +355,11 @@ public class ConnsTableModel extends AbstractTableModel{
 		
 		private String getStateDesc(int state) {
 			switch (state) {
-				case STATE.INIT: return "init";
-				case STATE.VERIFY: return "verify";
-				case STATE.CONN: return "conn";
-				case STATE.TRANS: return "trans";
-				case STATE.TERMINATE: return "terminate";
+				case STATE.INIT: return "INI";
+				case STATE.VERIFY: return "VFY";
+				case STATE.CONN: return "CONN";
+				case STATE.TRANS: return "TRS";
+				case STATE.TERMINATE: return "TMN";
 		
 				default: return "";
 			}

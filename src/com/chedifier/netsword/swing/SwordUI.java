@@ -74,12 +74,13 @@ public class SwordUI implements KeyListener{
 		
 		mAliveConnCounter=new JTextPane();  
 		mAliveConnCounter.setEditable(false);
-		mAliveConnCounter.setText("32");
+		mAliveConnCounter.setText("0");
 		mAliveConnCounter.setBackground(new Color(240,240,240));
 		SimpleAttributeSet attribs = new SimpleAttributeSet();
 		StyleConstants.setAlignment(attribs, StyleConstants.ALIGN_RIGHT);
 		mAliveConnCounter.setParagraphAttributes(attribs, false);
 		cnts = new GridBagConstraints();
+		cnts.fill = GridBagConstraints.HORIZONTAL;
 		cnts.weightx = 1f;cnts.weighty = 0f;
 		cnts.gridx = 1;cnts.gridy = 0;
 		mContent.add(mAliveConnCounter,cnts);
@@ -133,16 +134,15 @@ public class SwordUI implements KeyListener{
 		
 		StringBuilder info = new StringBuilder();
 		if(mLocalPort >0 ) {
-			info.append("  port=" + mLocalPort);
+			info.append("listening on " + mLocalPort);
 		}
 		
 		if(mIsLcoal) {
 			if(!StringUtils.isEmpty(mProxyHost)) {
-				info.append("  proxy addr=" + mProxyHost);
-			}
-			
-			if(mProxyPort > 0) {
-				info.append("  server_port=" + mProxyPort);
+				if(info.length() > 0) {
+					info.append(",");
+				}
+				info.append("proxy server(" + mProxyHost + "/" + mProxyPort + ")");
 			}
 		}
 		

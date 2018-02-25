@@ -82,8 +82,9 @@ public class Cipher {
 		
 		int l = 0;//location of packs
 		int tl = 0;
+		boolean completed = true;
 		while(l < len) {
-			int d = 0;int b = 0;boolean completed = true;
+			int d = 0;int b = 0;completed = true;
 			while(l < len) {
 				d = (packs[offset+l]&0xFF);
 				
@@ -124,6 +125,10 @@ public class Cipher {
 			}
 			
 			break;
+		}
+		
+		if(!completed) {
+			return null;
 		}
 		
 		if(buffer.position() > 0) {

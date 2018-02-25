@@ -88,7 +88,7 @@ public class Cipher {
 			while(l < len) {
 				d = (packs[offset+l]&0xFF);
 				
-				Log.r(TAG, "sChunkSize " + sChunkSize + " l " + l + " b " + b + " d " + d + " len " + len + " packs.len " + packs.length + " data.len " + data.length);
+				Log.d(TAG, "sChunkSize " + sChunkSize + " l " + l + " b " + b + " d " + d + " len " + len + " packs.len " + packs.length + " data.len " + data.length);
 				
 				if(++l+d > len) {
 					completed = false;

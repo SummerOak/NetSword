@@ -41,7 +41,6 @@ public class DateUtils {
 		SimpleDateFormat format = sDateFormatPool.obtain();
 		String ret = format.format(date);
 		
-		System.out.println("jjjdj time: " + time + " ret "+ ret);
 		sDatePool.recycle(date);
 		sDateFormatPool.recycle(format);
 		return ret;

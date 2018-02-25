@@ -74,7 +74,6 @@ public class Log {
 		}
 		long time = sLastDumpTime;
 		
-		Log.t("jjjdj", "time: " + time + " sLastDumpTime "+ sLastDumpTime);
 		
 		String dir = DEF_DIR;
 		if(!StringUtils.isEmpty(sLogDir)) {
@@ -130,7 +129,6 @@ public class Log {
 				
 				if(sb != null && sb.length() > 0) {
 					String path = getLogFilePath();
-					Log.t("jjjdj", "path: " + path);
 					FileUtils.writeString2File(path, sb.toString());
 				}
 				

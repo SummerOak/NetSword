@@ -14,7 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
@@ -37,10 +39,14 @@ public class SwordUI implements KeyListener{
 	private Dimension mDimension;
 	private JFrame mFrame;
 	private JPanel mContent;
-	private JTextArea mBaseInfo = null;
-	private JTextPane mAliveConnCounter = null;
+	private JTextField mBaseInfo = null;
+	private JTextField mAliveConnCounter = null;
+	private JTextField mMaxAlive = null;
+	private JTextField mMemInfo = null;
 	private JScrollPane mConnTableCnt = null;
 	private JTable mConnTable = null;
+	
+	private long mMaxAliveNum = 0;
 	
 	private ConnsTableModel mConnModel;
 	
@@ -62,8 +68,7 @@ public class SwordUI implements KeyListener{
 		mContent = new JPanel();
 		mContent.setLayout(new GridBagLayout());
 		
-		mBaseInfo=new JTextArea();  
-		mBaseInfo.setLineWrap(true);
+		mBaseInfo=new JTextField();  
 		mBaseInfo.setEditable(false);
 		mBaseInfo.setBackground(new Color(240,240,240));
 		GridBagConstraints cnts = new GridBagConstraints();
@@ -72,18 +77,40 @@ public class SwordUI implements KeyListener{
 		cnts.gridx = 0;cnts.gridy = 0;
 		mContent.add(mBaseInfo,cnts);
 		
-		mAliveConnCounter=new JTextPane();  
+		mAliveConnCounter=new JTextField();  
 		mAliveConnCounter.setEditable(false);
-		mAliveConnCounter.setText("0");
+		mAliveConnCounter.setText("Alive connections: 0");
 		mAliveConnCounter.setBackground(new Color(240,240,240));
-		SimpleAttributeSet attribs = new SimpleAttributeSet();
-		StyleConstants.setAlignment(attribs, StyleConstants.ALIGN_RIGHT);
-		mAliveConnCounter.setParagraphAttributes(attribs, false);
 		cnts = new GridBagConstraints();
 		cnts.fill = GridBagConstraints.HORIZONTAL;
-		cnts.weightx = 1f;cnts.weighty = 0f;
+		cnts.weightx = 0.5f;cnts.weighty = 0f;
 		cnts.gridx = 1;cnts.gridy = 0;
+		cnts.gridwidth = 1;
+		
 		mContent.add(mAliveConnCounter,cnts);
+		
+		mMaxAlive=new JTextField();  
+		mMaxAlive.setEditable(false);
+		mMaxAlive.setText("Max alive: 0");
+		mMaxAlive.setBackground(new Color(240,240,240));
+		cnts = new GridBagConstraints();
+		cnts.fill = GridBagConstraints.HORIZONTAL;
+		cnts.weightx = 0.3f;cnts.weighty = 0f;
+		cnts.gridx = 2;cnts.gridy = 0;
+		cnts.gridwidth = 1;
+		
+		mContent.add(mMaxAlive,cnts);
+		
+		mMemInfo=new JTextField();  
+		mMemInfo.setEditable(false);
+		mMemInfo.setHorizontalAlignment(SwingConstants.RIGHT);
+		mMemInfo.setText("Mem: 0 bytes");
+		mMemInfo.setBackground(new Color(240,240,240));
+		cnts = new GridBagConstraints();
+		cnts.fill = GridBagConstraints.HORIZONTAL;
+		cnts.weightx = 0.6f;cnts.weighty = 0f;
+		cnts.gridx = 3;cnts.gridy = 0;
+		mContent.add(mMemInfo,cnts);
 
 		mConnModel = new ConnsTableModel();
 		mConnTable = new ConnJTable(mConnModel);
@@ -94,7 +121,7 @@ public class SwordUI implements KeyListener{
 		cnts = new GridBagConstraints();
 		cnts.fill = GridBagConstraints.BOTH;
 		cnts.weightx = 1f;cnts.weighty = 1f;
-		cnts.gridwidth = 2;
+		cnts.gridwidth = 4;
 		cnts.gridx = 0;cnts.gridy = 1;
 		mContent.add(mConnTableCnt,cnts);
 		
@@ -157,7 +184,12 @@ public class SwordUI implements KeyListener{
 	
 	public void updateAliveConns(long aliveConnNum) {
 		if(mAliveConnCounter != null) {
-			mAliveConnCounter.setText(String.valueOf(aliveConnNum));
+			mAliveConnCounter.setText("Alive connections: " + String.valueOf(aliveConnNum));
+		}
+		
+		if(aliveConnNum > mMaxAliveNum) {
+			mMaxAliveNum = aliveConnNum;
+			updateMaxAlive(mMaxAliveNum);
 		}
 	}
 	
@@ -167,6 +199,24 @@ public class SwordUI implements KeyListener{
 			mConnModel.updateField(id, column, value);
 		}
 		
+	}
+	
+	public void updateMem(long pool,long total) {
+		Log.d(TAG, "update memory, pool " + pool + " total " + total);
+		if(mMemInfo != null) {
+			synchronized (mMemInfo) {				
+				mMemInfo.setText("Mem: " + pool + " bytes");
+			}
+		}
+	}
+	
+	private void updateMaxAlive(long max) {
+		Log.d(TAG, "updateMaxAlive, max " + max);
+		if(mMaxAlive != null) {
+			synchronized (mMaxAlive) {				
+				mMaxAlive.setText("Max alive: " + max);
+			}
+		}
 	}
 	
 	public void updatePortOps(int id,boolean src,int ops) {

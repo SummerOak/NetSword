@@ -1,9 +1,9 @@
 package com.chedifier.netsword.socks5;
 
 import com.chedifier.netsword.base.JobScheduler;
+import com.chedifier.netsword.base.JobScheduler.Job;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
-import com.chedifier.netsword.base.JobScheduler.Job;
 import com.chedifier.netsword.iface.IProxyListener;
 
 public class Messenger {

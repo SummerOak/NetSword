@@ -2,8 +2,8 @@
 is_server=0
 
 #proxy server
-server_address=47.90.206.185
-#server_address=127.0.0.1
+#server_address=47.90.206.185
+server_address=127.0.0.1
 server_port=8668
 
 #local
@@ -13,7 +13,3 @@ local_port=8667
 log_directory=./log
 log_level=2
 
-#1. chunk_size must in (256B,1M]
-#2. buffer_size must greater than chunk_size and smaller than 2M
-chunk_size=2048
-buffer_size=261120

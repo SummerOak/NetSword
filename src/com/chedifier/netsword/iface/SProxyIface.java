@@ -62,7 +62,6 @@ public class SProxyIface {
 		Log.setLogDir(Configuration.getConfig(Configuration.LOG_PATH, Configuration.DEFAULT_LOG_PATH));
 		
 		JobScheduler.init();
-		Cipher.init();
 
 		boolean isServer = false;
 		if(forceServerOrLocal > 0) {

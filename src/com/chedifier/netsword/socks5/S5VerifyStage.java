@@ -6,9 +6,9 @@ import java.nio.channels.SelectionKey;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.cipher.Cipher;
-import com.chedifier.netsword.cipher.Cipher.DecryptResult;
 import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
+import com.chedifier.netsword.memory.ByteBufferPool;
 
 public class S5VerifyStage extends AbsS5Stage{
 	
@@ -20,6 +20,11 @@ public class S5VerifyStage extends AbsS5Stage{
 	public void start() {
 		Log.r(getTag(), "S5VerifyStage start >>>");
 		super.start();
+		
+		if(isLocal()) {
+			getChannel().updateOps(true, true, SelectionKey.OP_READ);
+		}
+		
 		notifyState(SProxyIface.STATE.VERIFY);
 	}
 
@@ -68,28 +73,35 @@ public class S5VerifyStage extends AbsS5Stage{
 					return;
 				}
 			}else {
-				DecryptResult decResult = Cipher.decrypt(buffer.array(), 0, verifyInfoLen);
-				if(decResult != null && decResult.origin != null && decResult.origin.length > 0 && decResult.decryptLen > 0) {
-					byte[] data = decResult.origin;
-					Log.d(getTag(), "recv verify data from local: " + StringUtils.toRawString(data));
-					int verifyResult = verify(data, 0, data.length);
+				ByteBuffer decOutBuffer = ByteBufferPool.obtain(Cipher.estimateDecryptLen(verifyInfoLen,getChannel().getChunkSize()));
+				int dl = Cipher.decrypt(buffer.array(), 0, verifyInfoLen,getChannel().getChunkSize(),decOutBuffer);
+				if(dl > 0) {
+					Log.d(getTag(), "recv verify data from local: " + StringUtils.toRawString(decOutBuffer.array(),0,decOutBuffer.position()));
+					int verifyResult = verify(decOutBuffer.array(), 0, decOutBuffer.position());
 					if(verifyResult > 0) {
 						Log.d(getTag(), "verify success.");
 						
-						byte[] back = Cipher.encrypt(new byte[] {0x05,0x00});
-						if(getChannel().writeToBuffer(false, back) == back.length) {
-							getChannel().cutBuffer(buffer, decResult.decryptLen);
-							forward();
-							return;
-						}else {
-							Log.e(getTag(), "send verify msg to remote failed.");
+						ByteBuffer back = ByteBufferPool.obtain(Cipher.estimateEncryptLen(2, getChannel().getChunkSize()));
+						int el = Cipher.encrypt(new byte[] {0x05,0x00},getChannel().getChunkSize(),back);
+						if(el > 0) {
+							back.flip();
+							int ll = back.remaining();
+							if(getChannel().writeToBuffer(false, back) == ll) {
+								getChannel().cutBuffer(buffer, dl);
+								forward();
+							}else {
+								Log.e(getTag(), "send verify msg to remote failed.");
+							}
 						}
+						ByteBufferPool.recycle(back);
 					}else if(verifyResult < 0){
 						Log.e(getTag(), "verify socks5 methos failed.");
 						notifyError(Error.E_S5_VERIFY_FAILED);
 						return;
 					}
 				}
+				
+				ByteBufferPool.recycle(decOutBuffer);
 			}
 			
 			return;
@@ -103,19 +115,20 @@ public class S5VerifyStage extends AbsS5Stage{
 		if(isLocal()) {
 			if((opts&SelectionKey.OP_READ) > 0) {
 				ByteBuffer buffer = getChannel().getDestInBuffer();
-				DecryptResult decrypt = Cipher.decrypt(buffer.array(), 0, buffer.position());
-				if(decrypt != null && decrypt.decryptLen > 0) {
-					Log.d(getTag(), "recv verify info back from server: " + StringUtils.toRawString(decrypt.origin));
-					if(getChannel().writeToBuffer(false, decrypt.origin) == decrypt.origin.length) {
-						getChannel().cutBuffer(buffer, decrypt.decryptLen);
+				ByteBuffer decOutBuffer = ByteBufferPool.obtain(Cipher.estimateDecryptLen(buffer.position(),getChannel().getChunkSize()));
+				int dl = Cipher.decrypt(buffer.array(), 0, buffer.position(),getChannel().getChunkSize(),decOutBuffer);
+				if(dl > 0) {
+					Log.d(getTag(), "recv verify info back from server: " + StringUtils.toRawString(decOutBuffer.array(),0,decOutBuffer.position()));
+					decOutBuffer.flip();
+					int ll = decOutBuffer.remaining();
+					if(getChannel().writeToBuffer(false, decOutBuffer) == ll) {
+						getChannel().cutBuffer(buffer, dl);
 						forward();
-						return;
 					}else {
 						Log.e(getTag(), "send verify info to server failed.");
 					}
 				}
-				
-				return;
+				ByteBufferPool.recycle(decOutBuffer);
 			}
 		}
 		

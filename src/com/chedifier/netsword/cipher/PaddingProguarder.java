@@ -1,7 +1,14 @@
 package com.chedifier.netsword.cipher;
 
-public class PaddingProguarder implements IProguarder{
+import java.nio.ByteBuffer;
 
+import com.chedifier.netsword.base.Log;
+
+public class PaddingProguarder implements IProguarder{
+	private static final String TAG = "PaddingProguarder";
+	
+	
+	private static final int MAX_PADDING = 255;
 	private TYPE mType = TYPE.HEAD;
 	
 	public PaddingProguarder() {
@@ -9,68 +16,81 @@ public class PaddingProguarder implements IProguarder{
 	}
 	
 	@Override
-	public byte[] encode(byte[] origin) {
+	public boolean encode(byte[] origin,ByteBuffer outBuffer) {
 		if(origin != null) {			
-			return encode(origin,0,origin.length);
+			return encode(origin,0,origin.length,outBuffer);
 		}
 		
-		return null;
+		return false;
 	}
 
 	@Override
-	public byte[] decode(byte[] encode) {
+	public boolean decode(byte[] encode,ByteBuffer outBuffer) {
 		if(encode != null) {
-			return decode(encode,0,encode.length);
+			return decode(encode,0,encode.length,outBuffer);
 		}
 		
-		return null;
+		return false;
 	}
 
 	@Override
-	public byte[] encode(byte[] origin, int offset, int len) {
-		if(origin == null || len <= 0 || offset < 0 || origin.length <= 0 || (origin.length < (len + offset))) {
-			return origin;
+	public boolean encode(byte[] origin, int offset, int len,ByteBuffer outBuffer) {
+		if(outBuffer == null || origin == null || len <= 0 || offset < 0 || origin.length <= 0 || (origin.length < (len + offset))) {
+			return false;
 		}
 		
-		byte[] result;
 		switch(mType) {
 			case HEAD:{
-				int p = 1 + (int)(Math.random() * 8);
-				result = new byte[p+len+1];
-				result[0] = (byte)(p & 0xFF);
+				int p = 1 + (int)(Math.random() * MAX_PADDING);
+				if(outBuffer.remaining() < p+len+1) {
+					return false;
+				}
+				outBuffer.put((byte)(p & 0xFF));
 				for(int i=0;i<p;i++) {
-					result[i+1] = (byte)(Math.random() * 256);
+					outBuffer.put((byte)(Math.random() * 256));
 				}
 				
-				System.arraycopy(origin, offset, result, p+1, len);
+				outBuffer.put(origin,offset,len);
 				
-				return result;
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
 
 	@Override
-	public byte[] decode(byte[] encode, int offset, int len) {
-		if(encode == null || offset < 0 || len <= 1 || encode.length <= 0 || (encode.length < (len + offset))) {
-			return encode;
+	public boolean decode(byte[] encode, int offset, int len,ByteBuffer outBuffer) {
+		if(outBuffer == null || encode == null || offset < 0 || len <= 1 || encode.length <= 0 || (encode.length < (len + offset))) {
+			Log.e(TAG, "decode>> invalid input.");
+			return false;
 		}
-		
-		byte[] result = null;
 		
 		switch(mType) {
 			case HEAD:{
 				int p = encode[offset]&0xFF;
 				if(p >= 0 && p < len) {
-					result = new byte[len - p - 1];
-					System.arraycopy(encode, offset + p + 1, result, 0, len-p-1);
+					if(outBuffer.remaining() < (len-p-1)) {
+						return false;
+					}
+					outBuffer.put(encode,offset+p+1,len-p-1);
+					return true;
 				}
 				
-				return result;
+				return false;
 			}
 		}
 		
-		return null;
+		return false;
+	}
+	
+	@Override
+	public int estimateDecodeLen(int len) {
+		return len;
+	}
+	
+	@Override
+	public int estimateEncodeLen(int len) {
+		return len+MAX_PADDING;
 	}
 	
 	public enum TYPE{

@@ -14,8 +14,8 @@ import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.base.Timer;
 import com.chedifier.netsword.base.TimerTask;
 import com.chedifier.netsword.cipher.Cipher;
-import com.chedifier.netsword.cipher.Cipher.DecryptResult;
 import com.chedifier.netsword.iface.Error;
+import com.chedifier.netsword.memory.ByteBufferPool;
 import com.chedifier.netsword.socks5.AcceptorWrapper.IAcceptor;
 
 public class SSockChannel implements IAcceptor {
@@ -53,21 +53,23 @@ public class SSockChannel implements IAcceptor {
 	private ITrafficEvent mTrafficListener;
 
 	private final int BUFFER_SIZE;
+	private final int CHUNK_SIZE;
 
 	private final String getTag() {
 		return "SSockChannel_c" + mConnId;
 	}
 
-	public SSockChannel(Selector selector,int bufferSize) {
+	public SSockChannel(Selector selector,int bufferSize,int chunkSize) {
 		mSelector = selector;
 		BUFFER_SIZE = bufferSize;
+		CHUNK_SIZE = chunkSize;
 		
 		mDestConnected = false;
 		
-		mUpStreamBufferIn = ByteBuffer.allocate(BUFFER_SIZE);
-		mUpStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE << 1);
-		mDownStreamBufferIn = ByteBuffer.allocate(BUFFER_SIZE);
-		mDownStreamBufferOut = ByteBuffer.allocate(BUFFER_SIZE << 1);
+		mUpStreamBufferIn = ByteBufferPool.obtain(BUFFER_SIZE);
+		mUpStreamBufferOut = ByteBufferPool.obtain(BUFFER_SIZE << 1);
+		mDownStreamBufferIn = ByteBufferPool.obtain(BUFFER_SIZE);
+		mDownStreamBufferOut = ByteBufferPool.obtain(BUFFER_SIZE << 1);
 		
 		mTimer = new Timer();
 		mAlive = true;
@@ -125,11 +127,14 @@ public class SSockChannel implements IAcceptor {
 			} catch (IOException e) {
 				ExceptionHandler.handleException(e);
 			}
-			updateOps(true, true, SelectionKey.OP_READ);
 			return;
 		}
 
 		Log.e(getTag(), "src  socket already setted,can not be set dumplicated.");
+	}
+	
+	public int getChunkSize() {
+		return CHUNK_SIZE;
 	}
 
 	public int relay(boolean up, boolean encrypt) {
@@ -154,21 +159,26 @@ public class SSockChannel implements IAcceptor {
 		return r;
 	}
 
-	public int writeToBuffer(boolean up, byte[] data) {
+	public int writeToBuffer(boolean up, ByteBuffer data) {
 		if (!mAlive) {
 			Log.e(getTag(), "write>>> channel has died.");
 			return -1;
 		}
 
 		int w = 0;
-		if (data != null && data.length > 0) {
+		if (data != null && data.remaining() > 0) {
 			ByteBuffer buffer = up ? mUpStreamBufferOut : mDownStreamBufferOut;
-			if (buffer.remaining() >= data.length) {
-				buffer.put(data);
-				w = data.length;
-				updateOps(!up, true, SelectionKey.OP_WRITE);
+			int r = data.remaining();
+			if (buffer.remaining() >= data.remaining()) {
+				try {
+					buffer.put(data);
+					w = r;
+					updateOps(!up, true, SelectionKey.OP_WRITE);
+				}catch(Exception e) {
+					ExceptionHandler.handleException(e);
+				}
 			} else {
-				Log.e(getTag(), "writeToBuffer" + up + ">>> out buffer is full filled,need " + data.length + " remain "
+				Log.e(getTag(), "writeToBuffer" + up + ">>> out buffer is full filled,need " + r + " remain "
 						+ buffer.remaining() + " pause data read in.");
 				updateOps(up,false,SelectionKey.OP_READ);
 			}
@@ -194,22 +204,41 @@ public class SSockChannel implements IAcceptor {
 		}
 
 		int len = src.position();
-		byte[] data = Cipher.encrypt(src.array(), 0, len);
-		if (data == null) {
-			Log.e(getTag(), "encryptRelay>>> encrypt data failed.");
-			notifyRelayFailed(Error.E_S5_RELAY_ENCRYPT_FAILED);
-			return 0;
+		ByteBuffer outBuffer = ByteBufferPool.obtain(Cipher.estimateEncryptLen(len,CHUNK_SIZE));
+		try {
+			if(outBuffer != null && outBuffer.remaining() >= len) {
+				int el = Cipher.encrypt(src.array(), 0, len,CHUNK_SIZE,outBuffer);
+				if (el > 0) {
+					outBuffer.flip();
+					int ll = outBuffer.remaining();
+					if(dest.remaining() >= ll) {
+						try {
+							dest.put(outBuffer);
+							cutBuffer(src, el);
+							return el;
+						}catch(Exception e) {
+							ExceptionHandler.handleException(e);
+						}
+						
+					}else {
+						Log.e(getTag(),
+								"encryptRelay>>> out buffer is full filled: need " + ll + " remain " + dest.remaining());
+						notifyRelayFailed(Error.E_S5_OUT_BUFFER_FULL_FILLED);
+						return -1;
+					}
+				}else {
+					Log.e(getTag(), "encrypt failed");
+				}
+			}else {
+				Log.e(getTag(), "obtain out buffer failed");
+			}
+		}finally {
+			ByteBufferPool.recycle(outBuffer);
 		}
-		if (dest.remaining() >= data.length) {
-			dest.put(data);
-			src.clear();
-			return len;
-		} else {
-			Log.e(getTag(),
-					"encryptRelay>>> out buffer is full filled: need " + data.length + " remain " + dest.remaining());
-			notifyRelayFailed(Error.E_S5_OUT_BUFFER_FULL_FILLED);
-			return -1;
-		}
+		
+		Log.e(getTag(), "encryptRelay>>> encrypt data failed.");
+		notifyRelayFailed(Error.E_S5_RELAY_ENCRYPT_FAILED);
+		return 0;
 	}
 
 	/**
@@ -229,24 +258,31 @@ public class SSockChannel implements IAcceptor {
 		}
 
 		int len = src.position();
-		DecryptResult decRes = Cipher.decrypt(src.array(), 0, len);
-		if (decRes != null && decRes.origin != null && decRes.origin.length > 0 && decRes.decryptLen > 0) {
-			byte[] data = decRes.origin;
-			if (dest.remaining() >= data.length) {
-				dest.put(data);
-				cutBuffer(src, decRes.decryptLen);
-				return decRes.decryptLen;
+		ByteBuffer decOutBuffer = ByteBufferPool.obtain(Cipher.estimateDecryptLen(len,getChunkSize()));
+		try {
+			int dl = Cipher.decrypt(src.array(), 0, len,getChunkSize(),decOutBuffer);
+			if (dl > 0) {
+				decOutBuffer.flip();
+				final int ll = decOutBuffer.remaining();
+				if (dest.remaining() >= ll) {
+					dest.put(decOutBuffer);
+					cutBuffer(src, dl);
+					return dl;
+				} else {
+					Log.e(getTag(), "decryptRelay>>> out buffer is full filled,need " + ll + " remain "
+							+ dest.remaining());
+					notifyRelayFailed(Error.E_S5_OUT_BUFFER_FULL_FILLED);
+					return -1;
+				}
 			} else {
-				Log.e(getTag(), "encryptRelay>>> out buffer is full filled,need " + data.length + " remain "
-						+ dest.remaining());
-				notifyRelayFailed(Error.E_S5_OUT_BUFFER_FULL_FILLED);
-				return -1;
+				Log.d(getTag(), "decryptRelay>>> decrypt packs failed.");
+				notifyRelayFailed(Error.E_S5_RELAY_DECRYPT_FAILED);
+				return 0;
 			}
-		} else {
-			Log.d(getTag(), "decryptRelay>>> decrypt packs failed.");
-			notifyRelayFailed(Error.E_S5_RELAY_DECRYPT_FAILED);
-			return 0;
+		}finally {
+			ByteBufferPool.recycle(decOutBuffer);
 		}
+		
 	}
 
 	public int cutBuffer(ByteBuffer buffer, int len) {
@@ -292,7 +328,7 @@ public class SSockChannel implements IAcceptor {
 		return null;
 	}
 
-	private void updateOps(boolean src, boolean add, int opts) {
+	public void updateOps(boolean src, boolean add, int opts) {
 		Log.i(getTag(), "updateOps " + (add?"enable ":"disable ") + (src?" src " :" dest ") + opts + ": " + NetUtils.getOpsDest(opts));
 		SelectionKey key = src ? mSourceKey : mDestKey;
 		if (key != null) {
@@ -334,11 +370,10 @@ public class SSockChannel implements IAcceptor {
 		return false;
 	}
 
-	public void destroy() {
-		mAlive = false;
-
+	public synchronized void destroy() {
 		Log.r(getTag(), "total>>> src>" + mSrcIn + ",src<" + mSrcOut + ",dest>" + mDestIn + ",dest<" + mDestOut);
 
+		mAlive = false;
 		if (mDestKey != null) {
 			mDestKey.cancel();
 			mDestKey = null;
@@ -365,17 +400,21 @@ public class SSockChannel implements IAcceptor {
 		}
 		
 		if (mUpStreamBufferIn != null) {
+			ByteBufferPool.recycle(mUpStreamBufferIn);
 			mUpStreamBufferIn = null;
 		}
 		if (mDownStreamBufferIn != null) {
+			ByteBufferPool.recycle(mDownStreamBufferIn);
 			mDownStreamBufferIn = null;
 		}
 
 		if (mUpStreamBufferOut != null) {
+			ByteBufferPool.recycle(mUpStreamBufferOut);
 			mUpStreamBufferOut = null;
 		}
 
 		if (mDownStreamBufferOut != null) {
+			ByteBufferPool.recycle(mDownStreamBufferOut);
 			mDownStreamBufferOut = null;
 		}
 	}
@@ -430,8 +469,8 @@ public class SSockChannel implements IAcceptor {
 	}
 
 	@Override
-	public Error accept(SelectionKey selKey, int opts) {
-		if (!mAlive && selKey.isValid()) {
+	public synchronized Error accept(SelectionKey selKey, int opts) {
+		if (!mAlive || !selKey.isValid()) {
 			Log.e(getTag(), "accept>>> channel has died.");
 			return null;
 		}

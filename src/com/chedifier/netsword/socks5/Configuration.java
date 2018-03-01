@@ -16,14 +16,14 @@ public class Configuration {
 	public static final String LOCAL_PORT 	= "local_port";
 	
 	public static final String CHUNKSIZE 	= "chunk_size";
+	public static final int DEFAULT_CHUNKSIZE = 1<<18;
 	public static final String BUFFER_SIZE 	= "buffer_size";
+	public static final int DEFAULT_BUFFERSIZE = DEFAULT_CHUNKSIZE<<1;
 	
 	public static final String LOG_PATH 		= "log_directory";
 	public static final String LOG_LEVL 		= "log_level";
 	
 	private static final String SETTING_PATH = "./Socks5/settings.txt";
-	public static final int DEFAULT_CHUNKSIZE = 1<<20;
-	public static final int DEFAULT_BUFFERSIZE = DEFAULT_CHUNKSIZE<<1;
 	
 	public static final String DEFAULT_LOG_PATH = "./Socks5/Log";
 	

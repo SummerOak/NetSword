@@ -17,7 +17,9 @@ public enum Error {
 	E_S5_RELAY_ENCRYPT_FAILED(12,"encrypt failed"),
 	E_S5_RELAY_DECRYPT_FAILED(13,"decrypt failed"),
 	E_S5_OUT_BUFFER_FULL_FILLED(14,"out buffer full filled"),
-	E_S5_CHANNEL_DEAD(15,"channel dead");
+	E_S5_CHANNEL_DEAD(15,"channel dead"),
+	E_S5_SOCKET_ERROR_INIT(16,"init err"),
+	E_S5_SOCKET_PARCEL_NOT_FINISH(17,"uncomplete parcel");
 	
 	private int type;
 	private String msg;
@@ -32,6 +34,15 @@ public enum Error {
 	
 	public String getMessage() {
 		return this.msg;
+	}
+	
+	public static Error valueOf(int type) {
+		for(Error e:Error.values()) {
+			if(e.getType() == type) {
+				return e;
+			}
+		}
+		return null;
 	}
 	
 }

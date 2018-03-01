@@ -11,9 +11,9 @@ import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.NetUtils;
 import com.chedifier.netsword.base.StringUtils;
 import com.chedifier.netsword.cipher.Cipher;
-import com.chedifier.netsword.cipher.Cipher.DecryptResult;
 import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
+import com.chedifier.netsword.memory.ByteBufferPool;
 
 public class S5ConnStage extends AbsS5Stage{
 	private ConnInfo mConnInfo = new ConnInfo();
@@ -52,12 +52,24 @@ public class S5ConnStage extends AbsS5Stage{
 						return;
 					}
 					
-					byte[] data = Cipher.encrypt(buffer.array(), 0, buffer.position());
-					if(getChannel().writeToBuffer(true, data) == data.length) {
-						buffer.clear();
+					int estLen = Cipher.estimateEncryptLen(buffer.position(), getChannel().getChunkSize());
+					ByteBuffer outBuffer = ByteBufferPool.obtain(estLen);
+					if(outBuffer != null && outBuffer.remaining() >= estLen) {
+						if(Cipher.encrypt(buffer.array(), 0, buffer.position(),getChannel().getChunkSize(),outBuffer) > 0) {
+							outBuffer.flip();
+							int l = outBuffer.remaining();
+							if(getChannel().writeToBuffer(true, outBuffer) == l) {
+								buffer.clear();
+							}else {
+								Log.e(getTag(), "send conn info to server failed.");
+							}
+						}else {
+							Log.e(getTag(), "encrypt data failed.");
+						}
 					}else {
-						Log.e(getTag(), "send conn info to server failed.");
+						Log.e(getTag(), "obtain out buffer for encrypt failed.");
 					}
+					ByteBufferPool.recycle(outBuffer);
 				}else {
 					Log.e(getTag(), "build conn info failed.");
 					notifyError(Error.E_S5_CONN_BUILD_CONN_INFO_FAILED);
@@ -65,11 +77,15 @@ public class S5ConnStage extends AbsS5Stage{
 				}
 			}else {
 				Log.d(getTag(), "decrypt buffer: " + StringUtils.toRawString(buffer.array(),0,buffer.position()));
-				DecryptResult decResult = Cipher.decrypt(buffer.array(), 0, buffer.position());
-				if(decResult != null && decResult.origin != null && decResult.origin.length > 0 && decResult.decryptLen > 0) {
-					byte[] origin = decResult.origin;
-					Log.i(getTag(),"recv conn info: " + StringUtils.toRawString(origin));
-					int buildConnInfoResult = buildConnInfo(mConnInfo,origin, 0, origin.length);
+				ByteBuffer outBuffer = ByteBufferPool.obtain(Cipher.estimateDecryptLen(buffer.position(),getChannel().getChunkSize()));
+				if(outBuffer == null) {
+					Log.e(getTag(), "obtain outBuffer failed");
+					return ;
+				}
+				int dl = Cipher.decrypt(buffer.array(), 0, buffer.position(),getChannel().getChunkSize(),outBuffer);
+				if(dl > 0) {
+					Log.i(getTag(),"recv conn info: " + StringUtils.toRawString(outBuffer.array(),0,outBuffer.position()));
+					int buildConnInfoResult = buildConnInfo(mConnInfo,outBuffer.array(), 0, outBuffer.position());
 					if(buildConnInfoResult > 0) {
 						notifyConnInfo();
 						Log.d(getTag(), "build conn info success.");
@@ -82,7 +98,7 @@ public class S5ConnStage extends AbsS5Stage{
 							if(remoteChannel != null) {
 								mConnInfo.netAddr = remoteAddr;
 								getChannel().setDest(remoteChannel);
-								ByteBuffer rep = ByteBuffer.wrap(new byte[1024]);
+								ByteBuffer rep = ByteBufferPool.obtain(256);
 								byte addrType = mConnInfo.addrInfo.addrtp;
 								rep.put(new byte[]{0x05,0x00,0x00,addrType});
 								if(addrType == 0x03) {									
@@ -90,29 +106,44 @@ public class S5ConnStage extends AbsS5Stage{
 								}
 								rep.put(mConnInfo.addrInfo.addr);
 								rep.put(mConnInfo.addrInfo._port);
-								byte[] data = Cipher.encrypt(rep.array(),0,rep.position());
 								
-								if(getChannel().writeToBuffer(false, data) == data.length) {
-									getChannel().cutBuffer(buffer, decResult.decryptLen);
-									forward();
-									return;
+								int estLen = Cipher.estimateEncryptLen(rep.position(),getChannel().getChunkSize());
+								ByteBuffer outResult  = ByteBufferPool.obtain(estLen);
+								if(outResult != null && outResult.remaining() >= estLen) {
+									int el = Cipher.encrypt(rep.array(),0,rep.position(),getChannel().getChunkSize(),outResult);
+									if(el > 0) {
+										outResult.flip();
+										int l = outResult.remaining();
+										if(getChannel().writeToBuffer(false, outResult) == l) {
+											getChannel().cutBuffer(buffer, dl);
+											forward();
+										}else {
+											Log.e(getTag(), "send conn feedback to local failed.");
+										}
+									}else {
+										Log.e(getTag(),"decrypt failed.");
+									}
+									
+								}else {
+									Log.e(getTag(), "obtain out buffer for encrypt failed");
 								}
+								ByteBufferPool.recycle(outResult);
+								ByteBufferPool.recycle(rep);
 							}else {
 								Log.e(getTag(), "bind remote failed: " + remoteAddr);
 								notifyError(Error.E_S5_CONN_BIND_REMOTE);
-								return;
 							}
 						}else {
 							Log.e(getTag(), "receive wrong connect request.");
 							notifyError(Error.E_S5_CONN_BIND_REMOTE);
-							return;
 						}
 					}else if(buildConnInfoResult < 0) {
 						Log.e(getTag(), "build conn info failed.");
 						notifyError(Error.E_S5_CONN_BUILD_CONN_INFO_FAILED);
-						return;
 					}
 				}
+				
+				ByteBufferPool.recycle(outBuffer);
 			}
 			
 			return;
@@ -143,14 +174,25 @@ public class S5ConnStage extends AbsS5Stage{
 			if((opts&SelectionKey.OP_READ) > 0) {
 				ByteBuffer buffer = getChannel().getDestInBuffer();
 				Log.i(getTag(),"recv conn from server: " + StringUtils.toRawString(buffer.array(), buffer.position()));
-				DecryptResult decrypt = Cipher.decrypt(buffer.array(), 0, buffer.position());
-				if(decrypt != null && decrypt.origin != null && decrypt.origin.length > 0 && decrypt.decryptLen > 0) {
-					if(getChannel().writeToBuffer(false, decrypt.origin) == decrypt.origin.length) {
-						getChannel().cutBuffer(buffer, decrypt.decryptLen);
-						
-						forward();
+				ByteBuffer outBuffer = ByteBufferPool.obtain(Cipher.estimateDecryptLen(buffer.position(),getChannel().getChunkSize()));
+				if(outBuffer != null) {
+					int dl = Cipher.decrypt(buffer.array(), 0, buffer.position(),getChannel().getChunkSize(),outBuffer);
+					if(dl > 0) {
+						outBuffer.flip();
+						int ll = outBuffer.remaining();
+						if(getChannel().writeToBuffer(false, outBuffer) == ll) {
+							getChannel().cutBuffer(buffer, dl);
+							
+							forward();
+						}else {
+							Log.e(getTag(), "write conn info to client failed");
+						}
 					}
+				}else {
+					Log.e(getTag(), "obtain out buffer for decrypt failed.");
 				}
+				
+				ByteBufferPool.recycle(outBuffer);
 				
 				return;
 			}

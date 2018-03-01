@@ -17,13 +17,15 @@ import com.chedifier.netsword.base.ObjectPool.IConstructor;
 import com.chedifier.netsword.iface.IProxyListener;
 import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.iface.SProxyIface;
+import com.chedifier.netsword.memory.ByteBufferPool;
+import com.chedifier.netsword.memory.ByteBufferPool.IMemInfoListener;
 import com.chedifier.netsword.metrics.ISpeedListener;
 import com.chedifier.netsword.metrics.SpeedMetrics;
 import com.chedifier.netsword.socks5.AbsS5Stage.ICallback;
 import com.chedifier.netsword.socks5.AcceptorWrapper.IAcceptor;
 import com.chedifier.netsword.socks5.SSockChannel.ITrafficEvent;
 
-public class SProxy implements IAcceptor{
+public class SProxy implements IAcceptor,IMemInfoListener{
 
 	private final String TAG;
 
@@ -34,6 +36,7 @@ public class SProxy implements IAcceptor{
 	private boolean mIsLocal;
 	
 	private int mChannelBufferSize;
+	private int mChunkSize;
 	private boolean mWorking = false;
 	private String mProxyHost = null;
 	private int mProxyPort;
@@ -78,6 +81,8 @@ public class SProxy implements IAcceptor{
 
 		Log.d(TAG, "buffer size is " + mChannelBufferSize);
 		
+		mChunkSize = Configuration.getConfigInt(Configuration.CHUNKSIZE, Configuration.DEFAULT_CHUNKSIZE);
+		
 		init();
 		
 		
@@ -104,7 +109,7 @@ public class SProxy implements IAcceptor{
 	
 	private void init() {
 		AcceptorWrapper.init();
-		
+		ByteBufferPool.addListener(this);
 	}
 	
 	private synchronized int generateConnectionId() {
@@ -188,7 +193,6 @@ public class SProxy implements IAcceptor{
 				SocketChannel sc = mSocketChannel.accept();
 				if(sc != null) {		
 					mRelayerPool.obtain(sc);
-//					new Relayer(sc);
 				}
 			} catch (Throwable e) {
 				ExceptionHandler.handleException(e);
@@ -220,15 +224,16 @@ public class SProxy implements IAcceptor{
 			Messenger.notifyMessage(mListener, IProxyListener.RECV_CONN,mConnId, clientAddr);
 			
 			incConnection();
-			mChannel = new SSockChannel(mSelector,mChannelBufferSize);
-			mChannel.setConnId(mConnId);
-			AbsS5Stage stage = new S5InitStage(mChannel, mIsLocal, this);
-			stage.setConnId(mConnId);
-			stage.start();
 			
+			mChannel = new SSockChannel(mSelector,mChannelBufferSize,mChunkSize);
+			mChannel.setConnId(mConnId);
 			mChannel.setSource(conn);
 			mChannel.setTrafficListener(this);
 			mMetrics = new SpeedMetrics(this);
+			
+			AbsS5Stage stage = new S5InitStage(mChannel, mIsLocal, this);
+			stage.setConnId(mConnId);
+			stage.start();
 			
 			if(mIsLocal) {
 				try {
@@ -255,7 +260,10 @@ public class SProxy implements IAcceptor{
 			}
 			
 			mAlive = false;
+			
 			mChannel.destroy();
+			mChannel = null;
+			
 			decConnection();
 			
 			Messenger.notifyMessage(mListener, IProxyListener.STATE_UPDATE, mConnId, SProxyIface.STATE.TERMINATE);
@@ -326,6 +334,11 @@ public class SProxy implements IAcceptor{
 	
 	public static final String dumpInfo() {
 		return "alive connections: " + sAliveConnections;
+	}
+
+	@Override
+	public void onMemoryInfo(long pool, long total) {
+		Messenger.notifyMessage(mListener, IProxyListener.MEMORY_INFO, pool,pool);
 	}
 
 }

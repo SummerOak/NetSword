@@ -34,15 +34,16 @@ public class ObjectPool<T> {
 		}
 	}
 	
-	public void recycle(T o) {
+	public boolean recycle(T o) {
 		if(o != null) {
 			synchronized (mPool) {
 				if(mPool.size() < mSize && !mPool.contains(o)) {
 //					Log.d(TAG,"release " + System.identityHashCode(o));
-					mPool.add(o);
+					return mPool.add(o);
 				}
 			}
 		}
+		return false;
 	}
 	
 	public static interface IConstructor<T>{

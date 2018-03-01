@@ -243,6 +243,17 @@ public class Socks5 implements IProxyListener{
 				break;
 			}
 			
+			case IProxyListener.MEMORY_INFO:{
+				if(params != null) {
+					if(params.length > 1 && params[0] instanceof Long && params[1] instanceof Long) {
+						long pool = (long)params[0];
+						long total = (long)params[1];
+						mSwordUI.updateMem(pool, total);
+					}
+				}
+				break;
+			}
+			
 			default:break;
 		}
 		

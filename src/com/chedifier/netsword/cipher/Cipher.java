@@ -1,94 +1,117 @@
 package com.chedifier.netsword.cipher;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.chedifier.netsword.base.ArrayUtils;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
-import com.chedifier.netsword.socks5.Configuration;
+import com.chedifier.netsword.memory.ByteBufferPool;
 
 public class Cipher {
 	private static final String TAG = "Cipher";
-	private static IProguarder sP = new ShiftProguarder();
-	private static IProguarder sP2 = new PaddingProguarder();
 	
-	private static final int BLOCK_SIZE = 255;
-	private static int sChunkSize = Configuration.DEFAULT_CHUNKSIZE;
+	private static List<IProguarder> sPs = new ArrayList<>();
 	
-	public static void init() {
-		int chunkSize = Configuration.getConfigInt(Configuration.CHUNKSIZE, Configuration.DEFAULT_CHUNKSIZE);
-		if(256 < chunkSize && chunkSize <= (Configuration.DEFAULT_CHUNKSIZE << 1)) {
-			sChunkSize = chunkSize;
-		}
-		
-		Log.d(TAG, "chunk size: " + sChunkSize);
+	static{
+		sPs.add(new ShiftProguarder());
+		sPs.add(new PaddingProguarder());
 	}
 	
-	public static byte[] encrypt(byte[] origin,int offset ,int len) {
-		if(origin != null && ArrayUtils.isValidateRange(origin.length, offset, len)) {
+	private static final int BLOCK_SIZE = 255;
+	
+	/**
+	 * encrypt origin to result 
+	 * @param origin
+	 * @param offset
+	 * @param len
+	 * @param chunkSize
+	 * @param result
+	 * @return the len of data be encrypted
+	 */
+	public static int encrypt(byte[] origin,int offset ,int len,int chunkSize,ByteBuffer outBuffer) {
+		int s = 0;
+		if(origin != null && ArrayUtils.isValidateRange(origin.length, offset, len) && outBuffer != null) {
 			
-			ByteBuffer buffer = ByteBuffer.allocate(len + ((len/sChunkSize + 1)<<8));
-			int s = 0;
-			while(s < len) {
-				int l = len - s;
-				if(l > sChunkSize) {
-					l = sChunkSize;
-				}
-				
-				byte[] encrypted1 = sP.encode(origin, offset+s, l);
-				byte[] encrypted = sP2.encode(encrypted1);
-				if(encrypted == null || encrypted.length <= 0) {
-					Log.e(TAG, "encrypt>> block failed." + StringUtils.toRawString(origin,offset+s,l));
-					return null;
-				}
-				
-				byte[] pack = pack(encrypted);
-				if(pack != null && pack.length > 0) {
-					buffer.put(pack);
-				}else {
-					Log.e(TAG, "encrypt>>>pack chunk failed:" + StringUtils.toRawString(encrypted));
-				}
-				
-				s += l;
+			int estLen = estimateEncryptLen(len,chunkSize);
+			if(estLen > outBuffer.remaining()) {
+				Log.e(TAG, "encrypt failed,not enought buffer to store result");
+				return s;
 			}
 			
-			byte[] result = new byte[buffer.position()];
-			System.arraycopy(buffer.array(), 0, result, 0, result.length);
+			ByteBuffer encodedChunk = ByteBufferPool.obtain(estLen);
+			ByteBuffer packedChunk = ByteBufferPool.obtain(estimatePackLen(estLen));
+			while(s < len) {
+				int l = len - s;
+				if(l > chunkSize) {
+					l = chunkSize;
+				}
+				
+				encodedChunk.clear();
+				boolean encodeResult = proguard(sPs, origin, offset+s, l, encodedChunk);
+				if(!encodeResult) {
+					Log.e(TAG, "encrypt>> block failed." + StringUtils.toRawString(origin,offset+s,l));
+					break;
+				}
+				
+				packedChunk.clear();
+				boolean packResult = pack(encodedChunk.array(),0,encodedChunk.position(),packedChunk);
+				if(packResult) {
+					packedChunk.flip();
+					outBuffer.put(packedChunk);
+					s += l;
+				}else {
+					Log.e(TAG, "encrypt>>>pack chunk failed:" + StringUtils.toRawString(encodedChunk.array(),0,encodedChunk.position()));
+					break;
+				}
+			}
+			
+			ByteBufferPool.recycle(packedChunk);
+			ByteBufferPool.recycle(encodedChunk);
+			
 //			Log.t(TAG, "encrypt>> data: " + "len " + result.length + " > " + StringUtils.toRawString(result));
-			return result;
+			return s;
 		}else {
 			Log.e(TAG, "encrypt>> invalidate input.");
 		}
 		
-		return null;
+		return s;
 	}
 	
-	public static DecryptResult decrypt(byte[] packs,int offset,int len) {
+	/**
+	 * 
+	 * @param packs
+	 * @param offset
+	 * @param len
+	 * @param chunkSize
+	 * @param outBuffer
+	 * @return the len of date be decrypted in packs
+	 */
+	public static int decrypt(byte[] packs,int offset,int len,int chunkSize,ByteBuffer outBuffer) {
 		if(packs == null || !ArrayUtils.isValidateRange(packs.length, offset, len)) {
 			Log.e(TAG, "decrypt>>> invalidate input.");
-			return null;
+			return 0;
 		}
 		
-//		DecryptResult rr = new DecryptResult();
-//		rr.decryptLen = len;
-//		rr.origin = new byte[len];
-//		System.arraycopy(packs, offset, rr.origin, 0, len);
-//		return rr;
+		if(outBuffer != null && outBuffer.remaining() < estimateDecryptLen(len, chunkSize)) {
+			Log.e(TAG, "decrypt failed,not enought buffer to store result");
+			return 0;
+		}
 		
-//		Log.t(TAG, "decrypt " + len + ": " + StringUtils.toRawString(packs, offset, len));
-		
-		ByteBuffer buffer = ByteBuffer.allocate(len);
-		byte[] data = new byte[sChunkSize/BLOCK_SIZE + sChunkSize + 1 + 255];
+		ByteBuffer chunk = ByteBufferPool.obtain(chunkSize/BLOCK_SIZE + chunkSize + 1 + 255);
+		ByteBuffer decodedChunk = ByteBufferPool.obtain(len);
 		
 		int l = 0;//location of packs
 		int tl = 0;
 		boolean completed = true;
 		while(l < len) {
-			int d = 0;int b = 0;completed = true;
+			int d = 0;completed = true;
+			chunk.clear();
 			while(l < len) {
 				d = (packs[offset+l]&0xFF);
 				
-				Log.d(TAG, "sChunkSize " + sChunkSize + " l " + l + " b " + b + " d " + d + " len " + len + " packs.len " + packs.length + " data.len " + data.length);
+				Log.d(TAG, "sChunkSize " + chunkSize + " l " + l + " b " + chunk.position() + " d " + d + " len " + len + " packs.len " + packs.length + " chunk.len " + chunk.capacity());
 				
 				if(++l+d > len) {
 					completed = false;
@@ -99,8 +122,8 @@ public class Cipher {
 					break;
 				}
 				
-				System.arraycopy(packs, l + offset, data, b, d);
-				l += d; b += d;
+				chunk.put(packs,l+offset,d);
+				l += d;
 				if(d < BLOCK_SIZE) {
 					break;
 				}
@@ -111,75 +134,189 @@ public class Cipher {
 				break;
 			}
 			
-			if(b > 0) {
-				byte[] temp1 = sP2.decode(data, 0, b);
-				byte[] temp = sP.decode(temp1);
-				if(temp == null || temp.length <= 0) {
-					Log.e(TAG, "decrypt>>> decode block failed: " + StringUtils.toRawString(data,0,b));
-					return null;
+			if(chunk.position() > 0) {
+				decodedChunk.clear();
+				boolean deProguardResult = deProguard(sPs, chunk.array(), 0, chunk.position(), decodedChunk);
+				if(!deProguardResult) {
+					Log.e(TAG, "decrypt>>> decode block failed: " + StringUtils.toRawString(chunk.array(),0,chunk.position()));
+					break;
+				}else {
+					decodedChunk.flip();
+					outBuffer.put(decodedChunk);
+					tl = l;
+					continue;
 				}
-				
-				buffer.put(temp);
-				tl = l;
-				continue;
 			}
 			
 			break;
 		}
 		
-		if(!completed) {
-			return null;
+		ByteBufferPool.recycle(chunk);
+		ByteBufferPool.recycle(decodedChunk);
+		
+		if(!completed && tl <= 0) {
+			return 0;
 		}
 		
-		if(buffer.position() > 0) {
-			DecryptResult result = new DecryptResult();
-			result.decryptLen = tl;
-			result.origin = new byte[buffer.position()];
-			System.arraycopy(buffer.array(), 0, result.origin, 0, result.origin.length);
-			return result;
+		if(tl > 0) {
+			return tl;
 		}
 		
 		Log.e(TAG, "decrypt>>> decode packs failed. " + " processed " + l + "," + tl + " total len " + len);
 		
-		return null;
+		return 0;
 	}
 	
-	private static byte[] pack(byte[] origin) {
-		if(origin != null) {
-			return pack(origin,0,origin.length);
-		}
-		return null;
+	private static int estimatePackLen(int len) {
+		return (len/BLOCK_SIZE) + 1 + len;
 	}
 	
-	private static byte[] pack(byte[] origin,int offset,int len) {
+	private static boolean pack(byte[] origin,int offset,int len,ByteBuffer outBuffer) {
 		if(origin != null && ArrayUtils.isValidateRange(origin.length, offset, len)) {
-			byte[] packed = new byte[(len/BLOCK_SIZE) + 1 + len];
+			int ll = estimatePackLen(len);
+			if(outBuffer.remaining() < ll) {
+				return false;
+			}
+			
 			int l = len;
 			int i = 0;
 			while(l > 0) {
 				int b = l>BLOCK_SIZE?BLOCK_SIZE:l;
-				packed[i++] = (byte)(b&0xFF);
-				System.arraycopy(origin, offset+len-l, packed, i, b);
+				outBuffer.put((byte)(b&0xFF));
+				outBuffer.put(origin, offset+len-l, b);
 				l -= b;
-				i += b;
+				i += b + 1;
 			}
 			
-			while(i<packed.length) {
-				packed[i++] = 0;
+			if(i<ll) {
+				outBuffer.put((byte)0);
 			}
 			
-			return packed;
+			return true;
 		}
 		
-		return null;
+		return false;
 	}
 	
-	public static byte[] encrypt(byte[] origin) {
-		return encrypt(origin,0,origin.length);
+	private static boolean deProguard(List<IProguarder> ps,byte[] origin,int offset,int len,ByteBuffer outBuffer) {
+		if(ps == null || outBuffer == null) {
+			return false;
+		}
+		
+		boolean result = true;
+		int l = len;
+		ByteBuffer buffer = null;
+		for(int i=ps.size()-1;i>=0;i--) {
+			IProguarder p = ps.get(i);
+			if(i == 0) {
+				if(buffer == null) {
+					result = result && p.decode(origin, offset, len, outBuffer);
+				}else {
+					result = result && p.decode(buffer.array(), 0, buffer.position(), outBuffer);
+					ByteBufferPool.recycle(buffer);
+				}
+			}else {				
+				ByteBuffer next = ByteBufferPool.obtain(p.estimateDecodeLen(l));
+				if(buffer == null) {
+					result = result && p.decode(origin, offset, len, next);
+				}else {
+					result = result && p.decode(buffer.array(), 0,buffer.position(),next);
+					ByteBufferPool.recycle(buffer);
+				}
+				buffer = next;
+			}
+			
+			if(!result) {
+				break;
+			}
+		}
+		
+		if(!result) {
+			Log.e(TAG, "deProguard failed.");
+		}
+		
+		Log.t(TAG, "deProguard_origin: " + StringUtils.toRawString(origin,offset,len));
+		Log.t(TAG, "deProguard: " + StringUtils.toRawString(outBuffer.array(),0,outBuffer.position()));
+		
+		return result;
 	}
 	
-	public static DecryptResult decrypt(byte[] code) {
-		return decrypt(code, 0, code.length);
+	private static boolean proguard(List<IProguarder> ps,byte[] origin,int offset,int len,ByteBuffer outBuffer) {
+		if(ps == null || outBuffer == null) {
+			return false;
+		}
+		
+		boolean result = true;
+		int l = len;
+		ByteBuffer buffer = null;
+		for(int i=0;i<ps.size();i++) {
+			IProguarder p = ps.get(i);
+			if(i == ps.size() -1) {
+				if(buffer == null) {
+					result = result && p.encode(origin, offset, len, outBuffer);
+				}else {
+					result = result && p.encode(buffer.array(), 0, buffer.position(), outBuffer);
+					ByteBufferPool.recycle(buffer);
+				}
+			}else {				
+				ByteBuffer next = ByteBufferPool.obtain(p.estimateEncodeLen(l));
+				if(buffer == null) {
+					result = result && p.encode(origin, offset, len, next);
+				}else {
+					result = result && p.encode(buffer.array(), 0,buffer.position(),next);
+					ByteBufferPool.recycle(buffer);
+				}
+				buffer = next;
+			}
+			
+			if(!result) {
+				break;
+			}
+		}
+		
+		if(!result) {
+			Log.e(TAG, "deProguard failed.");
+		}
+		
+		return result;
+	}
+	
+	private static int estimateProguardLen(List<IProguarder> ps,int len) {
+		int rlt = len;
+		if(ps != null) {
+			for(IProguarder p:ps) {
+				rlt = p.estimateEncodeLen(rlt);
+			}
+		}
+		return rlt;
+	}
+	
+	private static int estimateDeProguardLen(List<IProguarder> ps,int len) {
+		int rlt = len;
+		if(ps != null) {
+			for(int i=ps.size()-1;i>=0;i--) {
+				rlt = ps.get(i).estimateDecodeLen(rlt);
+			}
+		}
+		return rlt;
+	}
+	
+	public static int encrypt(byte[] origin,int chunkSize,ByteBuffer outBuffer) {
+		return encrypt(origin,0,origin.length,chunkSize,outBuffer);
+	}
+	
+	public static int decrypt(byte[] code,int chunkSize,ByteBuffer outBuffer) {
+		return decrypt(code, 0, code.length,chunkSize,outBuffer);
+	}
+	
+	public static int estimateEncryptLen(int len,int chunkSize) {
+		int nc = len/chunkSize + 1;
+		int nb = chunkSize/BLOCK_SIZE + 1;
+		return len + (nc<<8) + nc + nb;
+	}
+	
+	public static int estimateDecryptLen(int len,int chunkSize) {
+		return len;
 	}
 	
 	public static class DecryptResult{

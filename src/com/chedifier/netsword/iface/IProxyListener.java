@@ -76,6 +76,11 @@ public interface IProxyListener {
 	 * params: int aliveNum
 	 */
 	public static final int ALIVE_NUM		= 14;
+	
+	/**
+	 * params: long pool,long total
+	 */
+	public static final int MEMORY_INFO		= 15;
 
 	Object onMessage(int msgId,Object... params);
 	

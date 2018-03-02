@@ -19,8 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import com.chedifier.netsword.base.Log;
-import com.chedifier.netsword.base.StringUtils;
+import com.chedifier.ladder.base.Log;
+import com.chedifier.ladder.base.StringUtils;
 
 
 public class SwordUI implements KeyListener{

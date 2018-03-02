@@ -1,10 +1,10 @@
 package com.chedifier.netsword;
 
-import com.chedifier.netsword.base.Log;
-import com.chedifier.netsword.iface.CmdId;
-import com.chedifier.netsword.iface.Error;
-import com.chedifier.netsword.iface.IProxyListener;
-import com.chedifier.netsword.iface.SProxyIface;
+import com.chedifier.ladder.base.Log;
+import com.chedifier.ladder.iface.CmdId;
+import com.chedifier.ladder.iface.Error;
+import com.chedifier.ladder.iface.IProxyListener;
+import com.chedifier.ladder.iface.SProxyIface;
 import com.chedifier.netsword.swing.ConnsTableModel.COLUMN;
 import com.chedifier.netsword.swing.SwordUI;
 import com.chedifier.netsword.swing.SwordUI.ISwordUIEvent;

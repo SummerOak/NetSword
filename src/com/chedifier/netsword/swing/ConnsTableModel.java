@@ -7,8 +7,8 @@ import java.util.HashMap;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
-import com.chedifier.netsword.base.Log;
-import com.chedifier.netsword.iface.SProxyIface.STATE;
+import com.chedifier.ladder.base.Log;
+import com.chedifier.ladder.iface.SProxyIface.STATE;
 
 public class ConnsTableModel extends AbstractTableModel{
 	private static final String TAG = "ConnsTableModel";

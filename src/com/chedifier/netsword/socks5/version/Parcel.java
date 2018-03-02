@@ -89,7 +89,6 @@ public class Parcel {
 	}
 	
 	public void writeString(String data) {
-		Log.t(TAG, "writeString:" + data);
 		byte[] raw = data==null?null:data.getBytes(StandardCharsets.UTF_8);
 		int len = raw==null?0:raw.length;
 		writeInt(len);
@@ -104,7 +103,6 @@ public class Parcel {
 			len = readInt();
 		}catch (Exception e) {
 			ExceptionHandler.handleException(e);
-			Log.t(TAG, "readString failed:" + e.getMessage());
 			return defValue;
 		}
 		
@@ -112,7 +110,6 @@ public class Parcel {
 			byte[] raw = readBytes(len);
 			if(raw != null) {
 				String value = new String(raw,StandardCharsets.UTF_8);
-				Log.t(TAG, "readString success:" + value);
 				return value;
 			}else {
 				position -= 4;
@@ -196,6 +193,12 @@ public class Parcel {
 	public interface Parcelable{
 		Parcel parcel();
 		Parcelable parcel(Parcel parcel);
+	}
+	
+	public static final class DATA_TYPE{
+		public static final int INIT_INFO = 0;
+		public static final int INIT_FEEDBACK = 1;
+		public static final int COMMAND = 2;
 	}
 	
 }

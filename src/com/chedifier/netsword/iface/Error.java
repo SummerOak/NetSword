@@ -19,7 +19,8 @@ public enum Error {
 	E_S5_OUT_BUFFER_FULL_FILLED(14,"out buffer full filled"),
 	E_S5_CHANNEL_DEAD(15,"channel dead"),
 	E_S5_SOCKET_ERROR_INIT(16,"init err"),
-	E_S5_SOCKET_PARCEL_NOT_FINISH(17,"uncomplete parcel");
+	E_S5_SOCKET_PARCEL_NOT_FINISH(17,"uncomplete parcel"),
+	E_S5_EXTERNAL_CMD_CHECK_FAILED(18,"not external command");
 	
 	private int type;
 	private String msg;
@@ -43,6 +44,11 @@ public enum Error {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + "("+type+")"+msg;
 	}
 	
 }

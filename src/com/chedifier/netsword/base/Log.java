@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.chedifier.netsword.base.JobScheduler.Job;
+import com.chedifier.netsword.base.Log.ICallback;
+import com.chedifier.netsword.memory.ByteBufferPool;
 import com.chedifier.netsword.socks5.Configuration;
 import com.chedifier.netsword.socks5.SProxy;
 
@@ -138,6 +140,16 @@ public class Log {
 			}
 		});
 		
+	}
+	
+	public static final void dumpBeforeExit(ICallback callback) {
+		final String TAG = "dumper";
+		Log.r(TAG, "\n\n\n\n----------------------run-info-begin-------------------");
+		Log.r(TAG, "SProxy info: " + SProxy.dumpInfo());
+		Log.r(TAG, ByteBufferPool.dumpInfo());
+		Log.r(TAG, "----------------------run-info-end---------------------\n\n\n\n");
+		
+		Log.dumpLog2File(callback);
 	}
 	
 	public interface ICallback{

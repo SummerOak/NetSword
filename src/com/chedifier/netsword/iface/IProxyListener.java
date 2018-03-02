@@ -78,7 +78,7 @@ public interface IProxyListener {
 	public static final int ALIVE_NUM		= 14;
 	
 	/**
-	 * params: long pool,long total
+	 * params: long inUsing,long total
 	 */
 	public static final int MEMORY_INFO		= 15;
 

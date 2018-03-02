@@ -13,6 +13,12 @@ public class ObjectPool<T> {
 		mConstructor = constructor;
 		mSize = size;
 	}
+	
+	public int getPoolSize() {
+		synchronized (mPool) {
+			return mPool.size();
+		}
+	}
 
 	public T obtain(Object... params) {
 		if(mConstructor == null) {
@@ -37,10 +43,13 @@ public class ObjectPool<T> {
 	public boolean recycle(T o) {
 		if(o != null) {
 			synchronized (mPool) {
-				if(mPool.size() < mSize && !mPool.contains(o)) {
-//					Log.d(TAG,"release " + System.identityHashCode(o));
-					return mPool.add(o);
+				for(T t:mPool) {
+					if(t == o) {
+						return false;
+					}
 				}
+				
+				return mPool.add(o);
 			}
 		}
 		return false;

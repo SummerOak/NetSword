@@ -99,7 +99,7 @@ public class Cipher {
 			return 0;
 		}
 		
-		ByteBuffer chunk = ByteBufferPool.obtain(chunkSize/BLOCK_SIZE + chunkSize + 1 + 255);
+		ByteBuffer chunk = ByteBufferPool.obtain(estimateEncryptLen(chunkSize, chunkSize));
 		ByteBuffer decodedChunk = ByteBufferPool.obtain(len);
 		
 		int l = 0;//location of packs
@@ -235,8 +235,8 @@ public class Cipher {
 			Log.e(TAG, "deProguard failed.");
 		}
 		
-		Log.t(TAG, "deProguard_origin: " + StringUtils.toRawString(origin,offset,len));
-		Log.t(TAG, "deProguard: " + StringUtils.toRawString(outBuffer.array(),0,outBuffer.position()));
+		Log.i(TAG, "deProguard_origin: " + StringUtils.toRawString(origin,offset,len));
+		Log.i(TAG, "deProguard: " + StringUtils.toRawString(outBuffer.array(),0,outBuffer.position()));
 		
 		return result;
 	}

@@ -5,6 +5,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -14,8 +15,10 @@ import com.chedifier.netsword.base.IOUtils;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.ObjectPool;
 import com.chedifier.netsword.base.ObjectPool.IConstructor;
-import com.chedifier.netsword.iface.IProxyListener;
+import com.chedifier.netsword.external.ExternalCmdHandler;
+import com.chedifier.netsword.external.ExternalCmdHandler.Command;
 import com.chedifier.netsword.iface.Error;
+import com.chedifier.netsword.iface.IProxyListener;
 import com.chedifier.netsword.iface.SProxyIface;
 import com.chedifier.netsword.memory.ByteBufferPool;
 import com.chedifier.netsword.memory.ByteBufferPool.IMemInfoListener;
@@ -43,7 +46,10 @@ public class SProxy implements IAcceptor,IMemInfoListener{
 	private InetSocketAddress mProxyAddress;
 	
 	private ObjectPool<Relayer> mRelayerPool;
-	private static volatile long sAliveConnections = 0;
+	private static volatile long sMaxConcurrents = 0L;
+	private static volatile long sAliveConnections = 0L;
+	private static volatile long sMaxConnections = 0L;
+	private Set<Relayer> mLivingRelayers = new HashSet<Relayer>();
 	private IProxyListener mListener;
 	
 	private static final String BIRTH_TIME = DateUtils.getCurrentDate();
@@ -138,6 +144,10 @@ public class SProxy implements IAcceptor,IMemInfoListener{
 		
 		Log.r(TAG, "start success >>> listening " + mPort);
 		while(mWorking) {
+			long now = System.currentTimeMillis();
+			long cost = now;
+			
+			
 			int sel = 0;
 			try {
 				Log.d(TAG, "select next ops...");
@@ -150,6 +160,10 @@ public class SProxy implements IAcceptor,IMemInfoListener{
 				ExceptionHandler.handleException(t);
 			}
 			
+			now = System.currentTimeMillis();
+			Log.t(TAG, "cost1 " + (now - cost));
+			
+			
 			Set<SelectionKey> regKeys = mSelector.selectedKeys();
             Iterator<SelectionKey> it = regKeys.iterator();  
             while (it.hasNext()) {
@@ -160,27 +174,73 @@ public class SProxy implements IAcceptor,IMemInfoListener{
             		}
             		
 //            		Log.d(TAG, "select " + key + " ops " + key.readyOps());
+            		
+            		
+            		cost = System.currentTimeMillis();
             		if(key != null && key.attachment() instanceof IAcceptor) {
             			((IAcceptor)key.attachment()).accept(key,key.readyOps());
             		}
+            		now = System.currentTimeMillis();
+            		cost = now - cost;
+            		Log.t(TAG, "cost2 "+cost);
             }
 		}
 		
-		Messenger.notifyMessage(mListener, IProxyListener.PROXY_STOP, mIsLocal);
+		stopAllRelayer();
+		
+		Log.dumpBeforeExit(new Log.ICallback() {
+			
+			@Override
+			public void onDumpFinish() {
+				Messenger.notifyMessage(mListener, IProxyListener.PROXY_STOP, mIsLocal);
+			}
+		});
 	}
 	
-	public void stop() {
+	public void stop(String reason) {
+		Log.r(TAG, "proxy is stopping, reason: " + reason);
+		
 		mWorking = false;
+		
+		if(mSelector != null) {			
+			mSelector.wakeup();
+		}
 	}
 	
-	private synchronized void incConnection() {
-		++sAliveConnections;
+	private void stopAllRelayer() {
+		synchronized (mLivingRelayers) {
+			Set<Relayer> rs = new HashSet<Relayer>(mLivingRelayers.size());
+			rs.addAll(mLivingRelayers);
+			
+			Iterator<Relayer> itr = rs.iterator();
+			while(itr.hasNext()) {
+				itr.next().release();
+			}
+		}
+	}
+	
+	private void incConnection(Relayer r) {
+		synchronized (mLivingRelayers) {
+			++sMaxConnections;
+			++sAliveConnections;
+			if(sAliveConnections > sMaxConcurrents) {
+				sMaxConcurrents = sAliveConnections;
+			}
+			
+			mLivingRelayers.add(r);
+		}
+		
 		Log.r(TAG, "inc " + sAliveConnections);
 		Messenger.notifyMessage(mListener, IProxyListener.ALIVE_NUM, sAliveConnections);
 	}
 	
-	private synchronized void decConnection() {
-		--sAliveConnections;
+	private void decConnection(Relayer r) {
+		
+		synchronized (mLivingRelayers) {
+			--sAliveConnections;
+			mLivingRelayers.remove(r);
+		}
+		
 		Log.r(TAG, "dec " + sAliveConnections);
 		Messenger.notifyMessage(mListener, IProxyListener.ALIVE_NUM, sAliveConnections);
 	}
@@ -223,7 +283,7 @@ public class SProxy implements IAcceptor,IMemInfoListener{
 			
 			Messenger.notifyMessage(mListener, IProxyListener.RECV_CONN,mConnId, clientAddr);
 			
-			incConnection();
+			incConnection(this);
 			
 			mChannel = new SSockChannel(mSelector,mChannelBufferSize,mChunkSize);
 			mChannel.setConnId(mConnId);
@@ -238,9 +298,8 @@ public class SProxy implements IAcceptor,IMemInfoListener{
 			if(mIsLocal) {
 				try {
 					SocketChannel sc = SocketChannel.open();
-					sc.configureBlocking(false);
-					sc.connect(mProxyAddress);
 					mChannel.setDest(sc);
+					sc.connect(mProxyAddress);
 				} catch (Throwable e) {
 					Log.e(getTag(), "failed to connect to proxy server.");
 					ExceptionHandler.handleException(e);
@@ -253,7 +312,7 @@ public class SProxy implements IAcceptor,IMemInfoListener{
 			mAlive = true;
 		}
 		
-		private void release() {
+		private synchronized void release() {
 			Log.d(TAG, "release conn " + mConnId);
 			if(!mAlive) {
 				return;
@@ -264,7 +323,7 @@ public class SProxy implements IAcceptor,IMemInfoListener{
 			mChannel.destroy();
 			mChannel = null;
 			
-			decConnection();
+			decConnection(this);
 			
 			Messenger.notifyMessage(mListener, IProxyListener.STATE_UPDATE, mConnId, SProxyIface.STATE.TERMINATE);
 			
@@ -330,15 +389,22 @@ public class SProxy implements IAcceptor,IMemInfoListener{
 		public void onDestOpsUpdate(int ops) {
 			Messenger.notifyMessage(mListener,IProxyListener.DEST_INTRS_OPS, mConnId, ops);
 		}
+
 	}
 	
 	public static final String dumpInfo() {
-		return "alive connections: " + sAliveConnections;
+		StringBuilder sb = new StringBuilder(256);
+		sb.append("living connections: " + sAliveConnections)
+		.append(" , max concurrents: " + sMaxConcurrents)
+		.append(" , total connections: " + sMaxConnections).append("\n");
+		sb.append("using memory ").append(ByteBufferPool.getMemInUsing())
+		.append(" , Total memory ").append(ByteBufferPool.getMemTotal());
+		return sb.toString();
 	}
 
 	@Override
-	public void onMemoryInfo(long pool, long total) {
-		Messenger.notifyMessage(mListener, IProxyListener.MEMORY_INFO, pool,pool);
+	public void onMemoryInfo(long inUsing, long total) {
+		Messenger.notifyMessage(mListener, IProxyListener.MEMORY_INFO, inUsing,total);
 	}
 
 }

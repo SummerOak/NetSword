@@ -8,17 +8,16 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
+import javax.swing.WindowConstants;
 
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
@@ -28,7 +27,7 @@ public class SwordUI implements KeyListener{
 	private static final String TAG = "SwordUI";
 	
 	private static final int WIDNOW_WIDTH = 800;
-	private static final int WINDOW_HEIGHT = 400;
+	private static final int WINDOW_HEIGHT = 480;
 	
 	private boolean mIsLcoal;
 	private String mTitle = "NetSword";
@@ -50,6 +49,8 @@ public class SwordUI implements KeyListener{
 	
 	private ConnsTableModel mConnModel;
 	
+	private ISwordUIEvent mListener;
+	
 	public static SwordUI build() {
 		return new SwordUI();
 	}
@@ -60,10 +61,19 @@ public class SwordUI implements KeyListener{
 		mFrame.setLayout(new GridBagLayout());
 		mFrame.setSize(WIDNOW_WIDTH,WINDOW_HEIGHT);  
 		mFrame.setLocation(mDimension.width/2-mFrame.getSize().width/2, mDimension.height/2-mFrame.getSize().height/2);
-		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
+		mFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);   
 		mFrame.setResizable(false);
 		mFrame.setFocusable(true);
 		mFrame.addKeyListener(this);
+		mFrame.addWindowListener(new WindowAdapter() {
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if(mListener != null) {
+					mListener.onSwordUIEvent(ISwordUIEvent.WINDOW_CLOSE);
+				}
+			}
+		});
 		
 		mContent = new JPanel();
 		mContent.setLayout(new GridBagLayout());
@@ -73,7 +83,7 @@ public class SwordUI implements KeyListener{
 		mBaseInfo.setBackground(new Color(240,240,240));
 		GridBagConstraints cnts = new GridBagConstraints();
 		cnts.fill = GridBagConstraints.HORIZONTAL;
-		cnts.weightx = 1f;cnts.weighty = 0f;
+		cnts.weightx = 0.8f;cnts.weighty = 0f;
 		cnts.gridx = 0;cnts.gridy = 0;
 		mContent.add(mBaseInfo,cnts);
 		
@@ -95,7 +105,7 @@ public class SwordUI implements KeyListener{
 		mMaxAlive.setBackground(new Color(240,240,240));
 		cnts = new GridBagConstraints();
 		cnts.fill = GridBagConstraints.HORIZONTAL;
-		cnts.weightx = 0.3f;cnts.weighty = 0f;
+		cnts.weightx = 0.4f;cnts.weighty = 0f;
 		cnts.gridx = 2;cnts.gridy = 0;
 		cnts.gridwidth = 1;
 		
@@ -132,6 +142,10 @@ public class SwordUI implements KeyListener{
 		mFrame.add(mContent,cnts);
 	}
 	
+	public void setEventListener(ISwordUIEvent l) {
+		this.mListener = l;
+	}
+	
 	public void show() {
 		mFrame.setVisible(true);
 	}
@@ -161,7 +175,7 @@ public class SwordUI implements KeyListener{
 		
 		StringBuilder info = new StringBuilder();
 		if(mLocalPort >0 ) {
-			info.append("listening on " + mLocalPort);
+			info.append("listening " + mLocalPort);
 		}
 		
 		if(mIsLcoal) {
@@ -169,7 +183,7 @@ public class SwordUI implements KeyListener{
 				if(info.length() > 0) {
 					info.append(",");
 				}
-				info.append("proxy server(" + mProxyHost + "/" + mProxyPort + ")");
+				info.append(" server(" + mProxyHost + "/" + mProxyPort + ")");
 			}
 		}
 		
@@ -184,7 +198,7 @@ public class SwordUI implements KeyListener{
 	
 	public void updateAliveConns(long aliveConnNum) {
 		if(mAliveConnCounter != null) {
-			mAliveConnCounter.setText("Alive connections: " + String.valueOf(aliveConnNum));
+			mAliveConnCounter.setText("Living connections: " + String.valueOf(aliveConnNum));
 		}
 		
 		if(aliveConnNum > mMaxAliveNum) {
@@ -201,11 +215,11 @@ public class SwordUI implements KeyListener{
 		
 	}
 	
-	public void updateMem(long pool,long total) {
-		Log.d(TAG, "update memory, pool " + pool + " total " + total);
+	public void updateMem(long inUsing,long total) {
+		Log.d(TAG, "update memory, pool " + inUsing + " total " + total);
 		if(mMemInfo != null) {
 			synchronized (mMemInfo) {				
-				mMemInfo.setText("Mem: " + pool + " bytes");
+				mMemInfo.setText("Mem: " + inUsing + "/" + total);
 			}
 		}
 	}
@@ -214,7 +228,7 @@ public class SwordUI implements KeyListener{
 		Log.d(TAG, "updateMaxAlive, max " + max);
 		if(mMaxAlive != null) {
 			synchronized (mMaxAlive) {				
-				mMaxAlive.setText("Max alive: " + max);
+				mMaxAlive.setText("Max concurrent: " + max);
 			}
 		}
 	}
@@ -245,5 +259,14 @@ public class SwordUI implements KeyListener{
 		Log.d(TAG, "keyReleased " + e);
 	}
 	
+	public static interface ISwordUIEvent{
+		public Object onSwordUIEvent(int eventId,Object... params);
+		
+		/**
+		 * window is closing
+		 * params: none
+		 */
+		public static final int WINDOW_CLOSE = 1;
+	}
 	
 }

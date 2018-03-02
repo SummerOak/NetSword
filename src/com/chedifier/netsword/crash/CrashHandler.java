@@ -15,9 +15,11 @@ public class CrashHandler {
 			
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
-				Log.r(TAG, "SProxy info: " + SProxy.dumpInfo());
-				Log.e(TAG, "thread: " + t.getName() + "reason: " + e.getMessage() + " stack: " + ExceptionHandler.getStackTraceString(e));
-				Log.dumpLog2File(new ICallback() {
+				Log.e(TAG, "FATAL died, thread: " + (t==null?"":t.getName()) 
+						+ " reason: " + (e==null?"":e.getMessage()) 
+						+ " stack: " + ExceptionHandler.getStackTraceString(e));
+				
+				Log.dumpBeforeExit(new ICallback() {
 					
 					@Override
 					public void onDumpFinish() {

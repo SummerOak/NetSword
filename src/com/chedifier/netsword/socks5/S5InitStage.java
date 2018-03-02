@@ -47,7 +47,7 @@ public class S5InitStage extends AbsS5Stage{
 	}
 	
 	@Override
-	public void onSourceOpts(int opts) {
+	public void onSourceOpts(int opts) {		
 		if(!isLocal()) {
 			if((opts&SelectionKey.OP_READ) > 0) {
 				//step 2: proxy server read and check init info;
@@ -60,9 +60,9 @@ public class S5InitStage extends AbsS5Stage{
 				}
 				
 				int dl = Cipher.decrypt(buffer.array(), 0, infoLen,getChannel().getChunkSize(),decOutBuffer);
-				Log.t(getTag(), "recv initInfo1:" + StringUtils.toRawString(buffer.array(),infoLen));
+				Log.i(getTag(), "recv initInfo1:" + StringUtils.toRawString(buffer.array(),infoLen));
 				if(dl > 0) {
-					Log.t(getTag(), "recv initInfo:" + StringUtils.toRawString(decOutBuffer.array(),decOutBuffer.position()));
+					Log.i(getTag(), "recv initInfo:" + StringUtils.toRawString(decOutBuffer.array(),decOutBuffer.position()));
 					Error result = verifyInitInfo(decOutBuffer.array(),0,decOutBuffer.position());
 					if(result == Error.SUCCESS) {
 						//step 3: proxy server verify init info successed, send feedback to local
@@ -120,8 +120,8 @@ public class S5InitStage extends AbsS5Stage{
 				ByteBuffer outBuffer = ByteBufferPool.obtain(Cipher.estimateEncryptLen(initInfo1==null?0:initInfo1.length, getChannel().getChunkSize()));
 				int l = Cipher.encrypt(initInfo1,getChannel().getChunkSize(),outBuffer);
 				if(l > 0) {
-					Log.t(getTag(), "send initInfo1:" + StringUtils.toRawString(initInfo1));
-					Log.t(getTag(), "send initInfo:" + StringUtils.toRawString(outBuffer.array(),0,outBuffer.position()));
+					Log.i(getTag(), "send initInfo1:" + StringUtils.toRawString(initInfo1));
+					Log.i(getTag(), "send initInfo:" + StringUtils.toRawString(outBuffer.array(),0,outBuffer.position()));
 					outBuffer.flip();
 					int ll = outBuffer.remaining();
 					if(getChannel().writeToBuffer(true, outBuffer) == ll) {
@@ -181,7 +181,7 @@ public class S5InitStage extends AbsS5Stage{
 	}
 	
 	private Error parseFeedback(byte[] raw,int offset,int len,InitFeedback.V1 out) {
-		Log.t(getTag(), "parse feedback: " + StringUtils.toRawString(raw));
+		Log.i(getTag(), "parse feedback: " + StringUtils.toRawString(raw));
 		if(raw == null || raw.length <= 0) {
 			return null;
 		}
@@ -199,7 +199,6 @@ public class S5InitStage extends AbsS5Stage{
 	}
 	
 	private Error verifyInitInfo(byte[] info,int offset,int len) {
-		Log.t(getTag(), "init info: " + StringUtils.toRawString(info,offset,len));
 		if(info == null || info.length <= 0) {
 			return Error.E_S5_SOCKET_ERROR_INIT;
 		}
@@ -219,7 +218,6 @@ public class S5InitStage extends AbsS5Stage{
 	@Override
 	public void onSocketBroken(Error result) {
 		notifyError(result);
-		notifyError(Error.E_S5_SOCKET_ERROR_INIT);
 	}
 
 }

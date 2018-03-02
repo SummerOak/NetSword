@@ -138,7 +138,6 @@ public class S5VerifyStage extends AbsS5Stage{
 	@Override
 	public void onSocketBroken(Error result) {
 		notifyError(result);
-		notifyError(Error.E_S5_SOCKET_ERROR_VERIFY);
 	}
 	
 }

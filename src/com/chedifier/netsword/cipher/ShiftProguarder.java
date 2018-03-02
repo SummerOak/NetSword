@@ -69,7 +69,7 @@ public class ShiftProguarder implements IProguarder{
 			outBuffer.put((byte)(((encode[offset+i]&0xFF)>>s)|((encode[offset+i]&m&0xFF)<<(8-s))));
 		}
 		
-		Log.t(TAG, "decode: " + StringUtils.toRawString(outBuffer.array(),0,outBuffer.position()));
+		Log.i(TAG, "decode: " + StringUtils.toRawString(outBuffer.array(),0,outBuffer.position()));
 		
 		return true;
 	}

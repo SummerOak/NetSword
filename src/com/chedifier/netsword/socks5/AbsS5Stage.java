@@ -2,6 +2,7 @@ package com.chedifier.netsword.socks5;
 
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.NetUtils;
+import com.chedifier.netsword.external.ExternalCmdHandler.Command;
 import com.chedifier.netsword.iface.Error;
 import com.chedifier.netsword.socks5.SSockChannel.IChannelEvent;
 
@@ -43,6 +44,14 @@ public abstract class AbsS5Stage implements IChannelEvent{
 		return mIsLocal;
 	}
 	
+	protected int getSrcInDataSize() {
+		return getChannel().getSrcInBuffer().position();
+	}
+	
+	protected int getDestInData() {
+		return getChannel().getDestInBuffer().position();
+	}
+	
 	public void start() {
 		
 	}
@@ -68,11 +77,12 @@ public abstract class AbsS5Stage implements IChannelEvent{
 		}
 	}
 	
-	protected void forward() {
+	protected AbsS5Stage forward() {
 		AbsS5Stage next = next();
 		if(next != null) {
 			next.start();
 		}
+		return next;
 	}
 	
 	public abstract AbsS5Stage next();
@@ -83,6 +93,11 @@ public abstract class AbsS5Stage implements IChannelEvent{
 	
 	protected ICallback getCallback() {
 		return mCallback;
+	}
+	
+	@Override
+	public void onSocketBroken(Error result) {
+		notifyError(result);
 	}
 	
 	protected void notifyState(int newState,Object... params) {
@@ -103,6 +118,5 @@ public abstract class AbsS5Stage implements IChannelEvent{
 		void onConnInfo(String ip,String domain,int port);
 		void onSrcOpsUpdate(int ops);
 		void onDestOpsUpdate(int ops);
-		
 	}
 }

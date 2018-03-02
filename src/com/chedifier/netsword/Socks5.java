@@ -1,51 +1,83 @@
 package com.chedifier.netsword;
 
 import com.chedifier.netsword.base.Log;
-import com.chedifier.netsword.iface.IProxyListener;
+import com.chedifier.netsword.iface.CmdId;
 import com.chedifier.netsword.iface.Error;
+import com.chedifier.netsword.iface.IProxyListener;
 import com.chedifier.netsword.iface.SProxyIface;
 import com.chedifier.netsword.swing.ConnsTableModel.COLUMN;
 import com.chedifier.netsword.swing.SwordUI;
+import com.chedifier.netsword.swing.SwordUI.ISwordUIEvent;
 
-public class Socks5 implements IProxyListener{
+public class Socks5 implements IProxyListener,ISwordUIEvent{
 
 	private static final String TAG = "SOCKS5";
 
 	private SwordUI mSwordUI;
-	private SProxyIface mProxy;
 	
 	private int mForceServer = 0;
 	private boolean mNonUI = false;
 	
+	private boolean mStop = false;
+	
 	private Socks5(String[] args) {
 		
-		parseArgs(args);
+		if(!parseArgs(args)) {
+			printHelps();
+			return;
+		}
+		
+		SProxyIface.init("./Socks5/setting.txt");
+		
+		if(mStop) {
+			SProxyIface.sendExternCommand(mForceServer!=1, CmdId.STOP, null, "testUser", "test123");
+			return;
+		}
 		
 		if(!mNonUI) {
 			mSwordUI = SwordUI.build();
+			mSwordUI.setEventListener(this);
 			mSwordUI.show();
 		}
 
-		mProxy = SProxyIface.start("./Socks5/setting.txt", this, mForceServer);
+		SProxyIface.start(this, mForceServer);
 	}
 	
 	public static void main(String[] args) {
 		new Socks5(args);
 	}
 	
-	private void parseArgs(String[] args) {
+	private boolean parseArgs(String[] args) {
 		
 		if(args != null) {
 			for(String s:args) {
 				if("s".equals(s)) {
 					mForceServer = 1;
-				}else if("l".equals(s)) {
+				}else if("c".equals(s)) {
 					mForceServer = -1;
 				}else if("nui".equals(s)) {
 					mNonUI = true;
+				}else if("stop".equals(s)) {
+					mStop = true;
+				}else {
+					return false;
 				}
 			}
 		}
+		
+		return true;
+	}
+	
+	private void printHelps() {
+		StringBuilder sb = new StringBuilder(125);
+		sb.append("tips>>>\n");
+		sb.append("input format [c|s|nui|stop]").append("\n");
+		sb.append("c		run as client").append("\n");
+		sb.append("c		run as server").append("\n");
+		sb.append("nui	run without ui").append("\n");
+		sb.append("stop	stop running proxy").append("\n");
+		
+		Log.r(TAG, sb.toString());
 	}
 
 	@Override
@@ -79,7 +111,7 @@ public class Socks5 implements IProxyListener{
 			}
 					
 			case IProxyListener.PROXY_STOP:{
-				
+				System.exit(0);
 				break;
 			}
 			
@@ -246,9 +278,9 @@ public class Socks5 implements IProxyListener{
 			case IProxyListener.MEMORY_INFO:{
 				if(params != null) {
 					if(params.length > 1 && params[0] instanceof Long && params[1] instanceof Long) {
-						long pool = (long)params[0];
+						long inUsing = (long)params[0];
 						long total = (long)params[1];
-						mSwordUI.updateMem(pool, total);
+						mSwordUI.updateMem(inUsing, total);
 					}
 				}
 				break;
@@ -260,7 +292,15 @@ public class Socks5 implements IProxyListener{
 		return null;
 	}
 
-	
+	@Override
+	public Object onSwordUIEvent(int eventId, Object... params) {
+		switch(eventId) {
+			case ISwordUIEvent.WINDOW_CLOSE:{
+				SProxyIface.stop("window close");
+				break;
+			}
+		}
+		return null;
+	}
 
-	
 }

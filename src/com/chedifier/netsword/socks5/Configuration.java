@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+import com.chedifier.netsword.base.IOUtils;
 import com.chedifier.netsword.base.StringUtils;
 
 public class Configuration {
@@ -14,25 +15,28 @@ public class Configuration {
 	public static final String SERVER_ADDR 	= "server_address";
 	public static final String SERVER_PORT 	= "server_port";
 	public static final String LOCAL_PORT 	= "local_port";
+	public static final String COMMAND_PORT 	= "command_port";
 	
 	public static final String CHUNKSIZE 	= "chunk_size";
-	public static final int DEFAULT_CHUNKSIZE = 1<<18;
+	public static final int DEFAULT_CHUNKSIZE = 1<<12;
 	public static final String BUFFER_SIZE 	= "buffer_size";
 	public static final int DEFAULT_BUFFERSIZE = DEFAULT_CHUNKSIZE<<1;
 	
 	public static final String LOG_PATH 		= "log_directory";
 	public static final String LOG_LEVL 		= "log_level";
 	
+	
 	private static final String SETTING_PATH = "./Socks5/settings.txt";
 	
 	public static final String DEFAULT_LOG_PATH = "./Socks5/Log";
 	
 	public synchronized static void init(String cfgPath) {
+		InputStream input = null;
 		try {
 			if (null == sConfig) {
 				File configFile = new File(SETTING_PATH);
 				if (configFile.exists() && configFile.isFile() && configFile.canRead()) {
-					InputStream input = new FileInputStream(configFile);
+					input = new FileInputStream(configFile);
 					sConfig = new Properties();
 					sConfig.load(input);
 				}
@@ -46,6 +50,8 @@ public class Configuration {
 			sConfig.setProperty("local_port", "0");
 			sConfig.setProperty("block_size", "0");
 			sConfig.setProperty("log_path", "0");
+		}finally {
+			IOUtils.safeClose(input);
 		}
 	}
 

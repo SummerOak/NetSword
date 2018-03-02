@@ -8,15 +8,13 @@ public class ExceptionHandler {
 	
 	public static final void handleException(Throwable t) {
 		if(t != null) {
-			Log.e(TAG, "" + t.toString());
-			t.printStackTrace();
+			Log.e(TAG, getStackTraceString(t));
 		}
 	}
 	
 	public static final void handleFatalException(Throwable t) {
 		if(t != null) {
-			Log.e(TAG, "" + t.toString());
-			t.printStackTrace();
+			Log.e(TAG, getStackTraceString(t));
 		}
 	}
 	

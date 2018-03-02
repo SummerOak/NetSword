@@ -106,8 +106,9 @@ public class SSockChannel implements IAcceptor {
 				Log.i(getTag(), "configureBlocking failed " + e.getMessage());
 				ExceptionHandler.handleException(e);
 			}
-
+			
 			updateOps(false, true, SelectionKey.OP_CONNECT);
+
 			return;
 		}
 
@@ -372,7 +373,11 @@ public class SSockChannel implements IAcceptor {
 
 	public synchronized void destroy() {
 		Log.r(getTag(), "total>>> src>" + mSrcIn + ",src<" + mSrcOut + ",dest>" + mDestIn + ",dest<" + mDestOut);
-
+		Log.r(getTag(), "mUpStreamBufferIn "+ mUpStreamBufferIn 
+				+ " mDownStreamBufferIn " + mDownStreamBufferIn 
+				+ " mUpStreamBufferOut " + mUpStreamBufferOut 
+				+ " mDownStreamBufferOut " + mDownStreamBufferOut);
+		
 		mAlive = false;
 		if (mDestKey != null) {
 			mDestKey.cancel();
@@ -465,7 +470,7 @@ public class SSockChannel implements IAcceptor {
 			}
 		};
 		
-		mTimer.schedule(mSuicideTask, 2*60*1000L);
+		mTimer.schedule(mSuicideTask, 30*1000L);
 	}
 
 	@Override
@@ -652,12 +657,16 @@ public class SSockChannel implements IAcceptor {
 	}
 	
 	private void notifyIntrestOpsUpdate(boolean src) {
-		Log.d(getTag(), "notifyIntrestOpsUpdate " + (src?"source ":"dest"));
+		
 		if(mAlive && mListener != null) {
 			if(src && mSourceKey != null) {
-				mListener.onSrcOpsUpdate(mSourceKey.interestOps());
-			}else if(!src && mDestKey != null){				
-				mListener.onDestOpsUpdate(mDestKey.interestOps());
+				int ops = mSourceKey.interestOps();
+				Log.d(getTag(), "notifyIntrestOpsUpdate source " + ops);
+				mListener.onSrcOpsUpdate(ops);
+			}else if(!src && mDestKey != null){	
+				int ops = mDestKey.interestOps();
+				Log.d(getTag(), "notifyIntrestOpsUpdate dest " + ops);
+				mListener.onDestOpsUpdate(ops);
 			}
 		}
 	}

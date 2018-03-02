@@ -204,7 +204,6 @@ public class S5ConnStage extends AbsS5Stage{
 	@Override
 	public void onSocketBroken(Error result) {
 		notifyError(result);
-		notifyError(Error.E_S5_SOCKET_ERROR_CONN);
 	}
 
 	private int buildConnInfo(ConnInfo connInfo,byte[] data,int offset,int len) {

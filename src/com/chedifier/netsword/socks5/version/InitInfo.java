@@ -6,6 +6,7 @@ public class InitInfo{
 
 	
 	public static class V1 implements Parcelable{
+		public int DATA_TYPE = Parcel.DATA_TYPE.INIT_INFO;
 		public int versionCode;
 		public String versionName;
 		public String userName;
@@ -14,6 +15,7 @@ public class InitInfo{
 		@Override
 		public Parcel parcel() {
 			Parcel parcel = Parcel.createEmptyParcel();
+			parcel.writeInt(DATA_TYPE);
 			parcel.writeInt(versionCode);
 			parcel.writeString(versionName);
 			parcel.writeString(userName);
@@ -27,14 +29,17 @@ public class InitInfo{
 		@Override
 		public Parcelable parcel(Parcel parcel) {
 			parcel.flip();
-			this.versionCode = parcel.readInt(0);
-			this.versionName = parcel.readString("");
-			this.userName = parcel.readString("");
-			this.password = parcel.readString("");
-			int s = parcel.readInt(1);
-			int sign  = hashCode();
-			if(s == sign) {
-				return this;
+			this.DATA_TYPE = parcel.readInt(-1);
+			if(this.DATA_TYPE == Parcel.DATA_TYPE.INIT_INFO) {
+				this.versionCode = parcel.readInt(0);
+				this.versionName = parcel.readString("");
+				this.userName = parcel.readString("");
+				this.password = parcel.readString("");
+				int s = parcel.readInt(1);
+				int sign  = hashCode();
+				if(s == sign) {
+					return this;
+				}
 			}
 			
 			return null;

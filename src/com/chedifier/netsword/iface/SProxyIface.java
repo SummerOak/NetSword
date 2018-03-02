@@ -3,25 +3,59 @@ package com.chedifier.netsword.iface;
 import com.chedifier.netsword.base.JobScheduler;
 import com.chedifier.netsword.base.Log;
 import com.chedifier.netsword.base.StringUtils;
-import com.chedifier.netsword.cipher.Cipher;
 import com.chedifier.netsword.crash.CrashHandler;
+import com.chedifier.netsword.external.ExternalCmdHandler;
 import com.chedifier.netsword.socks5.Configuration;
 import com.chedifier.netsword.socks5.SProxy;
 
 public class SProxyIface {
 	private static final String TAG = "SProxyIface";
 	
-	private SProxy mProxy; 
+	private static volatile boolean sInited = false;
+	
+	private static volatile SProxy sProxy = null;
+	
+	public static void init(String cfgFilePath) {
+		if(!sInited) {
+			CrashHandler.init();
+			Configuration.init(cfgFilePath);
+			
+			sInited = true;
+		}
+	}
 
-	public static SProxyIface start(String cfgFilePath,IProxyListener l,int forceServerOrLocal) {
-		return new SProxyIface(cfgFilePath, l, forceServerOrLocal);
+	public synchronized static void start(IProxyListener l,int forceServerOrLocal) {
+		if(!sInited) {
+			Log.e(TAG, "start SProxy failed,please invoke init first.");
+			return;
+		}
 		
+		if(sProxy != null) {
+			Log.e(TAG, "SProxy already started,can not be start again!");
+			return;
+		}
+		
+		new SProxyIface(l, forceServerOrLocal);
+	}
+	
+	public synchronized static void stop(String reason) {
+		if(sProxy != null) {			
+			sProxy.stop(reason);
+		}
+	}
+	
+	public static void sendExternCommand(boolean isLocal,int cmd,String params,String user,String password) {
+		ExternalCmdHandler.sendCommand(isLocal, cmd, params, user, password);
 	}
 	
 	private SProxy startSProxy(boolean isServer,IProxyListener l) {
+		if(sProxy != null) {
+			return sProxy;
+		}
+		
 		if (isServer) {
 			int port = Configuration.getConfigInt(Configuration.SERVER_PORT, 8668);
-			mProxy = SProxy.createServer(port,l);
+			sProxy = SProxy.createServer(port,l);
 		} else {
 			String server_host = Configuration.getConfig(Configuration.SERVER_ADDR, "");
 			int server_port = Configuration.getConfigInt(Configuration.SERVER_PORT, 0);
@@ -32,36 +66,29 @@ public class SProxyIface {
 				return null;
 			}
 
-			mProxy = SProxy.createLocal(port, server_host, server_port,l);
+			sProxy = SProxy.createLocal(port, server_host, server_port,l);
 		}
 		
-		if(mProxy != null) {
+		if(sProxy != null) {
 			new Thread("SProxy") {
 				@Override
 				public void run() {
-					mProxy.start();
+					sProxy.start();
 				}
 			}.start();
 			
 		}
 		
-		return mProxy;
+		return sProxy;
 	}
 	
-	public static void stop(SProxyIface proxy) {
-		if(proxy != null && proxy.mProxy != null) {
-			proxy.mProxy.stop();
-		}
-	}
-	
-	private SProxyIface(String cfgFilePath,IProxyListener l,int forceServerOrLocal) {
-		CrashHandler.init();
-		Configuration.init(cfgFilePath);
-		
+	private SProxyIface(IProxyListener l,int forceServerOrLocal) {
 		Log.setLogLevel(Configuration.getConfigInt(Configuration.LOG_LEVL, 0));
 		Log.setLogDir(Configuration.getConfig(Configuration.LOG_PATH, Configuration.DEFAULT_LOG_PATH));
 		
 		JobScheduler.init();
+		
+		ExternalCmdHandler.start();
 
 		boolean isServer = false;
 		if(forceServerOrLocal > 0) {

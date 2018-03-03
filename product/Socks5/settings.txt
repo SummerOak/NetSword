@@ -2,8 +2,8 @@
 is_server=0
 
 #proxy server
-#server_address=47.90.206.185
-server_address=127.0.0.1
+server_address=47.90.206.185
+#server_address=127.0.0.1
 server_port=8668
 
 #local
@@ -13,4 +13,4 @@ local_port=8667
 log_directory=./log
 log_level=2
 command_port=8666
-test=1
+test=0

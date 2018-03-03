@@ -13,3 +13,5 @@ local_port=8667
 log_directory=./log
 log_level=2
 command_port=8666
+
+test=1;

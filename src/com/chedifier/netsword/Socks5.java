@@ -1,6 +1,7 @@
 package com.chedifier.netsword;
 
 import com.chedifier.ladder.base.Log;
+import com.chedifier.ladder.base.StringUtils;
 import com.chedifier.ladder.iface.CmdId;
 import com.chedifier.ladder.iface.Error;
 import com.chedifier.ladder.iface.IProxyListener;
@@ -218,15 +219,21 @@ public class Socks5 implements IProxyListener,ISwordUIEvent{
 				if(params != null) {
 					if(params.length > 0 && params[0] instanceof Integer) {
 						int id = (int)params[0];
-						if(params.length > 1 && params[1] instanceof String) {
-							String ip = (String)params[1];
-							mSwordUI.updateConn(id, COLUMN.IP, ip);
+						String remote = "";
+						if(params.length > 2 && params[2] instanceof String) {
+							remote += (String)params[2];
+							
 						}
 						
-						if(params.length > 2 && params[2] instanceof String) {
-							String domain = (String)params[2];
-							mSwordUI.updateConn(id, COLUMN.DOMAIN, domain);
+						if(params.length > 1 && params[1] instanceof String) {
+							if(StringUtils.isEmpty(remote)) {
+								remote += (String)params[1];
+							}else {
+								remote += "(" + (String)params[1] + ")";
+							}
 						}
+						
+						mSwordUI.updateConn(id, COLUMN.REMOTE, remote);
 						
 						if(params.length > 3 && params[3] instanceof Integer) {
 							int port = (Integer)params[3];

@@ -14,13 +14,12 @@ public class ConnsTableModel extends AbstractTableModel{
 	private static final String TAG = "ConnsTableModel";
 	private static final long serialVersionUID = 1L;
 	
-	private static final int[] HEADS = new int[] {COLUMN.ID,COLUMN.CLIENT,COLUMN.DOMAIN,COLUMN.PORT,COLUMN.STATE,COLUMN.SRC_IN,COLUMN.SRC_OUT,COLUMN.DEST_IN,COLUMN.DEST_OUT,COLUMN.ERR};
+	private static final int[] HEADS = new int[] {COLUMN.ID,COLUMN.CLIENT,COLUMN.REMOTE,COLUMN.PORT,COLUMN.STATE,COLUMN.SRC_IN,COLUMN.SRC_OUT,COLUMN.DEST_IN,COLUMN.DEST_OUT,COLUMN.ERR};
 	private static final HashMap<Integer,Head> sHeadIdx = new HashMap<>();
 	static {
 		sHeadIdx.put(COLUMN.ID, 		new Head(COLUMN.ID,			"ID",			int.class,		30));
 		sHeadIdx.put(COLUMN.CLIENT, 	new Head(COLUMN.CLIENT,		"CLIENT",		String.class,	100));
-		sHeadIdx.put(COLUMN.DOMAIN, 	new Head(COLUMN.DOMAIN,		"DOMAIN",		String.class,	200));
-		sHeadIdx.put(COLUMN.IP, 		new Head(COLUMN.IP,			"IP",			String.class,	100));
+		sHeadIdx.put(COLUMN.REMOTE, 	new Head(COLUMN.REMOTE,		"DOMAIN",		String.class,	200));
 		sHeadIdx.put(COLUMN.PORT, 	new Head(COLUMN.PORT,		"PORT",			int.class,		50));
 		sHeadIdx.put(COLUMN.STATE, 	new Head(COLUMN.STATE,		"STATE",			String.class	,	50));
 		sHeadIdx.put(COLUMN.SRC_IN, 	new Head(COLUMN.SRC_IN,		"SI",			long.class,		80));
@@ -295,8 +294,7 @@ public class ConnsTableModel extends AbstractTableModel{
 	private static class ConnItem{
 		public int id = -1;
 		public String client = null;
-		public String domain = null;
-		public String ip = null;
+		public String remote = null;
 		public int port = -1;
 		public int state = -1;
 		public long srcIn = 0;
@@ -319,8 +317,7 @@ public class ConnsTableModel extends AbstractTableModel{
 			switch (column) {
 			case COLUMN.ID: 			if(value instanceof Integer)	id = (int)value; 			break;
 			case COLUMN.CLIENT: 		if(value instanceof String)	client = (String)value; 		break;
-			case COLUMN.DOMAIN: 		if(value instanceof String) 	domain = (String)value; 		break;
-			case COLUMN.IP: 			if(value instanceof String) 	ip = (String)value;	 		break;
+			case COLUMN.REMOTE: 		if(value instanceof String) 	remote = (String)value; 		break;
 			case COLUMN.PORT: 		if(value instanceof Integer) port = (int)value;			break;
 			case COLUMN.STATE:		if(value instanceof Integer) state = (int)value;			break;
 			case COLUMN.SRC_IN: 		if(value instanceof Long) srcIn = (long)value;			break;
@@ -336,8 +333,7 @@ public class ConnsTableModel extends AbstractTableModel{
 				switch (HEADS[column]) {
 				case COLUMN.ID: 			return id;
 				case COLUMN.CLIENT: 		return client;
-				case COLUMN.DOMAIN: 		return domain;
-				case COLUMN.IP: 			return ip;
+				case COLUMN.REMOTE: 		return remote;
 				case COLUMN.PORT: 		return port>0?port:null;
 				case COLUMN.STATE:		return getStateDesc(state);
 				case COLUMN.SRC_IN: 		return srcIn;
@@ -369,15 +365,14 @@ public class ConnsTableModel extends AbstractTableModel{
 	public static final class COLUMN{
 		public static final int ID 		= 0;
 		public static final int CLIENT 	= 1;
-		public static final int DOMAIN 	= 2;
-		public static final int IP 		= 3;
-		public static final int PORT 	= 4;
-		public static final int STATE 	= 5;
-		public static final int SRC_IN 	= 6;
-		public static final int SRC_OUT 	= 7;
-		public static final int DEST_IN 	= 8;
-		public static final int DEST_OUT = 9;
-		public static final int ERR 		= 10;
+		public static final int REMOTE 	= 2;
+		public static final int PORT 	= 3;
+		public static final int STATE 	= 4;
+		public static final int SRC_IN 	= 5;
+		public static final int SRC_OUT 	= 6;
+		public static final int DEST_IN 	= 7;
+		public static final int DEST_OUT = 8;
+		public static final int ERR 		= 9;
 	}
 
 }

@@ -178,19 +178,19 @@ public class ConnsTableModel extends AbstractTableModel{
 		
 		if(HEADS[c] == COLUMN.SRC_IN) {
 			if(item != null && (item.srcOps&SelectionKey.OP_READ) == 0) {
-				return Color.RED;
+				return Color.GRAY;
 			}
 		}else if(HEADS[c] == COLUMN.SRC_OUT){
 			if(item != null && (item.srcOps&SelectionKey.OP_WRITE) == 0) {
-				return Color.RED;
+				return Color.GRAY;
 			}
 		}else if(HEADS[c] == COLUMN.DEST_IN){
 			if(item != null && (item.destOps&SelectionKey.OP_READ) == 0) {
-				return Color.RED;
+				return Color.GRAY;
 			}
 		}else if(HEADS[c] == COLUMN.DEST_OUT){
 			if(item != null && (item.destOps&SelectionKey.OP_WRITE) == 0) {
-				return Color.RED;
+				return Color.GRAY;
 			}
 		}
 		

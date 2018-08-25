@@ -225,7 +225,7 @@ public class Socks5 implements IProxyListener,ISwordUIEvent{
 							
 						}
 						
-						if(params.length > 1 && params[1] instanceof String) {
+						if(params.length > 1 && params[1] instanceof String && ((String)params[1]).length() > 0) {
 							if(StringUtils.isEmpty(remote)) {
 								remote += (String)params[1];
 							}else {

@@ -40,7 +40,6 @@ public class SwordUI implements KeyListener{
 	private JPanel mContent;
 	private JTextField mBaseInfo = null;
 	private JTextField mAliveConnCounter = null;
-	private JTextField mMaxAlive = null;
 	private JTextField mMemInfo = null;
 	private JScrollPane mConnTableCnt = null;
 	private JTable mConnTable = null;
@@ -83,7 +82,7 @@ public class SwordUI implements KeyListener{
 		mBaseInfo.setBackground(new Color(240,240,240));
 		GridBagConstraints cnts = new GridBagConstraints();
 		cnts.fill = GridBagConstraints.HORIZONTAL;
-		cnts.weightx = 0.8f;cnts.weighty = 0f;
+		cnts.weightx = 1f;cnts.weighty = 0f;
 		cnts.gridx = 0;cnts.gridy = 0;
 		mContent.add(mBaseInfo,cnts);
 		
@@ -93,23 +92,11 @@ public class SwordUI implements KeyListener{
 		mAliveConnCounter.setBackground(new Color(240,240,240));
 		cnts = new GridBagConstraints();
 		cnts.fill = GridBagConstraints.HORIZONTAL;
-		cnts.weightx = 0.5f;cnts.weighty = 0f;
+		cnts.weightx = 0.2f;cnts.weighty = 0f;
 		cnts.gridx = 1;cnts.gridy = 0;
 		cnts.gridwidth = 1;
 		
 		mContent.add(mAliveConnCounter,cnts);
-		
-		mMaxAlive=new JTextField();  
-		mMaxAlive.setEditable(false);
-		mMaxAlive.setText("Max alive: 0");
-		mMaxAlive.setBackground(new Color(240,240,240));
-		cnts = new GridBagConstraints();
-		cnts.fill = GridBagConstraints.HORIZONTAL;
-		cnts.weightx = 0.4f;cnts.weighty = 0f;
-		cnts.gridx = 2;cnts.gridy = 0;
-		cnts.gridwidth = 1;
-		
-		mContent.add(mMaxAlive,cnts);
 		
 		mMemInfo=new JTextField();  
 		mMemInfo.setEditable(false);
@@ -118,8 +105,8 @@ public class SwordUI implements KeyListener{
 		mMemInfo.setBackground(new Color(240,240,240));
 		cnts = new GridBagConstraints();
 		cnts.fill = GridBagConstraints.HORIZONTAL;
-		cnts.weightx = 0.6f;cnts.weighty = 0f;
-		cnts.gridx = 3;cnts.gridy = 0;
+		cnts.weightx = 0.3f;cnts.weighty = 0f;
+		cnts.gridx = 2;cnts.gridy = 0;
 		mContent.add(mMemInfo,cnts);
 
 		mConnModel = new ConnsTableModel();
@@ -226,11 +213,6 @@ public class SwordUI implements KeyListener{
 	
 	private void updateMaxAlive(long max) {
 		Log.d(TAG, "updateMaxAlive, max " + max);
-		if(mMaxAlive != null) {
-			synchronized (mMaxAlive) {				
-				mMaxAlive.setText("Max concurrent: " + max);
-			}
-		}
 	}
 	
 	public void updatePortOps(int id,boolean src,int ops) {

@@ -1,7 +1,7 @@
-# NetSword
+# What's it
   This is a proxy based on Socks5 protocol implemented in java. As we all known, a proxy contains 2 parts: local and server. local take over request and relay to server, server send the request to remote and send data received from remote back to local. In NetSword, the two parts are implemented into one runnable jar. And data transmits between local and server are proguarded for some purpose(THE GREAT WALL). This project depends on [CloudLadderDownload](https://github.com/SummerOak/CloudLadder), All protocol related business are handled in that project. And this project only an UI implement.
   
-## Getting started
+# How to use it
 
   1. Firstly, download [release](https://github.com/SummerOak/NetSword/tree/master/release) folder and config setting.txt properly;
   2. Run command "java -jar NetSword.jar s" to start the server, If you are running it on Ubuntu and you want it run permanently(such as restart automatically after a crash), you can add netsword.service to you system and use systemctl system command to start it;

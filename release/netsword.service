@@ -1,3 +1,5 @@
+#used in server role
+
 [Unit]
 Description=NetSword
 
@@ -7,7 +9,7 @@ EnvironmentFile=-/root/NetSword/service.cfg
 WorkingDirectory=/root/NetSword
 ExecStart=/bin/bash /root/NetSword/service.sh
 Restart=always
-RestartSec=30
+RestartSec=3
 
 [Install]
 WantedBy=multi-user.target

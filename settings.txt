@@ -11,7 +11,4 @@ local_port=8667
 
 #common
 log_directory=./log
-log_level=0
-command_port=8666
-
-test=1;
+log_level=10

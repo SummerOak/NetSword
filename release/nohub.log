@@ -1,0 +1,586 @@
+20180901-18-55-28-278 : E> tid[17] SProxy.server >> start failed.Address already in u20180901-18-55-42-695 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c1 >> S5VerifyStage start >>>
+20180901-18-55-42-705 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c2 >> S5VerifyStage start >>>
+20180901-18-55-42-726 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c1 >> S5ConnStage start>>>
+20180901-18-55-42-733 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c2 >> S5ConnStage start>>>
+20180901-18-55-42-736 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c3 >> S5VerifyStage start >>>
+20180901-18-55-42-744 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c3 >> S5ConnStage start>>>
+20180901-18-55-42-748 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c4 >> S5VerifyStage start >>>
+20180901-18-55-42-760 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c5 >> S5VerifyStage start >>>
+20180901-18-55-42-775 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c4 >> S5ConnStage start>>>
+20180901-18-55-42-785 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c6 >> S5VerifyStage start >>>
+20180901-18-55-42-789 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c5 >> S5ConnStage start>>>
+20180901-18-55-42-794 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c7 >> S5VerifyStage start >>>
+20180901-18-55-42-803 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c8 >> S5VerifyStage start >>>
+20180901-18-55-42-827 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c3 >> S5TransStage start>>>
+20180901-18-55-42-831 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c8 >> S5ConnStage start>>>
+20180901-18-55-42-837 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c2 >> S5TransStage start>>>
+20180901-18-55-42-839 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c9 >> S5VerifyStage start >>>
+20180901-18-55-42-844 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c1 >> S5TransStage start>>>
+20180901-18-55-42-846 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c7 >> S5ConnStage start>>>
+20180901-18-55-42-848 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c6 >> S5ConnStage start>>>
+20180901-18-55-42-854 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c5 >> S5TransStage start>>>
+20180901-18-55-42-866 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c4 >> S5TransStage start>>>
+20180901-18-55-42-868 : R> tid[17] SSockChannel_c2 >> bind proxy success!
+20180901-18-55-42-872 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c10 >> S5VerifyStage start >>>
+20180901-18-55-42-875 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c9 >> S5ConnStage start>>>
+20180901-18-55-42-877 : R> tid[17] SSockChannel_c3 >> bind proxy success!
+20180901-18-55-42-879 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c11 >> S5VerifyStage start >>>
+20180901-18-55-42-882 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c10 >> S5ConnStage start>>>
+20180901-18-55-42-884 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c12 >> S5VerifyStage start >>>
+20180901-18-55-42-886 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c11 >> S5ConnStage start>>>
+20180901-18-55-42-889 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c13 >> S5VerifyStage start >>>
+20180901-18-55-42-891 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c12 >> S5ConnStage start>>>
+20180901-18-55-42-892 : R> tid[17] SSockChannel_c5 >> bind proxy success!
+20180901-18-55-42-895 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c13 >> S5ConnStage start>>>
+20180901-18-55-42-902 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c8 >> S5TransStage start>>>
+20180901-18-55-42-919 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c6 >> S5TransStage start>>>
+20180901-18-55-42-933 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c7 >> S5TransStage start>>>
+20180901-18-55-42-944 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c12 >> S5TransStage start>>>
+20180901-18-55-42-959 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c9 >> S5TransStage start>>>
+20180901-18-55-42-987 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c11 >> S5TransStage start>>>
+20180901-18-55-42-989 : R> tid[17] SSockChannel_c4 >> bind proxy success!
+20180901-18-55-42-989 : R> tid[17] SSockChannel_c8 >> bind proxy success!
+20180901-18-55-44-07 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c10 >> S5TransStage start>>>
+20180901-18-55-44-21 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c13 >> S5TransStage start>>>
+20180901-18-55-44-23 : R> tid[17] SSockChannel_c12 >> bind proxy success!
+20180901-18-55-44-24 : R> tid[17] SSockChannel_c6 >> bind proxy success!
+20180901-18-55-44-25 : R> tid[17] SSockChannel_c11 >> bind proxy success!
+20180901-18-55-44-28 : R> tid[17] SSockChannel_c7 >> bind proxy success!
+20180901-18-55-44-28 : R> tid[17] SSockChannel_c1 >> bind proxy success!
+20180901-18-55-44-55 : R> tid[17] SSockChannel_c13 >> bind proxy success!
+20180901-18-55-44-170 : R> tid[17] SSockChannel_c10 >> bind proxy success!
+20180901-18-55-45-491 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c14 >> S5VerifyStage start >>>
+20180901-18-55-45-493 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c14 >> S5ConnStage start>>>
+20180901-18-55-45-499 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c14 >> S5TransStage start>>>
+20180901-18-55-45-663 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c15 >> S5VerifyStage start >>>
+20180901-18-55-45-664 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c15 >> S5ConnStage start>>>
+20180901-18-55-45-670 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c15 >> S5TransStage start>>>
+20180901-18-55-45-707 : R> tid[17] SSockChannel_c15 >> bind proxy success!
+20180901-18-55-45-735 : R> tid[17] SSockChannel_c14 >> bind proxy success!
+20180901-18-55-45-959 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c16 >> S5VerifyStage start >>>
+20180901-18-55-45-960 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c16 >> S5ConnStage start>>>
+20180901-18-55-45-974 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c16 >> S5TransStage start>>>
+20180901-18-55-46-06 : R> tid[17] SSockChannel_c16 >> bind proxy success!
+20180901-18-55-52-814 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c17 >> S5VerifyStage start >>>
+20180901-18-55-52-815 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c17 >> S5ConnStage start>>>
+20180901-18-55-52-854 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c17 >> S5TransStage start>>>
+20180901-18-55-52-914 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c18 >> S5VerifyStage start >>>
+20180901-18-55-52-916 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c19 >> S5VerifyStage start >>>
+20180901-18-55-52-918 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c20 >> S5VerifyStage start >>>
+20180901-18-55-52-920 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c21 >> S5VerifyStage start >>>
+20180901-18-55-52-922 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c22 >> S5VerifyStage start >>>
+20180901-18-55-52-924 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c23 >> S5VerifyStage start >>>
+20180901-18-55-52-939 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c24 >> S5VerifyStage start >>>
+20180901-18-55-52-941 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c25 >> S5VerifyStage start >>>
+20180901-18-55-52-956 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c26 >> S5VerifyStage start >>>
+20180901-18-55-52-958 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c18 >> S5ConnStage start>>>
+20180901-18-55-52-959 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c19 >> S5ConnStage start>>>
+20180901-18-55-52-960 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c23 >> S5ConnStage start>>>
+20180901-18-55-52-960 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c22 >> S5ConnStage start>>>
+20180901-18-55-52-961 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c24 >> S5ConnStage start>>>
+20180901-18-55-52-962 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c26 >> S5ConnStage start>>>
+20180901-18-55-52-963 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c20 >> S5ConnStage start>>>
+20180901-18-55-52-964 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c27 >> S5VerifyStage start >>>
+20180901-18-55-52-964 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c25 >> S5ConnStage start>>>
+20180901-18-55-52-965 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c21 >> S5ConnStage start>>>
+20180901-18-55-52-967 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c27 >> S5ConnStage start>>>
+20180901-18-55-52-968 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c28 >> S5VerifyStage start >>>
+20180901-18-55-52-970 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c29 >> S5VerifyStage start >>>
+20180901-18-55-52-970 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c28 >> S5ConnStage start>>>
+20180901-18-55-52-972 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c30 >> S5VerifyStage start >>>
+20180901-18-55-52-973 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c29 >> S5ConnStage start>>>
+20180901-18-55-52-974 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c30 >> S5ConnStage start>>>
+20180901-18-55-52-975 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c31 >> S5VerifyStage start >>>
+20180901-18-55-52-976 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c31 >> S5ConnStage start>>>
+20180901-18-55-52-977 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c32 >> S5VerifyStage start >>>
+20180901-18-55-52-996 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c18 >> S5TransStage start>>>
+20180901-18-55-52-997 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c32 >> S5ConnStage start>>>
+20180901-18-55-52-998 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c33 >> S5VerifyStage start >>>
+20180901-18-55-53-00 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c19 >> S5TransStage start>>>
+20180901-18-55-53-19 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c23 >> S5TransStage start>>>
+20180901-18-55-53-42 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c30 >> S5TransStage start>>>
+20180901-18-55-53-51 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c24 >> S5TransStage start>>>
+20180901-18-55-53-72 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c22 >> S5TransStage start>>>
+20180901-18-55-53-83 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c26 >> S5TransStage start>>>
+20180901-18-55-53-99 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c20 >> S5TransStage start>>>
+20180901-18-55-53-104 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c27 >> S5TransStage start>>>
+20180901-18-55-53-116 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c28 >> S5TransStage start>>>
+20180901-18-55-53-132 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c29 >> S5TransStage start>>>
+20180901-18-55-53-143 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c25 >> S5TransStage start>>>
+20180901-18-55-53-144 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c33 >> S5ConnStage start>>>
+20180901-18-55-53-161 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c21 >> S5TransStage start>>>
+20180901-18-55-53-161 : R> tid[17] SSockChannel_c18 >> bind proxy success!
+20180901-18-55-53-162 : R> tid[17] SSockChannel_c25 >> bind proxy success!
+20180901-18-55-53-162 : R> tid[17] SSockChannel_c19 >> bind proxy success!
+20180901-18-55-53-163 : R> tid[17] SSockChannel_c23 >> bind proxy success!
+20180901-18-55-53-163 : R> tid[17] SSockChannel_c24 >> bind proxy success!
+20180901-18-55-53-173 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c32 >> S5TransStage start>>>
+20180901-18-55-53-174 : R> tid[17] SSockChannel_c20 >> bind proxy success!
+20180901-18-55-53-174 : R> tid[17] SSockChannel_c22 >> bind proxy success!
+20180901-18-55-53-175 : R> tid[17] SSockChannel_c26 >> bind proxy success!
+20180901-18-55-53-176 : R> tid[17] SSockChannel_c28 >> bind proxy success!
+20180901-18-55-53-176 : R> tid[17] SSockChannel_c30 >> bind proxy success!
+20180901-18-55-53-187 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c31 >> S5TransStage start>>>
+20180901-18-55-53-187 : R> tid[17] SSockChannel_c27 >> bind proxy success!
+20180901-18-55-53-191 : R> tid[17] SSockChannel_c32 >> bind proxy success!
+20180901-18-55-53-191 : R> tid[17] SSockChannel_c29 >> bind proxy success!
+20180901-18-55-53-206 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c33 >> S5TransStage start>>>
+20180901-18-55-53-209 : R> tid[17] SSockChannel_c21 >> bind proxy success!
+20180901-18-55-53-210 : R> tid[17] SSockChannel_c31 >> bind proxy success!
+20180901-18-55-53-218 : R> tid[17] SSockChannel_c33 >> bind proxy success!
+20180901-18-55-53-496 : E> tid[17] Relayer_c20 >> channel dead
+20180901-18-55-53-497 : R> tid[17] SSockChannel_c20 >> total>>> src>2586,src<3162,dest>0,dest<0
+20180901-18-55-53-498 : R> tid[17] SSockChannel_c20 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-503 : E> tid[17] Relayer_c27 >> channel dead
+20180901-18-55-53-503 : R> tid[17] SSockChannel_c27 >> total>>> src>3358,src<1224,dest>0,dest<0
+20180901-18-55-53-503 : R> tid[17] SSockChannel_c27 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-504 : E> tid[17] Relayer_c22 >> channel dead
+20180901-18-55-53-504 : R> tid[17] SSockChannel_c22 >> total>>> src>964,src<1252,dest>0,dest<0
+20180901-18-55-53-505 : R> tid[17] SSockChannel_c22 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-506 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c34 >> S5VerifyStage start >>>
+20180901-18-55-53-506 : E> tid[17] Relayer_c33 >> channel dead
+20180901-18-55-53-507 : R> tid[17] SSockChannel_c33 >> total>>> src>4243,src<12368,dest>9786,dest<419
+20180901-18-55-53-507 : R> tid[17] SSockChannel_c33 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-508 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c34 >> S5ConnStage start>>>
+20180901-18-55-53-509 : E> tid[17] Relayer_c31 >> channel dead
+20180901-18-55-53-509 : R> tid[17] SSockChannel_c31 >> total>>> src>655,src<1461,dest>0,dest<0
+20180901-18-55-53-509 : R> tid[17] SSockChannel_c31 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-510 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c35 >> S5VerifyStage start >>>
+20180901-18-55-53-511 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c35 >> S5ConnStage start>>>
+20180901-18-55-53-513 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c36 >> S5VerifyStage start >>>
+20180901-18-55-53-514 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c37 >> S5VerifyStage start >>>
+20180901-18-55-53-516 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c36 >> S5ConnStage start>>>
+20180901-18-55-53-530 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c34 >> S5TransStage start>>>
+20180901-18-55-53-532 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c37 >> S5ConnStage start>>>
+20180901-18-55-53-532 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c38 >> S5VerifyStage start >>>
+20180901-18-55-53-547 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c38 >> S5ConnStage start>>>
+20180901-18-55-53-548 : E> tid[17] Relayer_c32 >> channel dead
+20180901-18-55-53-548 : R> tid[17] SSockChannel_c32 >> total>>> src>1779,src<1406,dest>0,dest<0
+20180901-18-55-53-548 : R> tid[17] SSockChannel_c32 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-555 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c35 >> S5TransStage start>>>
+20180901-18-55-53-558 : E> tid[17] Relayer_c25 >> channel dead
+20180901-18-55-53-558 : R> tid[17] SSockChannel_c25 >> total>>> src>3425,src<921,dest>0,dest<0
+20180901-18-55-53-558 : R> tid[17] SSockChannel_c25 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-559 : E> tid[17] Relayer_c24 >> channel dead
+20180901-18-55-53-559 : R> tid[17] SSockChannel_c24 >> total>>> src>931,src<2164,dest>0,dest<0
+20180901-18-55-53-559 : R> tid[17] SSockChannel_c24 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-560 : E> tid[17] Relayer_c26 >> channel dead
+20180901-18-55-53-560 : R> tid[17] SSockChannel_c26 >> total>>> src>1347,src<2338,dest>0,dest<0
+20180901-18-55-53-560 : R> tid[17] SSockChannel_c26 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-561 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c39 >> S5VerifyStage start >>>
+20180901-18-55-53-561 : E> tid[17] Relayer_c28 >> channel dead
+20180901-18-55-53-561 : R> tid[17] SSockChannel_c28 >> total>>> src>4163,src<2497,dest>250,dest<3647
+20180901-18-55-53-561 : R> tid[17] SSockChannel_c28 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-562 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c40 >> S5VerifyStage start >>>
+20180901-18-55-53-564 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c41 >> S5VerifyStage start >>>
+20180901-18-55-53-565 : R> tid[17] SSockChannel_c35 >> bind proxy success!
+20180901-18-55-53-572 : R> tid[17] SSockChannel_c34 >> bind proxy success!
+20180901-18-55-53-573 : E> tid[17] Relayer_c19 >> channel dead
+20180901-18-55-53-573 : R> tid[17] SSockChannel_c19 >> total>>> src>3601,src<2806,dest>0,dest<0
+20180901-18-55-53-573 : R> tid[17] SSockChannel_c19 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-575 : E> tid[17] Relayer_c23 >> channel dead
+20180901-18-55-53-575 : R> tid[17] SSockChannel_c23 >> total>>> src>1662,src<2712,dest>0,dest<0
+20180901-18-55-53-575 : R> tid[17] SSockChannel_c23 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-581 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c42 >> S5VerifyStage start >>>
+20180901-18-55-53-585 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c39 >> S5ConnStage start>>>
+20180901-18-55-53-588 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c40 >> S5ConnStage start>>>
+20180901-18-55-53-593 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c36 >> S5TransStage start>>>
+20180901-18-55-53-598 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c41 >> S5ConnStage start>>>
+20180901-18-55-53-602 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c43 >> S5VerifyStage start >>>
+20180901-18-55-53-606 : R> tid[17] SSockChannel_c36 >> bind proxy success!
+20180901-18-55-53-613 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c42 >> S5ConnStage start>>>
+20180901-18-55-53-626 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c44 >> S5VerifyStage start >>>
+20180901-18-55-53-628 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c43 >> S5ConnStage start>>>
+20180901-18-55-53-649 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c38 >> S5TransStage start>>>
+20180901-18-55-53-649 : E> tid[17] Relayer_c38 >> channel dead
+20180901-18-55-53-649 : R> tid[17] SSockChannel_c38 >> total>>> src>2219,src<1837,dest>0,dest<0
+20180901-18-55-53-649 : R> tid[17] SSockChannel_c38 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=1586 lim=262144 cap=262144]
+20180901-18-55-53-651 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c44 >> S5ConnStage start>>>
+20180901-18-55-53-654 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c37 >> S5TransStage start>>>
+20180901-18-55-53-656 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c45 >> S5VerifyStage start >>>
+20180901-18-55-53-658 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c41 >> S5TransStage start>>>
+20180901-18-55-53-661 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c42 >> S5TransStage start>>>
+20180901-18-55-53-663 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c43 >> S5TransStage start>>>
+20180901-18-55-53-664 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c39 >> S5TransStage start>>>
+20180901-18-55-53-667 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c40 >> S5TransStage start>>>
+20180901-18-55-53-668 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c45 >> S5ConnStage start>>>
+20180901-18-55-53-670 : R> tid[17] SSockChannel_c42 >> bind proxy success!
+20180901-18-55-53-671 : R> tid[17] SSockChannel_c41 >> bind proxy success!
+20180901-18-55-53-671 : R> tid[17] SSockChannel_c37 >> bind proxy success!
+20180901-18-55-53-672 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c44 >> S5TransStage start>>>
+20180901-18-55-53-672 : R> tid[17] SSockChannel_c43 >> bind proxy success!
+20180901-18-55-53-692 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c45 >> S5TransStage start>>>
+20180901-18-55-53-692 : R> tid[17] SSockChannel_c44 >> bind proxy success!
+20180901-18-55-53-696 : R> tid[17] SSockChannel_c45 >> bind proxy success!
+20180901-18-55-53-707 : R> tid[17] SSockChannel_c39 >> bind proxy success!
+20180901-18-55-53-710 : R> tid[17] SSockChannel_c40 >> bind proxy success!
+20180901-18-55-53-816 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c46 >> S5VerifyStage start >>>
+20180901-18-55-53-816 : E> tid[17] Relayer_c35 >> channel dead
+20180901-18-55-53-817 : R> tid[17] SSockChannel_c35 >> total>>> src>2863,src<2968,dest>309,dest<1843
+20180901-18-55-53-817 : R> tid[17] SSockChannel_c35 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-819 : E> tid[17] Relayer_c36 >> channel dead
+20180901-18-55-53-820 : R> tid[17] SSockChannel_c36 >> total>>> src>4303,src<3852,dest>309,dest<1851
+20180901-18-55-53-820 : R> tid[17] SSockChannel_c36 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-823 : E> tid[17] Relayer_c37 >> channel dead
+20180901-18-55-53-823 : R> tid[17] SSockChannel_c37 >> total>>> src>3545,src<3904,dest>309,dest<1851
+20180901-18-55-53-824 : R> tid[17] SSockChannel_c37 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-826 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c47 >> S5VerifyStage start >>>
+20180901-18-55-53-831 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c46 >> S5ConnStage start>>>
+20180901-18-55-53-832 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c48 >> S5VerifyStage start >>>
+20180901-18-55-53-836 : E> tid[17] Relayer_c39 >> channel dead
+20180901-18-55-53-836 : R> tid[17] SSockChannel_c39 >> total>>> src>1605,src<3480,dest>0,dest<0
+20180901-18-55-53-837 : R> tid[17] SSockChannel_c39 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-838 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c47 >> S5ConnStage start>>>
+20180901-18-55-53-841 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c49 >> S5VerifyStage start >>>
+20180901-18-55-53-844 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c48 >> S5ConnStage start>>>
+20180901-18-55-53-845 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c50 >> S5VerifyStage start >>>
+20180901-18-55-53-872 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c49 >> S5ConnStage start>>>
+20180901-18-55-53-911 : E> tid[17] Relayer_c41 >> channel dead
+20180901-18-55-53-911 : R> tid[17] SSockChannel_c41 >> total>>> src>3043,src<1380,dest>0,dest<0
+20180901-18-55-53-911 : R> tid[17] SSockChannel_c41 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-53-916 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c46 >> S5TransStage start>>>
+20180901-18-55-53-931 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c48 >> S5TransStage start>>>
+20180901-18-55-53-996 : E> tid[17] Relayer_c18 >> channel dead
+20180901-18-55-53-996 : R> tid[17] SSockChannel_c18 >> total>>> src>6109,src<145553,dest>141579,dest<3755
+20180901-18-55-53-997 : R> tid[17] SSockChannel_c18 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-15 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c47 >> S5TransStage start>>>
+20180901-18-55-54-16 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c50 >> S5ConnStage start>>>
+20180901-18-55-54-17 : E> tid[17] Relayer_c45 >> channel dead
+20180901-18-55-54-18 : R> tid[17] SSockChannel_c45 >> total>>> src>1228,src<2358,dest>0,dest<0
+20180901-18-55-54-18 : R> tid[17] SSockChannel_c45 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-19 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c51 >> S5VerifyStage start >>>
+20180901-18-55-54-19 : E> tid[17] Relayer_c30 >> channel dead
+20180901-18-55-54-20 : R> tid[17] SSockChannel_c30 >> total>>> src>2676,src<2504,dest>0,dest<0
+20180901-18-55-54-20 : R> tid[17] SSockChannel_c30 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-35 : R> tid[17] SSockChannel_c48 >> bind proxy success!
+20180901-18-55-54-36 : E> tid[17] Relayer_c44 >> channel dead
+20180901-18-55-54-36 : R> tid[17] SSockChannel_c44 >> total>>> src>3314,src<24532,dest>22785,dest<426
+20180901-18-55-54-36 : R> tid[17] SSockChannel_c44 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-40 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c51 >> S5ConnStage start>>>
+20180901-18-55-54-42 : R> tid[17] SSockChannel_c46 >> bind proxy success!
+20180901-18-55-54-42 : E> tid[17] Relayer_c34 >> channel dead
+20180901-18-55-54-42 : R> tid[17] SSockChannel_c34 >> total>>> src>5751,src<6845,dest>3919,dest<643
+20180901-18-55-54-42 : R> tid[17] SSockChannel_c34 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-43 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c52 >> S5VerifyStage start >>>
+20180901-18-55-54-46 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c52 >> S5ConnStage start>>>
+20180901-18-55-54-48 : R> tid[17] SSockChannel_c47 >> bind proxy success!
+20180901-18-55-54-49 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c53 >> S5VerifyStage start >>>
+20180901-18-55-54-50 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c54 >> S5VerifyStage start >>>
+20180901-18-55-54-51 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c53 >> S5ConnStage start>>>
+20180901-18-55-54-52 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c54 >> S5ConnStage start>>>
+20180901-18-55-54-53 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c55 >> S5VerifyStage start >>>
+20180901-18-55-54-58 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c56 >> S5VerifyStage start >>>
+20180901-18-55-54-67 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c55 >> S5ConnStage start>>>
+20180901-18-55-54-68 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c56 >> S5ConnStage start>>>
+20180901-18-55-54-117 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c57 >> S5VerifyStage start >>>
+20180901-18-55-54-117 : E> tid[17] Relayer_c29 >> channel dead
+20180901-18-55-54-117 : R> tid[17] SSockChannel_c29 >> total>>> src>3313,src<7196,dest>4107,dest<643
+20180901-18-55-54-117 : R> tid[17] SSockChannel_c29 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-162 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c57 >> S5ConnStage start>>>
+20180901-18-55-54-173 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c49 >> S5TransStage start>>>
+20180901-18-55-54-181 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c52 >> S5TransStage start>>>
+20180901-18-55-54-182 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c56 >> S5TransStage start>>>
+20180901-18-55-54-185 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c51 >> S5TransStage start>>>
+20180901-18-55-54-188 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c54 >> S5TransStage start>>>
+20180901-18-55-54-199 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c50 >> S5TransStage start>>>
+20180901-18-55-54-205 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c53 >> S5TransStage start>>>
+20180901-18-55-54-207 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c55 >> S5TransStage start>>>
+20180901-18-55-54-212 : R> tid[17] SSockChannel_c49 >> bind proxy success!
+20180901-18-55-54-217 : R> tid[17] SSockChannel_c50 >> bind proxy success!
+20180901-18-55-54-217 : R> tid[17] SSockChannel_c54 >> bind proxy success!
+20180901-18-55-54-224 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c57 >> S5TransStage start>>>
+20180901-18-55-54-224 : R> tid[17] SSockChannel_c51 >> bind proxy success!
+20180901-18-55-54-224 : R> tid[17] SSockChannel_c56 >> bind proxy success!
+20180901-18-55-54-225 : R> tid[17] SSockChannel_c52 >> bind proxy success!
+20180901-18-55-54-232 : R> tid[17] SSockChannel_c53 >> bind proxy success!
+20180901-18-55-54-245 : R> tid[17] SSockChannel_c55 >> bind proxy success!
+20180901-18-55-54-300 : R> tid[17] SSockChannel_c57 >> bind proxy success!
+20180901-18-55-54-314 : E> tid[17] Relayer_c5 >> channel dead
+20180901-18-55-54-314 : R> tid[17] SSockChannel_c5 >> total>>> src>4083,src<6750,dest>229,dest<790
+20180901-18-55-54-314 : R> tid[17] SSockChannel_c5 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-338 : E> tid[17] Relayer_c8 >> channel dead
+20180901-18-55-54-338 : R> tid[17] SSockChannel_c8 >> total>>> src>6040,src<4778,dest>215,dest<568
+20180901-18-55-54-338 : R> tid[17] SSockChannel_c8 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-339 : E> tid[17] Relayer_c11 >> channel dead
+20180901-18-55-54-339 : R> tid[17] SSockChannel_c11 >> total>>> src>4702,src<7756,dest>4216,dest<610
+20180901-18-55-54-339 : R> tid[17] SSockChannel_c11 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-340 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c58 >> S5VerifyStage start >>>
+20180901-18-55-54-340 : E> tid[17] Relayer_c12 >> channel dead
+20180901-18-55-54-340 : R> tid[17] SSockChannel_c12 >> total>>> src>5534,src<9460,dest>5861,dest<643
+20180901-18-55-54-340 : R> tid[17] SSockChannel_c12 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-369 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c58 >> S5ConnStage start>>>
+20180901-18-55-54-380 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c58 >> S5TransStage start>>>
+20180901-18-55-54-407 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c59 >> S5VerifyStage start >>>
+20180901-18-55-54-411 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c59 >> S5ConnStage start>>>
+20180901-18-55-54-415 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c59 >> S5TransStage start>>>
+20180901-18-55-54-421 : R> tid[17] SSockChannel_c58 >> bind proxy success!
+20180901-18-55-54-455 : R> tid[17] SSockChannel_c59 >> bind proxy success!
+20180901-18-55-54-509 : E> tid[17] Relayer_c59 >> channel dead
+20180901-18-55-54-509 : R> tid[17] SSockChannel_c59 >> total>>> src>3185,src<3701,dest>519,dest<459
+20180901-18-55-54-510 : R> tid[17] SSockChannel_c59 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-54-698 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c60 >> S5VerifyStage start >>>
+20180901-18-55-54-699 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c60 >> S5ConnStage start>>>
+20180901-18-55-54-723 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c60 >> S5TransStage start>>>
+20180901-18-55-54-763 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c61 >> S5VerifyStage start >>>
+20180901-18-55-54-764 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c61 >> S5ConnStage start>>>
+20180901-18-55-54-778 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c61 >> S5TransStage start>>>
+20180901-18-55-54-779 : R> tid[17] SSockChannel_c60 >> bind proxy success!
+20180901-18-55-54-782 : R> tid[17] SSockChannel_c61 >> bind proxy success!
+20180901-18-55-55-81 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c62 >> S5VerifyStage start >>>
+20180901-18-55-55-82 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c62 >> S5ConnStage start>>>
+20180901-18-55-55-104 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c62 >> S5TransStage start>>>
+20180901-18-55-55-104 : E> tid[17] Relayer_c52 >> channel dead
+20180901-18-55-55-104 : R> tid[17] SSockChannel_c52 >> total>>> src>3593,src<25268,dest>20831,dest<438
+20180901-18-55-55-104 : R> tid[17] SSockChannel_c52 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-55-105 : E> tid[17] Relayer_c57 >> channel dead
+20180901-18-55-55-105 : R> tid[17] SSockChannel_c57 >> total>>> src>4301,src<2302,dest>248,dest<725
+20180901-18-55-55-105 : R> tid[17] SSockChannel_c57 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-55-105 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c63 >> S5VerifyStage start >>>
+20180901-18-55-55-106 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c63 >> S5ConnStage start>>>
+20180901-18-55-55-107 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c64 >> S5VerifyStage start >>>
+20180901-18-55-55-108 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c64 >> S5ConnStage start>>>
+20180901-18-55-55-126 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c63 >> S5TransStage start>>>
+20180901-18-55-55-127 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c64 >> S5TransStage start>>>
+20180901-18-55-55-135 : R> tid[17] SSockChannel_c64 >> bind proxy success!
+20180901-18-55-55-150 : R> tid[17] SSockChannel_c62 >> bind proxy success!
+20180901-18-55-55-163 : R> tid[17] SSockChannel_c63 >> bind proxy success!
+20180901-18-55-55-288 : E> tid[17] Relayer_c62 >> channel dead
+20180901-18-55-55-288 : R> tid[17] SSockChannel_c62 >> total>>> src>7468,src<1438,dest>625,dest<3983
+20180901-18-55-55-288 : R> tid[17] SSockChannel_c62 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-55-289 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c65 >> S5VerifyStage start >>>
+20180901-18-55-55-290 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c65 >> S5ConnStage start>>>
+20180901-18-55-55-304 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c65 >> S5TransStage start>>>
+20180901-18-55-55-313 : E> tid[17] Relayer_c60 >> channel dead
+20180901-18-55-55-313 : R> tid[17] SSockChannel_c60 >> total>>> src>7423,src<4019,dest>1253,dest<4076
+20180901-18-55-55-313 : R> tid[17] SSockChannel_c60 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-55-314 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c66 >> S5VerifyStage start >>>
+20180901-18-55-55-315 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c66 >> S5ConnStage start>>>
+20180901-18-55-55-317 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c66 >> S5TransStage start>>>
+20180901-18-55-55-341 : R> tid[17] SSockChannel_c66 >> bind proxy success!
+20180901-18-55-55-347 : R> tid[17] SSockChannel_c65 >> bind proxy success!
+20180901-18-55-55-505 : E> tid[17] Relayer_c65 >> channel dead
+20180901-18-55-55-505 : R> tid[17] SSockChannel_c65 >> total>>> src>8000,src<4869,dest>999,dest<4212
+20180901-18-55-55-505 : R> tid[17] SSockChannel_c65 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-55-506 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c67 >> S5VerifyStage start >>>
+20180901-18-55-55-507 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c67 >> S5ConnStage start>>>
+20180901-18-55-55-510 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c67 >> S5TransStage start>>>
+20180901-18-55-55-550 : R> tid[17] SSockChannel_c67 >> bind proxy success!
+20180901-18-55-55-784 : E> tid[17] Relayer_c40 >> channel dead
+20180901-18-55-55-785 : R> tid[17] SSockChannel_c40 >> total>>> src>5752,src<3825,dest>417,dest<1800
+20180901-18-55-55-785 : R> tid[17] SSockChannel_c40 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-55-786 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c68 >> S5VerifyStage start >>>
+20180901-18-55-55-787 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c68 >> S5ConnStage start>>>
+20180901-18-55-56-807 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c68 >> S5TransStage start>>>
+20180901-18-55-56-816 : E> tid[17] Relayer_c47 >> channel dead
+20180901-18-55-56-816 : R> tid[17] SSockChannel_c47 >> total>>> src>3019,src<19431,dest>18866,dest<426
+20180901-18-55-56-816 : R> tid[17] SSockChannel_c47 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-817 : E> tid[17] Relayer_c49 >> channel dead
+20180901-18-55-56-817 : R> tid[17] SSockChannel_c49 >> total>>> src>2122,src<27592,dest>26359,dest<426
+20180901-18-55-56-817 : R> tid[17] SSockChannel_c49 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-818 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c69 >> S5VerifyStage start >>>
+20180901-18-55-56-818 : E> tid[17] Relayer_c64 >> channel dead
+20180901-18-55-56-818 : R> tid[17] SSockChannel_c64 >> total>>> src>11607,src<4570,dest>2093,dest<7883
+20180901-18-55-56-818 : R> tid[17] SSockChannel_c64 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-821 : E> tid[17] Relayer_c53 >> channel dead
+20180901-18-55-56-822 : R> tid[17] SSockChannel_c53 >> total>>> src>1641,src<1740,dest>0,dest<0
+20180901-18-55-56-822 : R> tid[17] SSockChannel_c53 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-825 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c70 >> S5VerifyStage start >>>
+20180901-18-55-56-826 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c69 >> S5ConnStage start>>>
+20180901-18-55-56-826 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c70 >> S5ConnStage start>>>
+20180901-18-55-56-827 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c71 >> S5VerifyStage start >>>
+20180901-18-55-56-828 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c71 >> S5ConnStage start>>>
+20180901-18-55-56-828 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c72 >> S5VerifyStage start >>>
+20180901-18-55-56-829 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c72 >> S5ConnStage start>>>
+20180901-18-55-56-831 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c69 >> S5TransStage start>>>
+20180901-18-55-56-853 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c72 >> S5TransStage start>>>
+20180901-18-55-56-854 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c70 >> S5TransStage start>>>
+20180901-18-55-56-856 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c71 >> S5TransStage start>>>
+20180901-18-55-56-856 : R> tid[17] SSockChannel_c68 >> bind proxy success!
+20180901-18-55-56-862 : R> tid[17] SSockChannel_c69 >> bind proxy success!
+20180901-18-55-56-881 : R> tid[17] SSockChannel_c72 >> bind proxy success!
+20180901-18-55-56-890 : R> tid[17] SSockChannel_c70 >> bind proxy success!
+20180901-18-55-56-899 : R> tid[17] SSockChannel_c71 >> bind proxy success!
+20180901-18-55-56-949 : E> tid[17] Relayer_c61 >> channel dead
+20180901-18-55-56-949 : R> tid[17] SSockChannel_c61 >> total>>> src>4119,src<27588,dest>23957,dest<625
+20180901-18-55-56-949 : R> tid[17] SSockChannel_c61 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-950 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c73 >> S5VerifyStage start >>>
+20180901-18-55-56-954 : E> tid[17] Relayer_c42 >> channel dead
+20180901-18-55-56-954 : R> tid[17] SSockChannel_c42 >> total>>> src>5738,src<124189,dest>122040,dest<845
+20180901-18-55-56-954 : R> tid[17] SSockChannel_c42 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-954 : E> tid[17] Relayer_c71 >> channel dead
+20180901-18-55-56-954 : R> tid[17] SSockChannel_c71 >> total>>> src>3433,src<3600,dest>139,dest<600
+20180901-18-55-56-955 : R> tid[17] SSockChannel_c71 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-956 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c73 >> S5ConnStage start>>>
+20180901-18-55-56-958 : E> tid[17] Relayer_c48 >> channel dead
+20180901-18-55-56-958 : R> tid[17] SSockChannel_c48 >> total>>> src>2620,src<229825,dest>225796,dest<427
+20180901-18-55-56-958 : R> tid[17] SSockChannel_c48 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-959 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c74 >> S5VerifyStage start >>>
+20180901-18-55-56-961 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c74 >> S5ConnStage start>>>
+20180901-18-55-56-962 : E> tid[17] Relayer_c46 >> channel dead
+20180901-18-55-56-962 : R> tid[17] SSockChannel_c46 >> total>>> src>655,src<3639,dest>0,dest<0
+20180901-18-55-56-962 : R> tid[17] SSockChannel_c46 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-56-964 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c75 >> S5VerifyStage start >>>
+20180901-18-55-56-964 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c75 >> S5ConnStage start>>>
+20180901-18-55-56-965 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c73 >> S5TransStage start>>>
+20180901-18-55-56-968 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c76 >> S5VerifyStage start >>>
+20180901-18-55-56-969 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c74 >> S5TransStage start>>>
+20180901-18-55-56-970 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c76 >> S5ConnStage start>>>
+20180901-18-55-56-973 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c77 >> S5VerifyStage start >>>
+20180901-18-55-56-974 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c77 >> S5ConnStage start>>>
+20180901-18-55-56-975 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c75 >> S5TransStage start>>>
+20180901-18-55-56-980 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c76 >> S5TransStage start>>>
+20180901-18-55-56-990 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c77 >> S5TransStage start>>>
+20180901-18-55-56-997 : R> tid[17] SSockChannel_c74 >> bind proxy success!
+20180901-18-55-57-04 : R> tid[17] SSockChannel_c75 >> bind proxy success!
+20180901-18-55-57-11 : R> tid[17] SSockChannel_c76 >> bind proxy success!
+20180901-18-55-57-76 : E> tid[17] Relayer_c72 >> channel dead
+20180901-18-55-57-77 : R> tid[17] SSockChannel_c72 >> total>>> src>6343,src<2636,dest>456,dest<3618
+20180901-18-55-57-77 : R> tid[17] SSockChannel_c72 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-57-79 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c78 >> S5VerifyStage start >>>
+20180901-18-55-57-80 : E> tid[17] Relayer_c43 >> channel dead
+20180901-18-55-57-80 : R> tid[17] SSockChannel_c43 >> total>>> src>7234,src<304371,dest>297564,dest<1265
+20180901-18-55-57-80 : R> tid[17] SSockChannel_c43 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-57-82 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c79 >> S5VerifyStage start >>>
+20180901-18-55-57-83 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c79 >> S5ConnStage start>>>
+20180901-18-55-57-84 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c78 >> S5ConnStage start>>>
+20180901-18-55-57-84 : E> tid[17] Relayer_c51 >> channel dead
+20180901-18-55-57-84 : R> tid[17] SSockChannel_c51 >> total>>> src>2641,src<2867,dest>0,dest<0
+20180901-18-55-57-84 : R> tid[17] SSockChannel_c51 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-57-86 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c80 >> S5VerifyStage start >>>
+20180901-18-55-57-89 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c80 >> S5ConnStage start>>>
+20180901-18-55-57-91 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c79 >> S5TransStage start>>>
+20180901-18-55-57-92 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c78 >> S5TransStage start>>>
+20180901-18-55-57-93 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c80 >> S5TransStage start>>>
+20180901-18-55-57-129 : R> tid[17] SSockChannel_c80 >> bind proxy success!
+20180901-18-55-57-133 : R> tid[17] SSockChannel_c79 >> bind proxy success!
+20180901-18-55-57-140 : R> tid[17] SSockChannel_c78 >> bind proxy success!
+20180901-18-55-57-252 : E> tid[17] Relayer_c66 >> channel dead
+20180901-18-55-57-253 : R> tid[17] SSockChannel_c66 >> total>>> src>3460,src<3502,dest>309,dest<468
+20180901-18-55-57-253 : R> tid[17] SSockChannel_c66 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-57-255 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c81 >> S5VerifyStage start >>>
+20180901-18-55-57-255 : E> tid[17] Relayer_c63 >> channel dead
+20180901-18-55-57-256 : R> tid[17] SSockChannel_c63 >> total>>> src>6802,src<3180,dest>464,dest<4027
+20180901-18-55-57-256 : R> tid[17] SSockChannel_c63 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-57-257 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c82 >> S5VerifyStage start >>>
+20180901-18-55-57-259 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c81 >> S5ConnStage start>>>
+20180901-18-55-57-259 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c82 >> S5ConnStage start>>>
+20180901-18-55-57-263 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c81 >> S5TransStage start>>>
+20180901-18-55-57-265 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c82 >> S5TransStage start>>>
+20180901-18-55-57-297 : E> tid[17] Relayer_c56 >> channel dead
+20180901-18-55-57-297 : R> tid[17] SSockChannel_c56 >> total>>> src>13863,src<39797,dest>33989,dest<11871
+20180901-18-55-57-297 : R> tid[17] SSockChannel_c56 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-57-298 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c83 >> S5VerifyStage start >>>
+20180901-18-55-57-305 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c83 >> S5ConnStage start>>>
+20180901-18-55-57-308 : R> tid[17] SSockChannel_c82 >> bind proxy success!
+20180901-18-55-57-311 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c83 >> S5TransStage start>>>
+20180901-18-55-57-311 : R> tid[17] SSockChannel_c81 >> bind proxy success!
+20180901-18-55-57-316 : R> tid[17] SSockChannel_c83 >> bind proxy success!
+20180901-18-55-57-348 : E> tid[17] Relayer_c50 >> channel dead
+20180901-18-55-57-348 : R> tid[17] SSockChannel_c50 >> total>>> src>25347,src<7677,dest>3246,dest<23369
+20180901-18-55-57-348 : R> tid[17] SSockChannel_c50 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-55-57-349 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c84 >> S5VerifyStage start >>>
+20180901-18-55-57-351 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c84 >> S5ConnStage start>>>
+20180901-18-55-57-363 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c84 >> S5TransStage start>>>
+20180901-18-55-57-369 : R> tid[17] SSockChannel_c84 >> bind proxy success!
+20180901-18-55-57-643 : R> tid[17] SSockChannel_c73 >> bind proxy success!
+20180901-18-55-57-666 : R> tid[17] SSockChannel_c77 >> bind proxy success!
+20180901-18-56-02-270 : E> tid[17] Relayer_c54 >> channel dead
+20180901-18-56-02-271 : R> tid[17] SSockChannel_c54 >> total>>> src>3783,src<2895,dest>315,dest<459
+20180901-18-56-02-271 : R> tid[17] SSockChannel_c54 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-02-517 : E> tid[17] Relayer_c55 >> channel dead
+20180901-18-56-02-517 : R> tid[17] SSockChannel_c55 >> total>>> src>5539,src<1626,dest>630,dest<857
+20180901-18-56-02-517 : R> tid[17] SSockChannel_c55 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-05-443 : E> tid[17] Relayer_c83 >> channel dead
+20180901-18-56-05-443 : R> tid[17] SSockChannel_c83 >> total>>> src>4687,src<3754,dest>511,dest<3641
+20180901-18-56-05-443 : R> tid[17] SSockChannel_c83 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-05-760 : E> tid[17] Relayer_c84 >> channel dead
+20180901-18-56-05-760 : R> tid[17] SSockChannel_c84 >> total>>> src>9747,src<125879,dest>116079,dest<7379
+20180901-18-56-05-760 : R> tid[17] SSockChannel_c84 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-06-886 : E> tid[17] Relayer_c67 >> channel dead
+20180901-18-56-06-886 : R> tid[17] SSockChannel_c67 >> total>>> src>6187,src<15012,dest>4632,dest<4337
+20180901-18-56-06-886 : R> tid[17] SSockChannel_c67 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-07-532 : E> tid[17] Relayer_c81 >> channel dead
+20180901-18-56-07-532 : R> tid[17] SSockChannel_c81 >> total>>> src>7705,src<6000,dest>556,dest<2779
+20180901-18-56-07-532 : R> tid[17] SSockChannel_c81 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-07-543 : E> tid[17] Relayer_c70 >> channel dead
+20180901-18-56-07-543 : R> tid[17] SSockChannel_c70 >> total>>> src>19671,src<13658,dest>1529,dest<8791
+20180901-18-56-07-543 : R> tid[17] SSockChannel_c70 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-07-546 : E> tid[17] Relayer_c78 >> channel dead
+20180901-18-56-07-546 : R> tid[17] SSockChannel_c78 >> total>>> src>9907,src<7088,dest>834,dest<4218
+20180901-18-56-07-546 : R> tid[17] SSockChannel_c78 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-07-925 : E> tid[17] Relayer_c79 >> channel dead
+20180901-18-56-07-926 : R> tid[17] SSockChannel_c79 >> total>>> src>15821,src<13276,dest>1251,dest<6314
+20180901-18-56-07-926 : R> tid[17] SSockChannel_c79 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-08-366 : E> tid[17] Relayer_c80 >> channel dead
+20180901-18-56-08-366 : R> tid[17] SSockChannel_c80 >> total>>> src>17657,src<13852,dest>1390,dest<6989
+20180901-18-56-08-366 : R> tid[17] SSockChannel_c80 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-08-959 : E> tid[17] Relayer_c21 >> channel dead
+20180901-18-56-08-959 : R> tid[17] SSockChannel_c21 >> total>>> src>14303,src<8583,dest>1727,dest<10951
+20180901-18-56-08-960 : R> tid[17] SSockChannel_c21 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-14-645 : R> tid[17] com.chedifier.ladder.socks5.S5VerifyStage_c85 >> S5VerifyStage start >>>
+20180901-18-56-14-645 : R> tid[17] com.chedifier.ladder.socks5.S5ConnStage_c85 >> S5ConnStage start>>>
+20180901-18-56-14-648 : R> tid[17] com.chedifier.ladder.socks5.S5TransStage_c85 >> S5TransStage start>>>
+20180901-18-56-14-653 : R> tid[17] SSockChannel_c85 >> bind proxy success!
+20180901-18-56-15-479 : E> tid[17] Relayer_c74 >> channel dead
+20180901-18-56-15-479 : R> tid[17] SSockChannel_c74 >> total>>> src>23321,src<6137,dest>1200,dest<16918
+20180901-18-56-15-480 : R> tid[17] SSockChannel_c74 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-480 : E> tid[17] Relayer_c1 >> channel dead
+20180901-18-56-15-480 : R> tid[17] SSockChannel_c1 >> total>>> src>12726,src<74035,dest>52944,dest<1875
+20180901-18-56-15-480 : R> tid[17] SSockChannel_c1 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-480 : E> tid[17] Relayer_c68 >> channel dead
+20180901-18-56-15-480 : R> tid[17] SSockChannel_c68 >> total>>> src>10188,src<9628,dest>5822,dest<6086
+20180901-18-56-15-480 : R> tid[17] SSockChannel_c68 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-481 : E> tid[17] Relayer_c75 >> channel dead
+20180901-18-56-15-481 : R> tid[17] SSockChannel_c75 >> total>>> src>31572,src<8006,dest>1800,dest<25354
+20180901-18-56-15-481 : R> tid[17] SSockChannel_c75 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-481 : E> tid[17] Relayer_c3 >> channel dead
+20180901-18-56-15-481 : R> tid[17] SSockChannel_c3 >> total>>> src>8568,src<9196,dest>1063,dest<1540
+20180901-18-56-15-481 : R> tid[17] SSockChannel_c3 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-481 : E> tid[17] Relayer_c7 >> channel dead
+20180901-18-56-15-481 : R> tid[17] SSockChannel_c7 >> total>>> src>9618,src<8231,dest>720,dest<1990
+20180901-18-56-15-481 : R> tid[17] SSockChannel_c7 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-482 : E> tid[17] Relayer_c6 >> channel dead
+20180901-18-56-15-482 : R> tid[17] SSockChannel_c6 >> total>>> src>7159,src<16452,dest>8083,dest<1788
+20180901-18-56-15-482 : R> tid[17] SSockChannel_c6 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-482 : E> tid[17] Relayer_c15 >> channel dead
+20180901-18-56-15-482 : R> tid[17] SSockChannel_c15 >> total>>> src>9674,src<10757,dest>1017,dest<2746
+20180901-18-56-15-482 : R> tid[17] SSockChannel_c15 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-482 : E> tid[17] Relayer_c85 >> channel dead
+20180901-18-56-15-482 : R> tid[17] SSockChannel_c85 >> total>>> src>4454,src<378932,dest>370639,dest<426
+20180901-18-56-15-482 : R> tid[17] SSockChannel_c85 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-482 : E> tid[17] Relayer_c16 >> channel dead
+20180901-18-56-15-483 : R> tid[17] SSockChannel_c16 >> total>>> src>5797,src<57537,dest>48118,dest<1553
+20180901-18-56-15-483 : R> tid[17] SSockChannel_c16 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-483 : E> tid[17] Relayer_c77 >> channel dead
+20180901-18-56-15-483 : R> tid[17] SSockChannel_c77 >> total>>> src>7277,src<5021,dest>300,dest<4138
+20180901-18-56-15-483 : R> tid[17] SSockChannel_c77 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-483 : E> tid[17] Relayer_c76 >> channel dead
+20180901-18-56-15-483 : R> tid[17] SSockChannel_c76 >> total>>> src>34332,src<6657,dest>1800,dest<25583
+20180901-18-56-15-483 : R> tid[17] SSockChannel_c76 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-484 : E> tid[17] Relayer_c73 >> channel dead
+20180901-18-56-15-484 : R> tid[17] SSockChannel_c73 >> total>>> src>7855,src<1364,dest>300,dest<4138
+20180901-18-56-15-484 : R> tid[17] SSockChannel_c73 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-484 : E> tid[17] Relayer_c4 >> channel dead
+20180901-18-56-15-484 : R> tid[17] SSockChannel_c4 >> total>>> src>5096,src<10727,dest>6182,dest<2108
+20180901-18-56-15-484 : R> tid[17] SSockChannel_c4 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-484 : E> tid[17] Relayer_c10 >> channel dead
+20180901-18-56-15-484 : R> tid[17] SSockChannel_c10 >> total>>> src>9101,src<9236,dest>5967,dest<1077
+20180901-18-56-15-484 : R> tid[17] SSockChannel_c10 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-484 : E> tid[17] Relayer_c13 >> channel dead
+20180901-18-56-15-484 : R> tid[17] SSockChannel_c13 >> total>>> src>11566,src<14966,dest>8068,dest<3795
+20180901-18-56-15-484 : R> tid[17] SSockChannel_c13 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-485 : E> tid[17] Relayer_c2 >> channel dead
+20180901-18-56-15-485 : R> tid[17] SSockChannel_c2 >> total>>> src>3974,src<2621,dest>429,dest<1507
+20180901-18-56-15-485 : R> tid[17] SSockChannel_c2 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-485 : E> tid[17] Relayer_c82 >> channel dead
+20180901-18-56-15-485 : R> tid[17] SSockChannel_c82 >> total>>> src>17238,src<16068,dest>1668,dest<7605
+20180901-18-56-15-485 : R> tid[17] SSockChannel_c82 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-485 : E> tid[17] Relayer_c69 >> channel dead
+20180901-18-56-15-485 : R> tid[17] SSockChannel_c69 >> total>>> src>49957,src<21246,dest>10905,dest<38234
+20180901-18-56-15-485 : R> tid[17] SSockChannel_c69 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-485 : E> tid[17] Relayer_c58 >> channel dead
+20180901-18-56-15-486 : R> tid[17] SSockChannel_c58 >> total>>> src>4131,src<3019,dest>147,dest<568
+20180901-18-56-15-486 : R> tid[17] SSockChannel_c58 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]
+20180901-18-56-15-486 : E> tid[17] Relayer_c14 >> channel dead
+20180901-18-56-15-486 : R> tid[17] SSockChannel_c14 >> total>>> src>9257,src<7050,dest>3525,dest<1591
+20180901-18-56-15-486 : R> tid[17] SSockChannel_c14 >> mUpStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferIn java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mUpStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144] mDownStreamBufferOut java.nio.HeapByteBuffer[pos=0 lim=262144 cap=262144]

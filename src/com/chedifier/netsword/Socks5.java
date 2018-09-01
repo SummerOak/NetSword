@@ -2,7 +2,6 @@ package com.chedifier.netsword;
 
 import com.chedifier.ladder.base.Log;
 import com.chedifier.ladder.base.StringUtils;
-import com.chedifier.ladder.iface.CmdId;
 import com.chedifier.ladder.iface.Error;
 import com.chedifier.ladder.iface.IProxyListener;
 import com.chedifier.ladder.iface.SProxyIface;
@@ -19,8 +18,6 @@ public class Socks5 implements IProxyListener,ISwordUIEvent{
 	private int mForceServer = 0;
 	private boolean mNonUI = false;
 	
-	private boolean mStop = false;
-	
 	private Socks5(String[] args) {
 		
 		if(!parseArgs(args)) {
@@ -28,10 +25,7 @@ public class Socks5 implements IProxyListener,ISwordUIEvent{
 			return;
 		}
 		
-		SProxyIface.init("./Socks5/setting.txt");
-		
-		if(mStop) {
-			SProxyIface.sendExternCommand(mForceServer!=1, CmdId.STOP, null, "testUser", "test123");
+		if(!SProxyIface.init()) {
 			return;
 		}
 		
@@ -58,8 +52,6 @@ public class Socks5 implements IProxyListener,ISwordUIEvent{
 					mForceServer = -1;
 				}else if("nui".equals(s)) {
 					mNonUI = true;
-				}else if("stop".equals(s)) {
-					mStop = true;
 				}else {
 					return false;
 				}
@@ -72,11 +64,10 @@ public class Socks5 implements IProxyListener,ISwordUIEvent{
 	private void printHelps() {
 		StringBuilder sb = new StringBuilder(125);
 		sb.append("tips>>>\n");
-		sb.append("input format [c|s|nui|stop]").append("\n");
+		sb.append("input format [c|s|nui]").append("\n");
 		sb.append("c		run as client").append("\n");
-		sb.append("c		run as server").append("\n");
+		sb.append("s		run as server").append("\n");
 		sb.append("nui	run without ui").append("\n");
-		sb.append("stop	stop running proxy").append("\n");
 		
 		Log.r(TAG, sb.toString());
 	}

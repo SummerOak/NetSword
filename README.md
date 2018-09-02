@@ -1,5 +1,5 @@
 # What's it
-  This is a proxy based on Socks5 protocol implemented in java. As we all known, a proxy contains 2 parts: local and server. local take over request and relay it to server, server send the request to remote and send data received from remote back to local. In NetSword, the two parts are implemented into one runnable jar, and data transmits between local and server are proguarded for some purpose(THE GREAT WALL). This project depends on [CloudLadder](https://github.com/SummerOak/CloudLadder), all protocol related business are handled in that project. This project is just an UI implement.
+  It's a proxy based on Socks5 protocol and implemented in java. As we all known, a proxy contains 2 parts: local and server. local take over requests and relay it to server, server send these requests to remote and relay data received from remote back to local. In this proxy, these two parts are implemented into one runnable jar, and data transmits between local and server are disguised for some purpose(THE GREAT WALL). This project depends on [CloudLadder](https://github.com/SummerOak/CloudLadder), all protocol related business are handled in that project. This project is just an UI implement.
   
 # How to use it
 

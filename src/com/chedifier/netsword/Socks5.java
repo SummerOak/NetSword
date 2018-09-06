@@ -69,7 +69,7 @@ public class Socks5 implements IProxyListener,ISwordUIEvent{
 		sb.append("s		run as server").append("\n");
 		sb.append("nui	run without ui").append("\n");
 		
-		Log.r(TAG, sb.toString());
+		System.out.println(sb.toString());
 	}
 
 	@Override

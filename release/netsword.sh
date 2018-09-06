@@ -1,4 +1,4 @@
-
+cd "$(dirname "$0")"
 
 function getProperty {
    KEY=$1
@@ -50,7 +50,7 @@ else
    PORT=$(getProperty "local_port")
    echo "runing client on port: $PORT"
    enableSocksProxy
-   java -jar NetSword.jar $*  > /dev/null 2>&1
+   java -jar NetSword.jar $* > /dev/null 2>&1
    disableSocksProxy
 fi
 

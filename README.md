@@ -3,7 +3,7 @@
   
 # How to use it
 
-  1. Download [release](https://github.com/SummerOak/NetSword/tree/master/release) folder and config setting.txt properly;
+  1. Download [NetSword](https://github.com/SummerOak/NetSword/releases/download/v1.0/NetSword.zip) folder and config setting.txt properly;
   2. Run command "java -jar NetSword.jar s" to start the server, If you are running it on Ubuntu and you want it run permanently(such as restart automatically after a crash), you can add netsword.service to you system and use systemctl system command to start it;
   3. Before start the local part, You need make sure socks5 has open. This step can be skipped if you are running it on MAC because netsword.sh do it for you; 
   4. Finally, run command "java -jar NetSword.jar c" to start the local;
